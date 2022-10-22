@@ -97,16 +97,18 @@ public class AuthControllerImpl implements AuthController {
         // Create new user's account
         var user = new PlayerModel();
 
+        // Data coming from request
         user.setUsername(signUpRequest.getUsername());
         user.setEmail(signUpRequest.getEmail());
         user.setFirstName(signUpRequest.getFirstName());
         user.setLastName(signUpRequest.getLastName());
         user.setPassword(encoder.encode(signUpRequest.getPassword()));
 
+        // Default data
         Set<RoleModel> roles = new HashSet<>();
         roles.add(userRole);
-
         user.setRoles(roles);
+
         playerRepository.save(user);
 
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));

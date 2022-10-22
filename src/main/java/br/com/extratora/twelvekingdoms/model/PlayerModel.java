@@ -1,12 +1,14 @@
 package br.com.extratora.twelvekingdoms.model;
 
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import java.io.Serial;
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -40,6 +42,13 @@ public class PlayerModel implements Serializable {
 
     @Column(name = "PASSWORD", nullable = false)
     private String password;
+
+    @Column(name = "IS_ACTIVE", nullable = false)
+    private Boolean isActive = true;
+
+    @CreationTimestamp
+    @Column(name = "CREATED_AT", nullable = false)
+    private Timestamp createdAt;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(

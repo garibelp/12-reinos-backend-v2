@@ -24,6 +24,8 @@ public class UserDetailsImpl implements UserDetails {
 
     private final String email;
 
+    private final boolean isActive;
+
     @JsonIgnore
     private final String password;
 
@@ -34,12 +36,14 @@ public class UserDetailsImpl implements UserDetails {
             String username,
             String email,
             String password,
+            boolean isActive,
             Collection<? extends GrantedAuthority> authorities
     ) {
         this.id = id;
         this.username = username;
         this.email = email;
         this.password = password;
+        this.isActive = isActive;
         this.authorities = authorities;
     }
 
@@ -53,6 +57,7 @@ public class UserDetailsImpl implements UserDetails {
                 user.getUsername(),
                 user.getEmail(),
                 user.getPassword(),
+                user.getIsActive(),
                 authorities
         );
     }
@@ -79,7 +84,7 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return this.isActive;
     }
 
     @Override
@@ -94,6 +99,6 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, username, email, password, authorities);
+        return Objects.hash(id, username, email, password, isActive, authorities);
     }
 }
