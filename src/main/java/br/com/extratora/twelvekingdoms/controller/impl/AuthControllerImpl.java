@@ -17,7 +17,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -30,6 +29,7 @@ import javax.validation.Valid;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/auth")
@@ -56,8 +56,8 @@ public class AuthControllerImpl implements AuthController {
 
     @Override
     @PostMapping("/signin")
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
-        Authentication authentication = authenticationManager.authenticate(
+    public ResponseEntity<JwtResponse> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+        var authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword())
         );
 
@@ -67,7 +67,7 @@ public class AuthControllerImpl implements AuthController {
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         List<String> roles = userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
-                .toList();
+                .collect(Collectors.toList());
 
         return ResponseEntity.ok(
                 new JwtResponse(
@@ -82,7 +82,7 @@ public class AuthControllerImpl implements AuthController {
 
     @Override
     @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
+    public ResponseEntity<MessageResponse> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
         if (Boolean.TRUE.equals(playerRepository.existsByUsername(signUpRequest.getUsername()))) {
             throw new ResponseFieldStatusException(HttpStatus.BAD_REQUEST, "Username already exists!", "username");
         }
@@ -95,7 +95,7 @@ public class AuthControllerImpl implements AuthController {
                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
 
         // Create new user's account
-        PlayerModel user = new PlayerModel();
+        var user = new PlayerModel();
 
         user.setUsername(signUpRequest.getUsername());
         user.setEmail(signUpRequest.getEmail());

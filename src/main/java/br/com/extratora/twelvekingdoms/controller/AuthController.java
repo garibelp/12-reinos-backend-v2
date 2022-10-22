@@ -2,10 +2,12 @@ package br.com.extratora.twelvekingdoms.controller;
 
 import br.com.extratora.twelvekingdoms.dto.request.LoginRequest;
 import br.com.extratora.twelvekingdoms.dto.request.SignupRequest;
+import br.com.extratora.twelvekingdoms.dto.response.JwtResponse;
+import br.com.extratora.twelvekingdoms.dto.response.MessageResponse;
 import org.springframework.http.ResponseEntity;
 
 public interface AuthController {
-    ResponseEntity<?> authenticateUser(LoginRequest loginRequest);
+    ResponseEntity<JwtResponse> authenticateUser(LoginRequest loginRequest);
 
-    ResponseEntity<?> registerUser(SignupRequest signUpRequest);
+    ResponseEntity<MessageResponse> registerUser(SignupRequest signUpRequest);
 }

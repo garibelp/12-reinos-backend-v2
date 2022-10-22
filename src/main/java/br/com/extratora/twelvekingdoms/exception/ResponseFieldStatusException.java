@@ -6,7 +6,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 @Getter
 public class ResponseFieldStatusException extends ResponseStatusException {
-    private String field;
+    private final String field;
 
     public ResponseFieldStatusException(HttpStatus status, String reason, String field) {
         super(status, reason);

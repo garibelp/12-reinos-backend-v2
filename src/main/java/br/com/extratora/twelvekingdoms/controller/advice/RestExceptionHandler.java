@@ -14,16 +14,20 @@ import java.util.List;
 public class RestExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
-        ErrorResponse res = new ErrorResponse();
+        var res = new ErrorResponse();
+
         List<ErrorDto> errorList = res.getErrorList();
         ex.getFieldErrors().forEach(fieldError -> errorList.add(new ErrorDto(fieldError.getField(), fieldError.getDefaultMessage())));
+
         return ResponseEntity.badRequest().body(res);
     }
 
     @ExceptionHandler(ResponseFieldStatusException.class)
     public ResponseEntity<ErrorResponse> handleResponseStatusException(ResponseFieldStatusException ex) {
-        ErrorResponse res = new ErrorResponse();
+        var res = new ErrorResponse();
+
         res.getErrorList().add(new ErrorDto(ex.getField(), ex.getReason()));
+
         return ResponseEntity.badRequest().body(res);
     }
 }
