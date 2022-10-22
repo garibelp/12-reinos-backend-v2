@@ -6,12 +6,14 @@ import br.com.extratora.twelvekingdoms.dto.request.SignupRequest;
 import br.com.extratora.twelvekingdoms.dto.response.JwtResponse;
 import br.com.extratora.twelvekingdoms.dto.response.MessageResponse;
 import br.com.extratora.twelvekingdoms.enums.RolesEnum;
+import br.com.extratora.twelvekingdoms.exception.ResponseFieldStatusException;
 import br.com.extratora.twelvekingdoms.model.PlayerModel;
 import br.com.extratora.twelvekingdoms.model.RoleModel;
 import br.com.extratora.twelvekingdoms.repository.PlayerRepository;
 import br.com.extratora.twelvekingdoms.repository.RoleRepository;
 import br.com.extratora.twelvekingdoms.security.UserDetailsImpl;
 import br.com.extratora.twelvekingdoms.utils.JwtUtils;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -82,15 +84,11 @@ public class AuthControllerImpl implements AuthController {
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
         if (Boolean.TRUE.equals(playerRepository.existsByUsername(signUpRequest.getUsername()))) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: Username is already taken!"));
+            throw new ResponseFieldStatusException(HttpStatus.BAD_REQUEST, "Username already exists!", "username");
         }
 
         if (Boolean.TRUE.equals(playerRepository.existsByEmail(signUpRequest.getEmail()))) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: Email is already in use!"));
+            throw new ResponseFieldStatusException(HttpStatus.BAD_REQUEST, "Email is already in use!", "email");
         }
 
         RoleModel userRole = roleRepository.findByName(RolesEnum.USER)

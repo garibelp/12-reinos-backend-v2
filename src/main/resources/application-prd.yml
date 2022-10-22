@@ -1,0 +1,9 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_DB}
+    username: ${DATABASE_USER}
+    password: ${DATABASE_PWD}
+
+jwt:
+  secret: ${JWT_SECRET}
+  expires_in: ${JWT_EXPIRES_IN}
