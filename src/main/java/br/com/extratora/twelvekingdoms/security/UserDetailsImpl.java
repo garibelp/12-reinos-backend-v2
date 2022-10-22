@@ -11,6 +11,7 @@ import java.io.Serial;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Getter
@@ -18,7 +19,7 @@ public class UserDetailsImpl implements UserDetails {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    private final Long id;
+    private final UUID id;
 
     private final String username;
 
@@ -32,7 +33,7 @@ public class UserDetailsImpl implements UserDetails {
     private final Collection<? extends GrantedAuthority> authorities;
 
     public UserDetailsImpl(
-            Long id,
+            UUID id,
             String username,
             String email,
             String password,

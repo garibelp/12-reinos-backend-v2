@@ -1,1 +1,7 @@
-INSERT INTO ROLES(id, name) VALUES (1, 'USER'), (2, 'MODERATOR'), (3, 'ADMIN') ON CONFLICT DO NOTHING;
+INSERT INTO
+    ROLES(id, name)
+VALUES
+    (gen_random_uuid (), 'USER'),
+    (gen_random_uuid (), 'MODERATOR'),
+    (gen_random_uuid (), 'ADMIN')
+ON CONFLICT DO NOTHING;
