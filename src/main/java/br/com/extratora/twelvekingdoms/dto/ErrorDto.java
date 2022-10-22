@@ -1,4 +1,4 @@
-package br.com.extratora.twelvekingdoms.dto.response;
+package br.com.extratora.twelvekingdoms.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,6 +1,6 @@
 package br.com.extratora.twelvekingdoms.security.filter;
 
-import br.com.extratora.twelvekingdoms.service.impl.UserDetailsServiceImpl;
+import br.com.extratora.twelvekingdoms.security.service.UserDetailsServiceImpl;
 import br.com.extratora.twelvekingdoms.utils.JwtUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

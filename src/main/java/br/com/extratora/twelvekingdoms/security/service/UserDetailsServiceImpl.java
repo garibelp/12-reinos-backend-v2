@@ -1,4 +1,4 @@
-package br.com.extratora.twelvekingdoms.service.impl;
+package br.com.extratora.twelvekingdoms.security.service;
 
 import br.com.extratora.twelvekingdoms.model.PlayerModel;
 import br.com.extratora.twelvekingdoms.repository.PlayerRepository;

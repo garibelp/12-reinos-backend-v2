@@ -1,7 +1,6 @@
 INSERT INTO
     ROLES(id, name)
 VALUES
-    (gen_random_uuid (), 'USER'),
-    (gen_random_uuid (), 'MODERATOR'),
-    (gen_random_uuid (), 'ADMIN')
+    ('21e3f8c1-9f8c-437d-9ae5-de635dc8d202', 'ROLE_USER'),
+    ('463ba3a0-fe9b-4453-ad60-dc2492c9ecff', 'ROLE_ADMIN')
 ON CONFLICT DO NOTHING;

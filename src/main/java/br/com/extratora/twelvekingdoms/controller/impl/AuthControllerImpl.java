@@ -91,7 +91,7 @@ public class AuthControllerImpl implements AuthController {
             throw new ResponseFieldStatusException(HttpStatus.BAD_REQUEST, "Email is already in use!", "email");
         }
 
-        RoleModel userRole = roleRepository.findByName(RolesEnum.USER)
+        RoleModel userRole = roleRepository.findByName(RolesEnum.ROLE_USER)
                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
 
         // Create new user's account

@@ -1,14 +1,19 @@
 package br.com.extratora.twelvekingdoms.controller.advice;
 
-import br.com.extratora.twelvekingdoms.dto.response.ErrorDto;
+import br.com.extratora.twelvekingdoms.dto.ErrorDto;
 import br.com.extratora.twelvekingdoms.dto.response.ErrorResponse;
+import br.com.extratora.twelvekingdoms.exception.DataNotFoundException;
 import br.com.extratora.twelvekingdoms.exception.ResponseFieldStatusException;
+import br.com.extratora.twelvekingdoms.exception.UnauthorizedException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.util.List;
+import java.util.Objects;
 
 @RestControllerAdvice
 public class RestExceptionHandler {
@@ -29,5 +34,25 @@ public class RestExceptionHandler {
         res.getErrorList().add(new ErrorDto(ex.getField(), ex.getReason()));
 
         return ResponseEntity.badRequest().body(res);
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ErrorResponse> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException ex) {
+        var res = new ErrorResponse();
+
+        String message = "Field {" + ex.getName() + "} expected type: " + Objects.requireNonNull(ex.getRequiredType()).getTypeName();
+        res.getErrorList().add(new ErrorDto(ex.getName(), message));
+
+        return ResponseEntity.badRequest().body(res);
+    }
+
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<Void> handleUnauthorizedException(UnauthorizedException ex) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    }
+
+    @ExceptionHandler(DataNotFoundException.class)
+    public ResponseEntity<Void> handleDataNotFoundException(DataNotFoundException ex) {
+        return ResponseEntity.notFound().build();
     }
 }

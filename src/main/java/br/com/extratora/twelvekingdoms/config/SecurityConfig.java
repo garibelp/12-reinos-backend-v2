@@ -48,6 +48,7 @@ public class SecurityConfig {
                 .anyRequest().authenticated();
         // Add a filter to validate the tokens with every request
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+
         return http.build();
     }
 

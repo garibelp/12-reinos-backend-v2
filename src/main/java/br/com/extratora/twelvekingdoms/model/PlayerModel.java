@@ -1,5 +1,6 @@
 package br.com.extratora.twelvekingdoms.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -41,11 +42,12 @@ public class PlayerModel implements Serializable {
     @Email
     private String email;
 
+    @JsonIgnore
     @Column(name = "PASSWORD", nullable = false)
     private String password;
 
     @Column(name = "IS_ACTIVE", nullable = false)
-    private Boolean isActive = true;
+    private boolean isActive = true;
 
     @CreationTimestamp
     @Column(name = "CREATED_AT", nullable = false)
