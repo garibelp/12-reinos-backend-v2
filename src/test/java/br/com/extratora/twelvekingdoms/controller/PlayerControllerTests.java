@@ -4,6 +4,8 @@ import br.com.extratora.twelvekingdoms.controller.impl.PlayerControllerImpl;
 import br.com.extratora.twelvekingdoms.dto.BasicPlayerDto;
 import br.com.extratora.twelvekingdoms.dto.response.ErrorResponse;
 import br.com.extratora.twelvekingdoms.enums.PlayerSortEnum;
+import br.com.extratora.twelvekingdoms.exception.DataNotFoundException;
+import br.com.extratora.twelvekingdoms.exception.UnauthorizedException;
 import br.com.extratora.twelvekingdoms.service.PlayerService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -21,6 +23,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.Optional;
 
+import static br.com.extratora.twelvekingdoms.TestPayloads.PLAYER_UUID;
 import static br.com.extratora.twelvekingdoms.TestPayloads.getPlayerDtoPage;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
@@ -37,7 +40,7 @@ class PlayerControllerTests {
 
     @Test
     void givenDeleteCalled_whenValidRequest_thenShouldDeletePlayer() throws Exception {
-        RequestBuilder builder = MockMvcRequestBuilders.delete("/players/4c78842c-769b-4dc5-988a-234a438a4353");
+        RequestBuilder builder = MockMvcRequestBuilders.delete("/players/" + PLAYER_UUID.toString());
 
         mockMvc.perform(builder).andExpect(status().isAccepted());
 
@@ -53,9 +56,29 @@ class PlayerControllerTests {
 
     @Test
     void givenDetailsCalled_whenValidRequest_thenShouldReturnPlayerInfo() throws Exception {
-        RequestBuilder builder = MockMvcRequestBuilders.get("/players/4c78842c-769b-4dc5-988a-234a438a4353");
+        RequestBuilder builder = MockMvcRequestBuilders.get("/players/" + PLAYER_UUID.toString());
 
         mockMvc.perform(builder).andExpect(status().isOk());
+
+        verify(playerService, times(1)).getPlayer(any(), any());
+    }
+
+    @Test
+    void givenDetailsCalled_whenMissingUserPermission_thenShouldReturnUnauthorized() throws Exception {
+        when(playerService.getPlayer(any(), any())).thenThrow(new UnauthorizedException());
+        RequestBuilder builder = MockMvcRequestBuilders.get("/players/" + PLAYER_UUID.toString());
+
+        mockMvc.perform(builder).andExpect(status().isUnauthorized());
+
+        verify(playerService, times(1)).getPlayer(any(), any());
+    }
+
+    @Test
+    void givenDetailsCalled_whenNotFound_thenShouldReturnNotFound() throws Exception {
+        when(playerService.getPlayer(any(), any())).thenThrow(new DataNotFoundException(""));
+        RequestBuilder builder = MockMvcRequestBuilders.get("/players/" + PLAYER_UUID.toString());
+
+        mockMvc.perform(builder).andExpect(status().isNotFound());
 
         verify(playerService, times(1)).getPlayer(any(), any());
     }

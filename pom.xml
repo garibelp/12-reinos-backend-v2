@@ -20,15 +20,16 @@
             target/surefire-reports
         </sonar.junit.reportPaths>
         <sonar.exclusions>
-            **/utils/JwtUtils.java
+            src/main/java/br/com/extratora/twelvekingdoms/utils/JwtUtils.java
         </sonar.exclusions>
         <sonar.coverage.exclusions>
-            **/dto/**,
-            **/model/**,
-            **/repository/**,
-            **/config/**,
-            **/enums/**,
-            Main.java
+            src/main/java/br/com/extratora/twelvekingdoms/dto/**,
+            src/main/java/br/com/extratora/twelvekingdoms/model/**,
+            src/main/java/br/com/extratora/twelvekingdoms/repository/**,
+            src/main/java/br/com/extratora/twelvekingdoms/config/**,
+            src/main/java/br/com/extratora/twelvekingdoms/enums/**,
+            src/main/java/br/com/extratora/twelvekingdoms/security/**,
+            src/main/java/br/com/extratora/twelvekingdoms/Main.java
         </sonar.coverage.exclusions>
     </properties>
     <dependencies>
