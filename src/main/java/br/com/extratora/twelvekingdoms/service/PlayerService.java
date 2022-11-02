@@ -14,5 +14,5 @@ public interface PlayerService {
 
     PlayerModel getPlayer(UUID id, UserDetailsImpl user);
 
-    Page<BasicPlayerDto> listPlayers(int currentPage, int pageSize, Sort.Direction sortDirection, PlayerSortEnum sortField);
+    Page<BasicPlayerDto> playersPaginated(int currentPage, int pageSize, Sort.Direction sortDirection, PlayerSortEnum sortField);
 }

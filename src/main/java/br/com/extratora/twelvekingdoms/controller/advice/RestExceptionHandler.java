@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
+import javax.validation.ConstraintViolationException;
 import java.util.List;
 import java.util.Objects;
 
@@ -43,6 +44,13 @@ public class RestExceptionHandler {
         String message = "Field {" + ex.getName() + "} expected type: " + Objects.requireNonNull(ex.getRequiredType()).getTypeName();
         res.getErrorList().add(new ErrorDto(ex.getName(), message));
 
+        return ResponseEntity.badRequest().body(res);
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ErrorResponse> handleConstraintViolationException(ConstraintViolationException ex) {
+        var res = new ErrorResponse();
+        ex.getConstraintViolations().forEach(c -> res.getErrorList().add(new ErrorDto(c.getPropertyPath().toString(), c.getMessage())));
         return ResponseEntity.badRequest().body(res);
     }
 

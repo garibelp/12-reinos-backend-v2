@@ -4,20 +4,24 @@ import br.com.extratora.twelvekingdoms.dto.response.MessageResponse;
 import br.com.extratora.twelvekingdoms.dto.response.PlayerListResponse;
 import br.com.extratora.twelvekingdoms.enums.PlayerSortEnum;
 import br.com.extratora.twelvekingdoms.model.PlayerModel;
+import br.com.extratora.twelvekingdoms.security.UserDetailsImpl;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
+import org.springframework.validation.annotation.Validated;
 
+import javax.validation.constraints.Min;
 import java.util.UUID;
 
-public interface PlayerController {
-    ResponseEntity<MessageResponse> delete(Authentication authentication, UUID id);
+@Validated
 
-    ResponseEntity<PlayerModel> playerDetails(Authentication authentication, UUID id);
+public interface PlayerController {
+    ResponseEntity<MessageResponse> delete(UserDetailsImpl user, UUID id);
+
+    ResponseEntity<PlayerModel> details(UserDetailsImpl user, UUID id);
 
     ResponseEntity<PlayerListResponse> list(
-            int currentPage,
-            int pageSize,
+            @Min(0) int currentPage,
+            @Min(1) int pageSize,
             Sort.Direction sortDirection,
             PlayerSortEnum sortField
     );

@@ -38,8 +38,13 @@ public class PlayerServiceImpl implements PlayerService {
     }
 
     @Override
-    public Page<BasicPlayerDto> listPlayers(int currentPage, int pageSize, Sort.Direction sortDirection, PlayerSortEnum sortField) {
-        PageRequest pageRequest = PageRequest.of(currentPage, pageSize);
+    public Page<BasicPlayerDto> playersPaginated(
+            int currentPage,
+            int pageSize,
+            Sort.Direction sortDirection,
+            PlayerSortEnum sortField
+    ) {
+        var pageRequest = PageRequest.of(currentPage, pageSize);
 
         if (sortDirection != null && sortField != null) {
             pageRequest = pageRequest.withSort(sortDirection, sortField.toString().toLowerCase());

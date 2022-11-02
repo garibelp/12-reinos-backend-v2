@@ -12,7 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -28,29 +28,29 @@ public class PlayerControllerImpl implements PlayerController {
 
     @Override
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    @DeleteMapping
-    public ResponseEntity<MessageResponse> delete(Authentication authentication, @RequestParam UUID id) {
-        playerService.deletePlayer(id, (UserDetailsImpl) authentication.getPrincipal());
+    @DeleteMapping("/{id}")
+    public ResponseEntity<MessageResponse> delete(@AuthenticationPrincipal UserDetailsImpl user, @PathVariable UUID id) {
+        playerService.deletePlayer(id, user);
         return ResponseEntity.accepted().body(new MessageResponse("User deleted successfully!"));
     }
 
     @Override
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @GetMapping("/{id}")
-    public ResponseEntity<PlayerModel> playerDetails(Authentication authentication, @PathVariable UUID id) {
-        return ResponseEntity.ok(playerService.getPlayer(id, (UserDetailsImpl) authentication.getPrincipal()));
+    public ResponseEntity<PlayerModel> details(@AuthenticationPrincipal UserDetailsImpl user, @PathVariable UUID id) {
+        return ResponseEntity.ok(playerService.getPlayer(id, user));
     }
 
     @Override
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ResponseEntity<PlayerListResponse> list(
-            @RequestParam int currentPage,
-            @RequestParam int pageSize,
+            @RequestParam(defaultValue = "0") int currentPage,
+            @RequestParam(defaultValue = "5") int pageSize,
             @RequestParam(required = false) Sort.Direction sortDirection,
             @RequestParam(required = false) PlayerSortEnum sortField
     ) {
-        Page<BasicPlayerDto> playerList = playerService.listPlayers(currentPage, pageSize, sortDirection, sortField);
+        Page<BasicPlayerDto> playerList = playerService.playersPaginated(currentPage, pageSize, sortDirection, sortField);
         return ResponseEntity.ok(
                 new PlayerListResponse(
                         playerList.getTotalElements(),
