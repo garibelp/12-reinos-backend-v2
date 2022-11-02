@@ -1,6 +1,8 @@
 package br.com.extratora.twelvekingdoms.config;
 
 import br.com.extratora.twelvekingdoms.converter.CaseInsensitiveEnumConverter;
+import br.com.extratora.twelvekingdoms.enums.DiceEnum;
+import br.com.extratora.twelvekingdoms.enums.LineageEnum;
 import br.com.extratora.twelvekingdoms.enums.PlayerSortEnum;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.Sort;
@@ -13,8 +15,16 @@ import java.util.List;
 public class AppConfig implements WebMvcConfigurer {
     @Override
     public void addFormatters(FormatterRegistry registry) {
-        List<Class<? extends Enum>> enums = List.of(PlayerSortEnum.class, Sort.Direction.class);
-        enums.forEach(enumClass -> registry.addConverter(String.class, enumClass,
-                new CaseInsensitiveEnumConverter<>(enumClass)));
+        List<Class<? extends Enum>> enums = List.of(
+                PlayerSortEnum.class,
+                Sort.Direction.class,
+                DiceEnum.class,
+                LineageEnum.class
+        );
+        enums.forEach(enumClass -> registry.addConverter(
+                String.class,
+                enumClass,
+                new CaseInsensitiveEnumConverter<>(enumClass))
+        );
     }
 }

@@ -50,7 +50,7 @@ class AuthControllerTests {
     @ParameterizedTest
     @CsvSource({
             "5,test,,,,",
-            "5,'',,,,",
+            "6,'',,,,",
             "4,tests,,,,",
             "4,,Test@001,,,",
             "4,,,,,email@valid",
@@ -59,9 +59,11 @@ class AuthControllerTests {
             "1,tests,Test@001,Some,User,",
             "1,tests,Test@001,Some,User,invalid",
             "1,tests,Test@001,Some,,email@valid",
+            "1,'     ',Test@001,Some,User,email@valid",
             "4,,Test@001,,,",
             "3,,Test@001,Some,,",
             "2,,Test@001,Some,User,",
+            "2,tests,Test@001,'    ','    ',email@valid",
     })
     void givenRegisterUserCalled_whenInvalidBodyFields_thenReturnErrorResponse(
             int errorListSize,

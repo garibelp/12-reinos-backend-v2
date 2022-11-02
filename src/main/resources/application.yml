@@ -3,6 +3,9 @@ logging:
     org:
       springframework: ERROR
 spring:
+  web:
+    locale: en_US
+    locale-resolver: fixed
   main:
     banner-mode: off
   jpa:

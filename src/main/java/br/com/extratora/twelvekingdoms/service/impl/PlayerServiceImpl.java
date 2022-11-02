@@ -60,7 +60,7 @@ public class PlayerServiceImpl implements PlayerService {
 
         Optional<PlayerModel> playerOpt = playerRepository.findById(id);
         if (playerOpt.isEmpty() || !playerOpt.get().isActive()) {
-            throw new DataNotFoundException("id");
+            throw new DataNotFoundException();
         }
         return playerOpt.get();
     }

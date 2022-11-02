@@ -1,10 +1,7 @@
 package br.com.extratora.twelvekingdoms.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -17,15 +14,16 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
 @Entity
 @Table(name = "PLAYER")
 public class PlayerModel implements Serializable {
     @Serial
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 2L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -66,4 +64,7 @@ public class PlayerModel implements Serializable {
             inverseJoinColumns = @JoinColumn(name = "ROLE_ID")
     )
     private Set<RoleModel> roles = new HashSet<>();
+
+    @OneToMany(mappedBy = "player", fetch = FetchType.LAZY)
+    private Set<SheetModel> sheets = new HashSet<>();
 }
