@@ -75,7 +75,7 @@ class PlayerControllerTests {
 
     @Test
     void givenDetailsCalled_whenNotFound_thenShouldReturnNotFound() throws Exception {
-        when(playerService.getPlayer(any(), any())).thenThrow(new DataNotFoundException(""));
+        when(playerService.getPlayer(any(), any())).thenThrow(new DataNotFoundException());
         RequestBuilder builder = MockMvcRequestBuilders.get("/players/" + PLAYER_UUID.toString());
 
         mockMvc.perform(builder).andExpect(status().isNotFound());

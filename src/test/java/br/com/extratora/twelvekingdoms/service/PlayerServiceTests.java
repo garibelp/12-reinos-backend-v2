@@ -29,8 +29,8 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
 class PlayerServiceTests {
-    private final UserDetailsImpl user = getUserDetails(PLAYER_UUID, "user", false, true);
-    private final UserDetailsImpl admin = getUserDetails(PLAYER_UUID, "user", true, true);
+    private final UserDetailsImpl user = getUserDetailsAdmin();
+    private final UserDetailsImpl admin = getUserDetailsUser();
     @Captor
     private ArgumentCaptor<PageRequest> pageRequestCaptor;
     @Mock
@@ -53,12 +53,11 @@ class PlayerServiceTests {
     void givenDeletePlayer_whenUserNotFoundOnDb_thenThrowDataNotFoundException() {
         when(playerRepository.findById(PLAYER_2_UUID)).thenReturn(Optional.empty());
 
-        DataNotFoundException ex = assertThrows(
+        assertThrows(
                 DataNotFoundException.class,
                 () -> playerService.deletePlayer(PLAYER_2_UUID, admin)
         );
 
-        assertEquals("id", ex.getField());
         verify(playerRepository, times(1)).findById(PLAYER_2_UUID);
         verify(playerRepository, times(0)).disableUser(PLAYER_2_UUID);
     }
@@ -68,12 +67,11 @@ class PlayerServiceTests {
         when(playerRepository.findById(PLAYER_2_UUID))
                 .thenReturn(Optional.of(getPlayerModel(PLAYER_2_UUID, "user2", true, false)));
 
-        DataNotFoundException ex = assertThrows(
+        assertThrows(
                 DataNotFoundException.class,
                 () -> playerService.deletePlayer(PLAYER_2_UUID, admin)
         );
 
-        assertEquals("id", ex.getField());
         verify(playerRepository, times(1)).findById(PLAYER_2_UUID);
         verify(playerRepository, times(0)).disableUser(PLAYER_2_UUID);
     }
@@ -108,12 +106,11 @@ class PlayerServiceTests {
     void givenGetPlayer_whenUserNotFoundOnDb_thenThrowDataNotFoundException() {
         when(playerRepository.findById(PLAYER_2_UUID)).thenReturn(Optional.empty());
 
-        DataNotFoundException ex = assertThrows(
+        assertThrows(
                 DataNotFoundException.class,
                 () -> playerService.getPlayer(PLAYER_2_UUID, admin)
         );
 
-        assertEquals("id", ex.getField());
         verify(playerRepository, times(1)).findById(PLAYER_2_UUID);
     }
 
@@ -122,12 +119,11 @@ class PlayerServiceTests {
         when(playerRepository.findById(PLAYER_2_UUID))
                 .thenReturn(Optional.of(getPlayerModel(PLAYER_2_UUID, "user2", true, false)));
 
-        DataNotFoundException ex = assertThrows(
+        assertThrows(
                 DataNotFoundException.class,
                 () -> playerService.getPlayer(PLAYER_2_UUID, admin)
         );
 
-        assertEquals("id", ex.getField());
         verify(playerRepository, times(1)).findById(PLAYER_2_UUID);
     }
 

@@ -1,7 +1,10 @@
 package br.com.extratora.twelvekingdoms;
 
 import br.com.extratora.twelvekingdoms.dto.BasicPlayerDto;
+import br.com.extratora.twelvekingdoms.dto.request.CreateSheetRequest;
 import br.com.extratora.twelvekingdoms.dto.request.SignupRequest;
+import br.com.extratora.twelvekingdoms.enums.DiceEnum;
+import br.com.extratora.twelvekingdoms.enums.LineageEnum;
 import br.com.extratora.twelvekingdoms.enums.RolesEnum;
 import br.com.extratora.twelvekingdoms.model.PlayerModel;
 import br.com.extratora.twelvekingdoms.model.RoleModel;
@@ -13,6 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 public class TestPayloads {
     public static UUID PLAYER_UUID = UUID.fromString("4c78842c-769b-4dc5-988a-234a438a4353");
@@ -49,6 +53,14 @@ public class TestPayloads {
                 .build();
     }
 
+    public static UserDetailsImpl getUserDetailsAdmin() {
+        return getUserDetails(PLAYER_UUID, "admin", true, true);
+    }
+
+    public static UserDetailsImpl getUserDetailsUser() {
+        return getUserDetails(PLAYER_UUID, "user", false, true);
+    }
+
     public static UserDetailsImpl getUserDetails(UUID id, String username, boolean isAdmin, boolean isActive) {
         return UserDetailsImpl.build(getPlayerModel(id, username, isAdmin, isActive));
     }
@@ -61,5 +73,111 @@ public class TestPayloads {
                 .lastName("Name")
                 .email("valid@mail")
                 .build();
+    }
+
+    public static CreateSheetRequest getValidCreateSheetRequest() {
+        return CreateSheetRequest.builder()
+                .name("Valid")
+                .lineage(LineageEnum.COGNI)
+                .intelligence(DiceEnum.D4)
+                .cunning(DiceEnum.D4)
+                .tenacity(DiceEnum.D6)
+                .celerity(DiceEnum.D8)
+                .build();
+    }
+
+    public static Stream<CreateSheetRequest> getInvalidCreateSheetRequestStreamWithDiceValidation() {
+        return Stream.concat(
+                getInvalidCreateSheetRequestStream(),
+                Stream.of(
+                        CreateSheetRequest.builder()
+                                .name("Valid")
+                                .lineage(LineageEnum.COGNI)
+                                .intelligence(DiceEnum.D4)
+                                .cunning(DiceEnum.D4)
+                                .tenacity(DiceEnum.D4)
+                                .celerity(DiceEnum.D4)
+                                .build(),
+                        CreateSheetRequest.builder()
+                                .name("Valid")
+                                .lineage(LineageEnum.COGNI)
+                                .intelligence(DiceEnum.D4)
+                                .cunning(DiceEnum.D4)
+                                .tenacity(DiceEnum.D4)
+                                .celerity(DiceEnum.D6)
+                                .build(),
+                        CreateSheetRequest.builder()
+                                .name("Valid")
+                                .lineage(LineageEnum.COGNI)
+                                .intelligence(DiceEnum.D4)
+                                .cunning(DiceEnum.D4)
+                                .tenacity(DiceEnum.D6)
+                                .celerity(DiceEnum.D6)
+                                .build(),
+                        CreateSheetRequest.builder()
+                                .name("Valid")
+                                .lineage(LineageEnum.COGNI)
+                                .intelligence(DiceEnum.D4)
+                                .cunning(DiceEnum.D6)
+                                .tenacity(DiceEnum.D6)
+                                .celerity(DiceEnum.D6)
+                                .build(),
+                        CreateSheetRequest.builder()
+                                .name("Valid")
+                                .lineage(LineageEnum.COGNI)
+                                .intelligence(DiceEnum.D4)
+                                .cunning(DiceEnum.D6)
+                                .tenacity(DiceEnum.D6)
+                                .celerity(DiceEnum.D8)
+                                .build()
+                )
+        );
+    }
+
+    public static Stream<CreateSheetRequest> getInvalidCreateSheetRequestStream() {
+        return Stream.of(
+                CreateSheetRequest.builder().build(),
+                CreateSheetRequest.builder()
+                        .name("")
+                        .build(),
+                CreateSheetRequest.builder()
+                        .name("Test")
+                        .build(),
+                CreateSheetRequest.builder()
+                        .name("Test max characters!!")
+                        .build(),
+                CreateSheetRequest.builder()
+                        .name("Valid")
+                        .lineage(LineageEnum.COGNI)
+                        .build(),
+                CreateSheetRequest.builder()
+                        .name("Valid")
+                        .lineage(LineageEnum.COGNI)
+                        .intelligence(DiceEnum.D4)
+                        .cunning(DiceEnum.D4)
+                        .celerity(DiceEnum.D4)
+                        .build(),
+                CreateSheetRequest.builder()
+                        .name("Valid")
+                        .lineage(LineageEnum.COGNI)
+                        .intelligence(DiceEnum.D4)
+                        .cunning(DiceEnum.D4)
+                        .tenacity(DiceEnum.D4)
+                        .build(),
+                CreateSheetRequest.builder()
+                        .name("Valid")
+                        .lineage(LineageEnum.COGNI)
+                        .tenacity(DiceEnum.D4)
+                        .cunning(DiceEnum.D4)
+                        .celerity(DiceEnum.D4)
+                        .build(),
+                CreateSheetRequest.builder()
+                        .name("Valid")
+                        .lineage(LineageEnum.COGNI)
+                        .intelligence(DiceEnum.D4)
+                        .tenacity(DiceEnum.D4)
+                        .celerity(DiceEnum.D4)
+                        .build()
+        );
     }
 }
