@@ -28,8 +28,9 @@ public class PlayerServiceImpl implements PlayerService {
 
     @Override
     public void deletePlayer(UUID id, UserDetailsImpl user) {
-        validateAndRetrievePlayerById(id, user);
-        playerRepository.disableUser(id);
+        PlayerModel player = validateAndRetrievePlayerById(id, user);
+        player.setActive(false);
+        playerRepository.save(player);
     }
 
     @Override

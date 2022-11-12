@@ -88,8 +88,7 @@ class PlayerServiceTests {
 
         verify(playerRepository, times(1)).findById(PLAYER_2_UUID);
         verify(playerRepository, times(1)).findById(PLAYER_UUID);
-        verify(playerRepository, times(1)).disableUser(PLAYER_2_UUID);
-        verify(playerRepository, times(1)).disableUser(PLAYER_UUID);
+        verify(playerRepository, times(2)).save(any());
     }
 
     @Test

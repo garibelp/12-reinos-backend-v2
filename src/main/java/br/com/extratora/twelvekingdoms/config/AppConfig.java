@@ -4,6 +4,7 @@ import br.com.extratora.twelvekingdoms.converter.CaseInsensitiveEnumConverter;
 import br.com.extratora.twelvekingdoms.enums.DiceEnum;
 import br.com.extratora.twelvekingdoms.enums.LineageEnum;
 import br.com.extratora.twelvekingdoms.enums.PlayerSortEnum;
+import br.com.extratora.twelvekingdoms.enums.SheetSortEnum;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.Sort;
 import org.springframework.format.FormatterRegistry;
@@ -19,7 +20,8 @@ public class AppConfig implements WebMvcConfigurer {
                 PlayerSortEnum.class,
                 Sort.Direction.class,
                 DiceEnum.class,
-                LineageEnum.class
+                LineageEnum.class,
+                SheetSortEnum.class
         );
         enums.forEach(enumClass -> registry.addConverter(
                 String.class,

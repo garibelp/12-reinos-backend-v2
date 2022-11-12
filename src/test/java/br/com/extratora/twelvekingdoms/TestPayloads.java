@@ -1,6 +1,7 @@
 package br.com.extratora.twelvekingdoms;
 
 import br.com.extratora.twelvekingdoms.dto.BasicPlayerDto;
+import br.com.extratora.twelvekingdoms.dto.BasicSheetDto;
 import br.com.extratora.twelvekingdoms.dto.request.CreateSheetRequest;
 import br.com.extratora.twelvekingdoms.dto.request.SignupRequest;
 import br.com.extratora.twelvekingdoms.enums.DiceEnum;
@@ -32,6 +33,18 @@ public class TestPayloads {
                 .id(PLAYER_UUID)
                 .username("username")
                 .email("user@mail.com")
+                .isActive(true)
+                .build();
+    }
+
+    public static Page<BasicSheetDto> getBasicSheetDtoPage() {
+        return new PageImpl<>(List.of(getBasicSheetDto()));
+    }
+
+    public static BasicSheetDto getBasicSheetDto() {
+        return BasicSheetDto.builder()
+                .id(PLAYER_UUID)
+                .level(1)
                 .isActive(true)
                 .build();
     }

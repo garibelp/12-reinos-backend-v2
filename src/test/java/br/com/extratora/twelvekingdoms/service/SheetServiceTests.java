@@ -2,6 +2,7 @@ package br.com.extratora.twelvekingdoms.service;
 
 import br.com.extratora.twelvekingdoms.enums.DiceEnum;
 import br.com.extratora.twelvekingdoms.enums.ErrorEnum;
+import br.com.extratora.twelvekingdoms.enums.SheetSortEnum;
 import br.com.extratora.twelvekingdoms.exception.DataNotFoundException;
 import br.com.extratora.twelvekingdoms.exception.InvalidDataException;
 import br.com.extratora.twelvekingdoms.exception.UnauthorizedException;
@@ -13,8 +14,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Optional;
@@ -27,6 +32,8 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
 class SheetServiceTests {
+    @Captor
+    private ArgumentCaptor<PageRequest> pageRequestCaptor;
     @Mock
     private SheetRepository sheetRepository;
     @InjectMocks
@@ -135,4 +142,117 @@ class SheetServiceTests {
         assertEquals(expectedSheet, receivedSheet);
     }
 
+    @Test
+    void givenDeleteSheet_whenUserNotAdminAndDifferentUUIDs_thenThrowUnauthorizedException() {
+        when(sheetRepository.findById(PLAYER_2_UUID)).thenReturn(Optional.of(getSheetModel(PLAYER_2_UUID)));
+        var user = getUserDetailsUser();
+        assertThrows(
+                UnauthorizedException.class,
+                () -> sheetService.deleteSheet(PLAYER_2_UUID, user)
+        );
+        verify(sheetRepository, times(1)).findById(PLAYER_2_UUID);
+        verify(sheetRepository, times(0)).save(any());
+    }
+
+    @Test
+    void givenDeleteSheet_whenUserAdminAndDifferentUUIDs_thenShouldDeleteSheet() {
+        when(sheetRepository.findById(PLAYER_2_UUID)).thenReturn(Optional.of(getSheetModel(PLAYER_2_UUID)));
+        var user = getUserDetailsAdmin();
+
+        sheetService.deleteSheet(PLAYER_2_UUID, user);
+
+        verify(sheetRepository, times(1)).findById(PLAYER_2_UUID);
+        verify(sheetRepository, times(1)).save(any());
+    }
+
+    @Test
+    void givenDeleteSheet_whenSheetNotFoundOnDbAndUserNotAdmin_thenThrowUnauthorizedException() {
+        var user = getUserDetailsUser();
+        var userId = user.getId();
+        when(sheetRepository.findById(userId)).thenReturn(Optional.empty());
+
+        assertThrows(
+                UnauthorizedException.class,
+                () -> sheetService.deleteSheet(userId, user)
+        );
+
+        verify(sheetRepository, times(1)).findById(userId);
+        verify(sheetRepository, times(0)).save(any());
+    }
+
+    @Test
+    void givenDeleteSheet_whenSheetNotFoundOnDbAndUserAdmin_thenThrowDataNotFoundException() {
+        var user = getUserDetailsAdmin();
+        var userId = user.getId();
+        when(sheetRepository.findById(userId)).thenReturn(Optional.empty());
+
+        assertThrows(
+                DataNotFoundException.class,
+                () -> sheetService.deleteSheet(userId, user)
+        );
+
+        verify(sheetRepository, times(1)).findById(userId);
+        verify(sheetRepository, times(0)).save(any());
+    }
+
+    @Test
+    void givenDeleteSheet_whenSheetFoundOnDbAndUserNotAdminAndOwner_thenShouldDeleteSheet() {
+        var user = getUserDetailsUser();
+        var userId = user.getId();
+        when(sheetRepository.findById(any())).thenReturn(Optional.of(getSheetModel(userId)));
+
+        sheetService.deleteSheet(userId, user);
+
+        verify(sheetRepository, times(1)).findById(userId);
+        verify(sheetRepository, times(1)).save(any());
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "0,1,,,true",
+            "0,1,,,false",
+            "0,1,ASC,,true",
+            "0,1,ASC,,false",
+            "0,1,,NAME,true",
+            "0,1,,NAME,false",
+            "0,1,ASC,NAME,true",
+            "0,1,ASC,NAME,false",
+            "0,1,DESC,NAME,true",
+            "0,1,DESC,NAME,false",
+            "0,1,ASC,LEVEL,true",
+            "0,1,ASC,LEVEL,false",
+            "0,1,DESC,LEVEL,true",
+            "0,1,DESC,LEVEL,false",
+    })
+    void givenSheetsPaginated_whenValid_thenCallWithPagination(
+            int currentPage,
+            int pageSize,
+            Sort.Direction sortDirection,
+            SheetSortEnum sortField,
+            boolean adminUser
+    ) {
+        var user = adminUser ? getUserDetailsAdmin() : getUserDetailsUser();
+        sheetService.sheetsPaginated(user, currentPage, pageSize, sortDirection, sortField);
+
+        if (adminUser) {
+
+            verify(sheetRepository, times(1))
+                    .findSheetsPaginated(pageRequestCaptor.capture());
+        } else {
+            verify(sheetRepository, times(1))
+                    .findActivePlayerSheetsPaginated(pageRequestCaptor.capture(), any());
+        }
+
+        Pageable page = pageRequestCaptor.getValue();
+
+        assertEquals(currentPage, page.getPageNumber());
+        assertEquals(pageSize, page.getPageSize());
+        if (sortDirection == null || sortField == null) {
+            assertEquals(Sort.unsorted(), page.getSort());
+        } else {
+            Sort.Order sort = page.getSort().get().findFirst().get();
+            assertEquals(sortDirection, sort.getDirection());
+            assertEquals(sortField.name(), sort.getProperty().toUpperCase());
+        }
+    }
 }

@@ -1,7 +1,9 @@
 package br.com.extratora.twelvekingdoms.service.impl;
 
+import br.com.extratora.twelvekingdoms.dto.BasicSheetDto;
 import br.com.extratora.twelvekingdoms.dto.request.CreateSheetRequest;
 import br.com.extratora.twelvekingdoms.enums.DiceEnum;
+import br.com.extratora.twelvekingdoms.enums.SheetSortEnum;
 import br.com.extratora.twelvekingdoms.exception.DataNotFoundException;
 import br.com.extratora.twelvekingdoms.exception.InvalidDataException;
 import br.com.extratora.twelvekingdoms.exception.UnauthorizedException;
@@ -10,8 +12,12 @@ import br.com.extratora.twelvekingdoms.model.SheetModel;
 import br.com.extratora.twelvekingdoms.repository.SheetRepository;
 import br.com.extratora.twelvekingdoms.security.UserDetailsImpl;
 import br.com.extratora.twelvekingdoms.service.SheetService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -22,6 +28,7 @@ import static br.com.extratora.twelvekingdoms.enums.DiceEnum.*;
 import static br.com.extratora.twelvekingdoms.enums.ErrorEnum.INVALID_CREATION_DICES;
 
 @Service
+@Transactional
 public class SheetServiceImpl implements SheetService {
 
     private final SheetRepository sheetRepository;
@@ -52,20 +59,35 @@ public class SheetServiceImpl implements SheetService {
 
     @Override
     public SheetModel getSheet(UserDetailsImpl user, UUID id) {
-        Optional<SheetModel> sheetOpt = sheetRepository.findById(id);
+        return validateAndRetrieveSheetForUser(id, user);
+    }
 
-        if (sheetOpt.isEmpty()) {
-            if (user.isAdmin()) throw new DataNotFoundException();
-            throw new UnauthorizedException();
+    @Override
+    public Page<BasicSheetDto> sheetsPaginated(
+            UserDetailsImpl user,
+            int currentPage,
+            int pageSize,
+            Sort.Direction sortDirection,
+            SheetSortEnum sortField
+    ) {
+        var pageRequest = PageRequest.of(currentPage, pageSize);
+
+        if (sortDirection != null && sortField != null) {
+            pageRequest = pageRequest.withSort(sortDirection, sortField.toString().toLowerCase());
         }
 
-        SheetModel sheet = sheetOpt.get();
-
-        if (!(user.isAdmin() || sheet.getPlayer().getId().equals(user.getId()))) {
-            throw new UnauthorizedException();
+        if (user.isAdmin()) {
+            return sheetRepository.findSheetsPaginated(pageRequest);
         }
 
-        return sheet;
+        return sheetRepository.findActivePlayerSheetsPaginated(pageRequest, user.getId());
+    }
+
+    @Override
+    public void deleteSheet(UUID id, UserDetailsImpl user) {
+        SheetModel sheet = validateAndRetrieveSheetForUser(id, user);
+        sheet.setActive(false);
+        sheetRepository.save(sheet);
     }
 
     private void validateDiceAttributes(CreateSheetRequest request) {
@@ -81,5 +103,22 @@ public class SheetServiceImpl implements SheetService {
         if (diceMap.size() != 3 || !(diceMap.get(D4) == 2 && diceMap.get(D6) == 1 && diceMap.get(D8) == 1)) {
             throw new InvalidDataException(INVALID_CREATION_DICES);
         }
+    }
+
+    private SheetModel validateAndRetrieveSheetForUser(UUID sheetId, UserDetailsImpl user) {
+        Optional<SheetModel> sheetOpt = sheetRepository.findById(sheetId);
+
+        if (sheetOpt.isEmpty()) {
+            if (user.isAdmin()) throw new DataNotFoundException();
+            throw new UnauthorizedException();
+        }
+
+        SheetModel sheet = sheetOpt.get();
+
+        if (!(user.isAdmin() || sheet.getPlayer().getId().equals(user.getId()))) {
+            throw new UnauthorizedException();
+        }
+
+        return sheet;
     }
 }
