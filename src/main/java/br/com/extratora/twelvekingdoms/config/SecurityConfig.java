@@ -42,7 +42,8 @@ public class SecurityConfig {
                 .requiresSecure().and()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-                .authorizeRequests().antMatchers("/auth/**", "/api-docs/**", "/swagger-ui.html", "/swagger-ui/**").permitAll()
+                .authorizeRequests()
+                .antMatchers("/auth/**", "/api-docs/**", "/api-docs.yaml", "/swagger-ui.html", "/swagger-ui/**").permitAll()
                 .anyRequest().authenticated();
         // Add a filter to validate the tokens with every request
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);

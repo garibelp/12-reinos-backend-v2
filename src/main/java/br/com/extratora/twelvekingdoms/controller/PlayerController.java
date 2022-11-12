@@ -7,6 +7,7 @@ import br.com.extratora.twelvekingdoms.enums.PlayerSortEnum;
 import br.com.extratora.twelvekingdoms.model.PlayerModel;
 import br.com.extratora.twelvekingdoms.security.UserDetailsImpl;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -35,7 +36,7 @@ public interface PlayerController {
             @ApiResponse(responseCode = "401"),
             @ApiResponse(responseCode = "403")
     })
-    ResponseEntity<MessageResponse> delete(UserDetailsImpl user, UUID id);
+    ResponseEntity<MessageResponse> delete(@Parameter(hidden = true) UserDetailsImpl user, UUID id);
 
     @Operation(summary = "Retrieve player details", security = @SecurityRequirement(name = "bearerAuth"))
     @ApiResponses(value = {
@@ -50,7 +51,7 @@ public interface PlayerController {
             @ApiResponse(responseCode = "401"),
             @ApiResponse(responseCode = "403")
     })
-    ResponseEntity<PlayerModel> details(UserDetailsImpl user, UUID id);
+    ResponseEntity<PlayerModel> details(@Parameter(hidden = true) UserDetailsImpl user, UUID id);
 
     @Operation(summary = "List players", security = @SecurityRequirement(name = "bearerAuth"))
     @ApiResponses(value = {

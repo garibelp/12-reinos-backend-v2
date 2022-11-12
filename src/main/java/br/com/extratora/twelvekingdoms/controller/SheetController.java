@@ -8,6 +8,7 @@ import br.com.extratora.twelvekingdoms.enums.SheetSortEnum;
 import br.com.extratora.twelvekingdoms.model.SheetModel;
 import br.com.extratora.twelvekingdoms.security.UserDetailsImpl;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -35,7 +36,7 @@ public interface SheetController {
             ),
             @ApiResponse(responseCode = "401")
     })
-    ResponseEntity<SheetModel> create(UserDetailsImpl user, @Valid CreateSheetRequest request);
+    ResponseEntity<SheetModel> create(@Parameter(hidden = true) UserDetailsImpl user, @Valid CreateSheetRequest request);
 
     @Operation(summary = "Retrieve sheet details", security = @SecurityRequirement(name = "bearerAuth"))
     @ApiResponses(value = {
@@ -50,7 +51,7 @@ public interface SheetController {
             @ApiResponse(responseCode = "401"),
             @ApiResponse(responseCode = "403")
     })
-    ResponseEntity<SheetModel> details(UserDetailsImpl user, UUID id);
+    ResponseEntity<SheetModel> details(@Parameter(hidden = true) UserDetailsImpl user, UUID id);
 
     @Operation(summary = "List sheets", security = @SecurityRequirement(name = "bearerAuth"))
     @ApiResponses(value = {
@@ -69,7 +70,7 @@ public interface SheetController {
             @Min(1) int pageSize,
             Sort.Direction sortDirection,
             SheetSortEnum sortField,
-            UserDetailsImpl user
+            @Parameter(hidden = true) UserDetailsImpl user
     );
 
     @Operation(summary = "Delete a sheet", security = @SecurityRequirement(name = "bearerAuth"))
@@ -85,5 +86,5 @@ public interface SheetController {
             @ApiResponse(responseCode = "401"),
             @ApiResponse(responseCode = "403")
     })
-    ResponseEntity<MessageResponse> delete(UserDetailsImpl user, UUID id);
+    ResponseEntity<MessageResponse> delete(@Parameter(hidden = true) UserDetailsImpl user, UUID id);
 }

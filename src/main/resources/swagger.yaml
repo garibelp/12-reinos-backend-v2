@@ -1,0 +1,686 @@
+openapi: 3.0.1
+info:
+  title: 12 Kingdoms Backend
+  version: V2
+servers:
+  - url: http://localhost:8080
+    description: Generated server url
+paths:
+  /sheets:
+    get:
+      tags:
+        - sheet-controller-impl
+      summary: Retrieve sheet details
+      operationId: details
+      parameters:
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/SheetModel'
+        "403":
+          description: Forbidden
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/SheetModel'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SheetModel'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - bearerAuth: [ ]
+    post:
+      tags:
+        - sheet-controller-impl
+      summary: Create a sheet
+      operationId: create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateSheetRequest'
+        required: true
+      responses:
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/SheetModel'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SheetModel'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - bearerAuth: [ ]
+  /auth/signup:
+    post:
+      tags:
+        - auth-controller-impl
+      summary: Register a new player
+      operationId: registerUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignupRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /auth/signin:
+    post:
+      tags:
+        - auth-controller-impl
+      summary: Authenticate existing player
+      operationId: authenticateUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JwtResponse'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /sheets/list:
+    get:
+      tags:
+        - sheet-controller-impl
+      summary: List sheets
+      operationId: list
+      parameters:
+        - name: currentPage
+          in: query
+          required: false
+          schema:
+            minimum: 0
+            type: integer
+            format: int32
+            default: 0
+        - name: pageSize
+          in: query
+          required: false
+          schema:
+            minimum: 1
+            type: integer
+            format: int32
+            default: 5
+        - name: sortDirection
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: sortField
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/SheetListResponse'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SheetListResponse'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - bearerAuth: [ ]
+  /players:
+    get:
+      tags:
+        - player-controller-impl
+      summary: Retrieve player details
+      operationId: details_1
+      parameters:
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlayerModel'
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PlayerModel'
+        "403":
+          description: Forbidden
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PlayerModel'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - bearerAuth: [ ]
+  /players/list:
+    get:
+      tags:
+        - player-controller-impl
+      summary: List players
+      operationId: list_1
+      parameters:
+        - name: currentPage
+          in: query
+          required: false
+          schema:
+            minimum: 0
+            type: integer
+            format: int32
+            default: 0
+        - name: pageSize
+          in: query
+          required: false
+          schema:
+            minimum: 1
+            type: integer
+            format: int32
+            default: 5
+        - name: sortDirection
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: sortField
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PlayerListResponse'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlayerListResponse'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - bearerAuth: [ ]
+  /sheets/{id}:
+    delete:
+      tags:
+        - sheet-controller-impl
+      summary: Delete a sheet
+      operationId: delete
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+        "403":
+          description: Forbidden
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - bearerAuth: [ ]
+  /players/{id}:
+    delete:
+      tags:
+        - player-controller-impl
+      summary: Delete a player
+      operationId: delete_1
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+        "403":
+          description: Forbidden
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - bearerAuth: [ ]
+components:
+  schemas:
+    CreateSheetRequest:
+      required:
+        - celerity
+        - cunning
+        - intelligence
+        - lineage
+        - name
+        - tenacity
+      type: object
+      properties:
+        name:
+          maxLength: 20
+          minLength: 5
+          type: string
+        lineage:
+          type: string
+          enum:
+            - ANAO
+            - ASHARIANO
+            - COGNI
+            - ECLESEN
+            - ELFO
+            - EREPE
+            - GNOMO
+            - HUMANO
+            - IUVENTI
+            - KADIT
+            - LAVI
+            - ORC
+        intelligence:
+          type: string
+          enum:
+            - D4
+            - D6
+            - D8
+            - D12
+            - D20
+        cunning:
+          type: string
+          enum:
+            - D4
+            - D6
+            - D8
+            - D12
+            - D20
+        tenacity:
+          type: string
+          enum:
+            - D4
+            - D6
+            - D8
+            - D12
+            - D20
+        celerity:
+          type: string
+          enum:
+            - D4
+            - D6
+            - D8
+            - D12
+            - D20
+        bond:
+          type: string
+        motivation:
+          type: string
+    SheetModel:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        intelligence:
+          type: string
+          enum:
+            - D4
+            - D6
+            - D8
+            - D12
+            - D20
+        cunning:
+          type: string
+          enum:
+            - D4
+            - D6
+            - D8
+            - D12
+            - D20
+        tenacity:
+          type: string
+          enum:
+            - D4
+            - D6
+            - D8
+            - D12
+            - D20
+        celerity:
+          type: string
+          enum:
+            - D4
+            - D6
+            - D8
+            - D12
+            - D20
+        name:
+          type: string
+        level:
+          type: integer
+          format: int32
+        mentalCurrent:
+          type: integer
+          format: int32
+        mentalTotal:
+          type: integer
+          format: int32
+        physicalCurrent:
+          type: integer
+          format: int32
+        physicalTotal:
+          type: integer
+          format: int32
+        heroismCurrent:
+          type: integer
+          format: int32
+        heroismTotal:
+          type: integer
+          format: int32
+        bond:
+          type: string
+        motivation:
+          type: string
+        active:
+          type: boolean
+    ErrorDto:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+    ErrorResponse:
+      type: object
+      properties:
+        errorList:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorDto'
+    SignupRequest:
+      required:
+        - email
+        - firstName
+        - lastName
+        - password
+        - username
+      type: object
+      properties:
+        username:
+          maxLength: 20
+          minLength: 5
+          type: string
+        password:
+          pattern: "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>]).{8,20}$"
+          type: string
+        firstName:
+          maxLength: 20
+          minLength: 3
+          type: string
+        lastName:
+          maxLength: 30
+          minLength: 3
+          type: string
+        email:
+          type: string
+    MessageResponse:
+      type: object
+      properties:
+        message:
+          type: string
+    LoginRequest:
+      required:
+        - password
+        - username
+      type: object
+      properties:
+        username:
+          maxLength: 20
+          minLength: 5
+          type: string
+        password:
+          pattern: "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>]).{8,20}$"
+          type: string
+    JwtResponse:
+      type: object
+      properties:
+        type:
+          type: string
+        jwt:
+          type: string
+        id:
+          type: string
+          format: uuid
+        username:
+          type: string
+        email:
+          type: string
+        roles:
+          type: array
+          items:
+            type: string
+    BasicSheetDto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        level:
+          type: integer
+          format: int32
+        userId:
+          type: string
+          format: uuid
+        userName:
+          type: string
+        active:
+          type: boolean
+    SheetListResponse:
+      type: object
+      properties:
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int32
+        currentPage:
+          type: integer
+          format: int32
+        pageSize:
+          type: integer
+          format: int32
+        list:
+          type: array
+          items:
+            $ref: '#/components/schemas/BasicSheetDto'
+    PlayerModel:
+      required:
+        - email
+        - firstName
+        - lastName
+        - username
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        username:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        roles:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/RoleModel'
+        sheets:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/SheetModel'
+        active:
+          type: boolean
+    RoleModel:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          enum:
+            - ROLE_USER
+            - ROLE_ADMIN
+    BasicPlayerDto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        username:
+          type: string
+        email:
+          type: string
+        active:
+          type: boolean
+    PlayerListResponse:
+      type: object
+      properties:
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int32
+        currentPage:
+          type: integer
+          format: int32
+        pageSize:
+          type: integer
+          format: int32
+        list:
+          type: array
+          items:
+            $ref: '#/components/schemas/BasicPlayerDto'
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
