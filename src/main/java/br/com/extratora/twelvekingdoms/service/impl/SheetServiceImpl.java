@@ -18,6 +18,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static br.com.extratora.twelvekingdoms.enums.DiceEnum.*;
 import static br.com.extratora.twelvekingdoms.enums.ErrorEnum.INVALID_CREATION_DICES;
 
 @Service
@@ -60,7 +61,7 @@ public class SheetServiceImpl implements SheetService {
 
         SheetModel sheet = sheetOpt.get();
 
-        if (!(user.isAdmin() || sheet.getPlayer().getId().equals(id))) {
+        if (!(user.isAdmin() || sheet.getPlayer().getId().equals(user.getId()))) {
             throw new UnauthorizedException();
         }
 
@@ -68,7 +69,7 @@ public class SheetServiceImpl implements SheetService {
     }
 
     private void validateDiceAttributes(CreateSheetRequest request) {
-        Map<DiceEnum, Long> diceEnums = Stream.of(
+        Map<DiceEnum, Long> diceMap = Stream.of(
                         request.getCelerity(),
                         request.getTenacity(),
                         request.getIntelligence(),
@@ -77,7 +78,7 @@ public class SheetServiceImpl implements SheetService {
                         diceEnum -> diceEnum, Collectors.counting()
                 ));
 
-        if (!(diceEnums.get(DiceEnum.D4) == 2 && diceEnums.get(DiceEnum.D6) == 1 && diceEnums.get(DiceEnum.D8) == 1)) {
+        if (diceMap.size() != 3 || !(diceMap.get(D4) == 2 && diceMap.get(D6) == 1 && diceMap.get(D8) == 1)) {
             throw new InvalidDataException(INVALID_CREATION_DICES);
         }
     }

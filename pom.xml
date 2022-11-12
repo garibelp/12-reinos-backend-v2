@@ -29,6 +29,10 @@
             src/main/java/br/com/extratora/twelvekingdoms/config/**,
             src/main/java/br/com/extratora/twelvekingdoms/enums/**,
             src/main/java/br/com/extratora/twelvekingdoms/security/**,
+            src/main/java/br/com/extratora/twelvekingdoms/converter/**,
+            src/main/java/br/com/extratora/twelvekingdoms/controller/advice/**,
+            src/main/java/br/com/extratora/twelvekingdoms/controller/AuthController.java,
+            src/main/java/br/com/extratora/twelvekingdoms/controller/impl/AuthControllerImpl.java,
             src/main/java/br/com/extratora/twelvekingdoms/Main.java
         </sonar.coverage.exclusions>
     </properties>

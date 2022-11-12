@@ -8,6 +8,7 @@ import br.com.extratora.twelvekingdoms.enums.LineageEnum;
 import br.com.extratora.twelvekingdoms.enums.RolesEnum;
 import br.com.extratora.twelvekingdoms.model.PlayerModel;
 import br.com.extratora.twelvekingdoms.model.RoleModel;
+import br.com.extratora.twelvekingdoms.model.SheetModel;
 import br.com.extratora.twelvekingdoms.security.UserDetailsImpl;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -179,5 +180,18 @@ public class TestPayloads {
                         .celerity(DiceEnum.D4)
                         .build()
         );
+    }
+
+    public static PlayerModel getPlayerModel(UUID id) {
+        return PlayerModel
+                .builder()
+                .id(id)
+                .build();
+    }
+
+    public static SheetModel getSheetModel(UUID playerId) {
+        return SheetModel.builder()
+                .player(getPlayerModel(playerId))
+                .build();
     }
 }

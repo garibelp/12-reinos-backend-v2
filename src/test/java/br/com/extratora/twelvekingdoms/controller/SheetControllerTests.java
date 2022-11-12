@@ -2,6 +2,7 @@ package br.com.extratora.twelvekingdoms.controller;
 
 import br.com.extratora.twelvekingdoms.controller.impl.SheetControllerImpl;
 import br.com.extratora.twelvekingdoms.dto.request.CreateSheetRequest;
+import br.com.extratora.twelvekingdoms.exception.InvalidDataException;
 import br.com.extratora.twelvekingdoms.service.SheetService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -21,9 +22,9 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.util.UUID;
 
 import static br.com.extratora.twelvekingdoms.TestPayloads.getValidCreateSheetRequest;
+import static br.com.extratora.twelvekingdoms.enums.ErrorEnum.INVALID_CREATION_DICES;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(SheetControllerImpl.class)
@@ -47,12 +48,24 @@ class SheetControllerTests {
     }
 
     @Test
-    void givenSheetCreation_whenValidBody_thenShouldReturnOk() throws Exception {
+    void givenSheetCreation_whenValidBodyValidation_thenShouldReturnOk() throws Exception {
         RequestBuilder builder = MockMvcRequestBuilders.post("/sheets")
                 .content(objectMapper.writeValueAsString(getValidCreateSheetRequest()))
                 .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(builder).andExpect(status().isOk());
+
+        verify(sheetService, times(1)).createSheet(any(), any());
+    }
+
+    @Test
+    void givenSheetCreation_whenValidBodyValidationButInvalidDices_thenShouldReturnBadRequest() throws Exception {
+        when(sheetService.createSheet(any(), any())).thenThrow(new InvalidDataException(INVALID_CREATION_DICES));
+        RequestBuilder builder = MockMvcRequestBuilders.post("/sheets")
+                .content(objectMapper.writeValueAsString(getValidCreateSheetRequest()))
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(builder).andExpect(status().isBadRequest());
 
         verify(sheetService, times(1)).createSheet(any(), any());
     }

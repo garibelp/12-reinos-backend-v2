@@ -29,8 +29,8 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
 class PlayerServiceTests {
-    private final UserDetailsImpl user = getUserDetailsAdmin();
-    private final UserDetailsImpl admin = getUserDetailsUser();
+    private final UserDetailsImpl admin = getUserDetailsAdmin();
+    private final UserDetailsImpl user = getUserDetailsUser();
     @Captor
     private ArgumentCaptor<PageRequest> pageRequestCaptor;
     @Mock
