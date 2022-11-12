@@ -40,17 +40,17 @@ public class SheetControllerImpl implements SheetController {
 
     @Override
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    @GetMapping("/{id}")
+    @GetMapping
     public ResponseEntity<SheetModel> details(
             @AuthenticationPrincipal UserDetailsImpl user,
-            @PathVariable UUID id
+            @RequestParam UUID id
     ) {
         return ResponseEntity.ok(sheetService.getSheet(user, id));
     }
 
     @Override
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    @GetMapping
+    @GetMapping("/list")
     public ResponseEntity<SheetListResponse> list(
             @RequestParam(defaultValue = "0") int currentPage,
             @RequestParam(defaultValue = "5") int pageSize,

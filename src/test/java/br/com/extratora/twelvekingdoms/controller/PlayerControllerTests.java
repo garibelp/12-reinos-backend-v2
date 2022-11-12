@@ -56,7 +56,8 @@ class PlayerControllerTests {
 
     @Test
     void givenDetailsCalled_whenValidRequest_thenShouldReturnPlayerInfo() throws Exception {
-        RequestBuilder builder = MockMvcRequestBuilders.get("/players/" + PLAYER_UUID.toString());
+        RequestBuilder builder = MockMvcRequestBuilders.get("/players")
+                .param("id", PLAYER_UUID.toString());
 
         mockMvc.perform(builder).andExpect(status().isOk());
 
@@ -66,7 +67,8 @@ class PlayerControllerTests {
     @Test
     void givenDetailsCalled_whenMissingUserPermission_thenShouldReturnUnauthorized() throws Exception {
         when(playerService.getPlayer(any(), any())).thenThrow(new UnauthorizedException());
-        RequestBuilder builder = MockMvcRequestBuilders.get("/players/" + PLAYER_UUID.toString());
+        RequestBuilder builder = MockMvcRequestBuilders.get("/players")
+                .param("id", PLAYER_UUID.toString());
 
         mockMvc.perform(builder).andExpect(status().isUnauthorized());
 
@@ -76,7 +78,8 @@ class PlayerControllerTests {
     @Test
     void givenDetailsCalled_whenNotFound_thenShouldReturnNotFound() throws Exception {
         when(playerService.getPlayer(any(), any())).thenThrow(new DataNotFoundException());
-        RequestBuilder builder = MockMvcRequestBuilders.get("/players/" + PLAYER_UUID.toString());
+        RequestBuilder builder = MockMvcRequestBuilders.get("/players")
+                .param("id", PLAYER_UUID.toString());
 
         mockMvc.perform(builder).andExpect(status().isNotFound());
 
@@ -85,7 +88,8 @@ class PlayerControllerTests {
 
     @Test
     void givenDetailsCalled_whenInvalidParameter_thenShouldReturnErrorResponse() throws Exception {
-        RequestBuilder builder = MockMvcRequestBuilders.get("/players/invalid");
+        RequestBuilder builder = MockMvcRequestBuilders.get("/players")
+                .param("id", "invalid");
 
         mockMvc.perform(builder).andExpect(status().isBadRequest());
     }
@@ -136,7 +140,7 @@ class PlayerControllerTests {
 
         Page<BasicPlayerDto> dbData = getPlayerDtoPage();
         when(playerService.playersPaginated(expectedPageNumber, expectedPageSize, expectedSortDirection, expectedSortField)).thenReturn(dbData);
-        RequestBuilder builder = MockMvcRequestBuilders.get("/players")
+        RequestBuilder builder = MockMvcRequestBuilders.get("/players/list")
                 .param("currentPage", currentPage)
                 .param("pageSize", pageSize)
                 .param("sortDirection", sortDirection)
@@ -174,7 +178,7 @@ class PlayerControllerTests {
             String sortField,
             Integer totalErrors
     ) throws Exception {
-        RequestBuilder builder = MockMvcRequestBuilders.get("/players")
+        RequestBuilder builder = MockMvcRequestBuilders.get("/players/list")
                 .param("currentPage", currentPage)
                 .param("pageSize", pageSize)
                 .param("sortDirection", sortDirection)

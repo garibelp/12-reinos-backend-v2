@@ -36,14 +36,14 @@ public class PlayerControllerImpl implements PlayerController {
 
     @Override
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    @GetMapping("/{id}")
-    public ResponseEntity<PlayerModel> details(@AuthenticationPrincipal UserDetailsImpl user, @PathVariable UUID id) {
+    @GetMapping
+    public ResponseEntity<PlayerModel> details(@AuthenticationPrincipal UserDetailsImpl user, @RequestParam UUID id) {
         return ResponseEntity.ok(playerService.getPlayer(id, user));
     }
 
     @Override
     @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping
+    @GetMapping("/list")
     public ResponseEntity<PlayerListResponse> list(
             @RequestParam(defaultValue = "0") int currentPage,
             @RequestParam(defaultValue = "5") int pageSize,

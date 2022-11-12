@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -56,7 +55,7 @@ public class AuthControllerImpl implements AuthController {
 
     @Override
     @PostMapping("/signin")
-    public ResponseEntity<JwtResponse> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<JwtResponse> authenticateUser(@RequestBody LoginRequest loginRequest) {
         var authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword())
         );
@@ -83,7 +82,7 @@ public class AuthControllerImpl implements AuthController {
 
     @Override
     @PostMapping("/signup")
-    public ResponseEntity<MessageResponse> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
+    public ResponseEntity<MessageResponse> registerUser(@RequestBody SignupRequest signUpRequest) {
         if (Boolean.TRUE.equals(playerRepository.existsByUsername(signUpRequest.getUsername()))) {
             throw new ResponseFieldStatusException(HttpStatus.BAD_REQUEST, "Username already exists!", "username");
         }

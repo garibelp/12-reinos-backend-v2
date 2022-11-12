@@ -7,3 +7,10 @@ spring:
 jwt:
   secret: ${JWT_SECRET}
   expires_in: ${JWT_EXPIRES_IN}
+
+# Open API configuration
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false

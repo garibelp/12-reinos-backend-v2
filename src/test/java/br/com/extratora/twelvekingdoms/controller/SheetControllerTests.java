@@ -85,15 +85,14 @@ class SheetControllerTests {
             "invalid"
     })
     void givenGetSheet_whenInvalidUuid_thenShouldReturnBadRequest(String id) throws Exception {
-        RequestBuilder builder = MockMvcRequestBuilders.get("/sheets/" + id);
+        RequestBuilder builder = MockMvcRequestBuilders.get("/sheets").param("id", id);
 
         mockMvc.perform(builder).andExpect(status().isBadRequest());
     }
 
     @Test
     void givenGetSheet_whenValidUuid_thenShouldReturnOk() throws Exception {
-        UUID id = UUID.randomUUID();
-        RequestBuilder builder = MockMvcRequestBuilders.get("/sheets/" + id);
+        RequestBuilder builder = MockMvcRequestBuilders.get("/sheets").param("id", UUID.randomUUID().toString());
 
         mockMvc.perform(builder).andExpect(status().isOk());
 
@@ -186,7 +185,7 @@ class SheetControllerTests {
                 any(),
                 any()
         )).thenReturn(dbData);
-        RequestBuilder builder = MockMvcRequestBuilders.get("/sheets")
+        RequestBuilder builder = MockMvcRequestBuilders.get("/sheets/list")
                 .param("currentPage", currentPage)
                 .param("pageSize", pageSize)
                 .param("sortDirection", sortDirection)
@@ -235,7 +234,7 @@ class SheetControllerTests {
             String sortField,
             Integer totalErrors
     ) throws Exception {
-        RequestBuilder builder = MockMvcRequestBuilders.get("/sheets")
+        RequestBuilder builder = MockMvcRequestBuilders.get("/sheets/list")
                 .param("currentPage", currentPage)
                 .param("pageSize", pageSize)
                 .param("sortDirection", sortDirection)

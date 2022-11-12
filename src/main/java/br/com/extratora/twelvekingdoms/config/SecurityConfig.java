@@ -4,6 +4,7 @@ import br.com.extratora.twelvekingdoms.security.AuthEntryPointJwt;
 import br.com.extratora.twelvekingdoms.security.filter.AuthTokenFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -33,7 +34,25 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    @Profile("dev")
+    public SecurityFilterChain filterChainDev(HttpSecurity http) throws Exception {
+        http.cors().and().csrf().disable()
+                .requiresChannel()
+                .requestMatchers(r -> r.getHeader("X-Forwarded-Proto") != null)
+                .requiresSecure().and()
+                .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+                .authorizeRequests().antMatchers("/auth/**", "/api-docs/**", "/swagger-ui.html", "/swagger-ui/**").permitAll()
+                .anyRequest().authenticated();
+        // Add a filter to validate the tokens with every request
+        http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+
+        return http.build();
+    }
+
+    @Bean
+    @Profile("prod")
+    public SecurityFilterChain filterChainProd(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable()
                 .requiresChannel()
                 .requestMatchers(r -> r.getHeader("X-Forwarded-Proto") != null)
