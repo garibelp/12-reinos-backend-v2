@@ -7,6 +7,7 @@ import br.com.extratora.twelvekingdoms.enums.SheetSortEnum;
 import br.com.extratora.twelvekingdoms.exception.DataNotFoundException;
 import br.com.extratora.twelvekingdoms.exception.InvalidDataException;
 import br.com.extratora.twelvekingdoms.exception.UnauthorizedException;
+import br.com.extratora.twelvekingdoms.model.LineageModel;
 import br.com.extratora.twelvekingdoms.model.PlayerModel;
 import br.com.extratora.twelvekingdoms.model.SheetModel;
 import br.com.extratora.twelvekingdoms.repository.LineageRepository;
@@ -45,18 +46,19 @@ public class SheetServiceImpl implements SheetService {
     public SheetModel createSheet(UserDetailsImpl user, CreateSheetRequest request) {
         validateDiceAttributes(request);
 
-        var player = new PlayerModel();
-        player.setId(user.getId());
-
-        var lineageOpt = lineageRepository.findByName(request.getLineage());
-
-        if (lineageOpt.isEmpty()) {
+        if (!lineageRepository.existsById(request.getLineageId())) {
             throw new InvalidDataException(INVALID_CREATION_LINEAGE);
         }
 
+        var player = new PlayerModel();
+        player.setId(user.getId());
+
+        var lineage = new LineageModel();
+        lineage.setId(request.getLineageId());
+
         var sheet = new SheetModel();
         sheet.setPlayer(player);
-        sheet.setLineage(lineageOpt.get());
+        sheet.setLineage(lineage);
         sheet.setName(request.getName());
         sheet.setIntelligence(request.getIntelligence());
         sheet.setCunning(request.getCunning());

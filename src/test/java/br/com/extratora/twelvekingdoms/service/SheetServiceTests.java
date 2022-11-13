@@ -78,14 +78,14 @@ class SheetServiceTests {
         assertEquals(ErrorEnum.INVALID_CREATION_DICES.getName(), ex.getError().getName());
         assertEquals(ErrorEnum.INVALID_CREATION_DICES.getDescription(), ex.getError().getDescription());
         verify(sheetRepository, times(0)).save(any());
-        verify(lineageRepository, times(0)).findByName(any());
+        verify(lineageRepository, times(0)).existsById(any());
     }
 
     @Test
     void givenCreateSheet_whenLineageNotFoundOnDb_thenShouldThrowInvalidDataException() {
         var user = getUserDetailsUser();
         var sheet = getValidCreateSheetRequest();
-        when(lineageRepository.findByName(any())).thenReturn(Optional.empty());
+        when(lineageRepository.existsById(any())).thenReturn(false);
 
         InvalidDataException ex = assertThrows(
                 InvalidDataException.class,
@@ -95,14 +95,14 @@ class SheetServiceTests {
         assertEquals(ErrorEnum.INVALID_CREATION_LINEAGE.getName(), ex.getError().getName());
         assertEquals(ErrorEnum.INVALID_CREATION_LINEAGE.getDescription(), ex.getError().getDescription());
         verify(sheetRepository, times(0)).save(any());
-        verify(lineageRepository, times(1)).findByName(any());
+        verify(lineageRepository, times(1)).existsById(any());
     }
 
     @Test
     void givenCreateSheet_whenValidPayload_thenShouldSaveData() {
         var user = getUserDetailsUser();
         var sheet = getValidCreateSheetRequest();
-        when(lineageRepository.findByName(any())).thenReturn(Optional.ofNullable(getLineageModel(sheet.getLineage())));
+        when(lineageRepository.existsById(any())).thenReturn(true);
         ArgumentCaptor<SheetModel> captor = ArgumentCaptor.forClass(SheetModel.class);
 
         sheetService.createSheet(user, sheet);
@@ -113,43 +113,43 @@ class SheetServiceTests {
 
     @Test
     void givenGetSheet_whenSheetNotFoundAndUserNotAdmin_thenShouldThrowUnauthorizedException() {
-        when(sheetRepository.findById(PLAYER_2_UUID)).thenReturn(Optional.empty());
+        when(sheetRepository.findById(UUID_2)).thenReturn(Optional.empty());
         var user = getUserDetailsUser();
 
         assertThrows(
                 UnauthorizedException.class,
-                () -> sheetService.getSheet(user, PLAYER_2_UUID)
+                () -> sheetService.getSheet(user, UUID_2)
         );
     }
 
     @Test
     void givenGetSheet_whenSheetNotFoundAndUserAdmin_thenShouldThrowDataNotFoundException() {
-        when(sheetRepository.findById(PLAYER_2_UUID)).thenReturn(Optional.empty());
+        when(sheetRepository.findById(UUID_2)).thenReturn(Optional.empty());
         var user = getUserDetailsAdmin();
 
         assertThrows(
                 DataNotFoundException.class,
-                () -> sheetService.getSheet(user, PLAYER_2_UUID)
+                () -> sheetService.getSheet(user, UUID_2)
         );
     }
 
     @Test
     void givenGetSheet_whenSheetNotFromUserAndUserNotAdmin_thenShouldThrowUnauthorizedException() {
-        when(sheetRepository.findById(PLAYER_2_UUID)).thenReturn(Optional.of(getSheetModel(PLAYER_2_UUID)));
+        when(sheetRepository.findById(UUID_2)).thenReturn(Optional.of(getSheetModel(UUID_2)));
         var user = getUserDetailsUser();
 
         assertThrows(
                 UnauthorizedException.class,
-                () -> sheetService.getSheet(user, PLAYER_2_UUID)
+                () -> sheetService.getSheet(user, UUID_2)
         );
     }
 
     @Test
     void givenGetSheet_whenSheetNotFromUserAndUserAdmin_thenShouldReturnSheet() {
-        var expectedSheet = getSheetModel(PLAYER_2_UUID);
-        when(sheetRepository.findById(PLAYER_2_UUID)).thenReturn(Optional.of(expectedSheet));
+        var expectedSheet = getSheetModel(UUID_2);
+        when(sheetRepository.findById(UUID_2)).thenReturn(Optional.of(expectedSheet));
 
-        var receivedSheet = sheetService.getSheet(getUserDetailsAdmin(), PLAYER_2_UUID);
+        var receivedSheet = sheetService.getSheet(getUserDetailsAdmin(), UUID_2);
 
         assertEquals(expectedSheet, receivedSheet);
     }
@@ -167,24 +167,24 @@ class SheetServiceTests {
 
     @Test
     void givenDeleteSheet_whenUserNotAdminAndDifferentUUIDs_thenThrowUnauthorizedException() {
-        when(sheetRepository.findById(PLAYER_2_UUID)).thenReturn(Optional.of(getSheetModel(PLAYER_2_UUID)));
+        when(sheetRepository.findById(UUID_2)).thenReturn(Optional.of(getSheetModel(UUID_2)));
         var user = getUserDetailsUser();
         assertThrows(
                 UnauthorizedException.class,
-                () -> sheetService.deleteSheet(PLAYER_2_UUID, user)
+                () -> sheetService.deleteSheet(UUID_2, user)
         );
-        verify(sheetRepository, times(1)).findById(PLAYER_2_UUID);
+        verify(sheetRepository, times(1)).findById(UUID_2);
         verify(sheetRepository, times(0)).save(any());
     }
 
     @Test
     void givenDeleteSheet_whenUserAdminAndDifferentUUIDs_thenShouldDeleteSheet() {
-        when(sheetRepository.findById(PLAYER_2_UUID)).thenReturn(Optional.of(getSheetModel(PLAYER_2_UUID)));
+        when(sheetRepository.findById(UUID_2)).thenReturn(Optional.of(getSheetModel(UUID_2)));
         var user = getUserDetailsAdmin();
 
-        sheetService.deleteSheet(PLAYER_2_UUID, user);
+        sheetService.deleteSheet(UUID_2, user);
 
-        verify(sheetRepository, times(1)).findById(PLAYER_2_UUID);
+        verify(sheetRepository, times(1)).findById(UUID_2);
         verify(sheetRepository, times(1)).save(any());
     }
 

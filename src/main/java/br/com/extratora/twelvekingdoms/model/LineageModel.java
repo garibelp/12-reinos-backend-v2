@@ -1,6 +1,5 @@
 package br.com.extratora.twelvekingdoms.model;
 
-import br.com.extratora.twelvekingdoms.enums.LineageEnum;
 import lombok.*;
 import org.hibernate.annotations.Type;
 
@@ -26,7 +25,7 @@ public class LineageModel implements Serializable {
     private UUID id;
 
     @Column(name = "NAME", nullable = false, unique = true, length = 20)
-    private LineageEnum name;
+    private String name;
 
     @NotBlank
     @Type(type = "org.hibernate.type.TextType")

@@ -1,7 +1,6 @@
 package br.com.extratora.twelvekingdoms.dto.request;
 
 import br.com.extratora.twelvekingdoms.enums.DiceEnum;
-import br.com.extratora.twelvekingdoms.enums.LineageEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,6 +10,7 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.UUID;
 
 @Data
 @Builder
@@ -22,7 +22,7 @@ public class CreateSheetRequest {
     private String name;
 
     @NotNull
-    private LineageEnum lineage;
+    private UUID lineageId;
 
     @NotNull
     private DiceEnum intelligence;

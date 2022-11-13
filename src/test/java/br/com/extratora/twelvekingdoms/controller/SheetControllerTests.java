@@ -57,6 +57,7 @@ class SheetControllerTests {
 
     @Test
     void givenSheetCreation_whenValidBodyValidation_thenShouldReturnOk() throws Exception {
+        when(sheetService.createSheet(any(), any())).thenReturn(getSheetModel(UUID_1));
         RequestBuilder builder = MockMvcRequestBuilders.post("/sheets")
                 .content(objectMapper.writeValueAsString(getValidCreateSheetRequest()))
                 .contentType(MediaType.APPLICATION_JSON);
@@ -101,7 +102,7 @@ class SheetControllerTests {
 
     @Test
     void givenDeleteCalled_whenValidRequest_thenShouldDeleteSheet() throws Exception {
-        RequestBuilder builder = MockMvcRequestBuilders.delete("/sheets/" + PLAYER_UUID.toString());
+        RequestBuilder builder = MockMvcRequestBuilders.delete("/sheets/" + UUID_1.toString());
 
         mockMvc.perform(builder).andExpect(status().isAccepted());
 

@@ -42,52 +42,52 @@ class PlayerServiceTests {
     void givenDeletePlayer_whenUserNotAdminAndDifferentUUIDs_thenThrowUnauthorizedException() {
         assertThrows(
                 UnauthorizedException.class,
-                () -> playerService.deletePlayer(PLAYER_2_UUID, user)
+                () -> playerService.deletePlayer(UUID_2, user)
         );
 
-        verify(playerRepository, times(0)).findById(PLAYER_2_UUID);
-        verify(playerRepository, times(0)).disableUser(PLAYER_2_UUID);
+        verify(playerRepository, times(0)).findById(UUID_2);
+        verify(playerRepository, times(0)).disableUser(UUID_2);
     }
 
     @Test
     void givenDeletePlayer_whenUserNotFoundOnDb_thenThrowDataNotFoundException() {
-        when(playerRepository.findById(PLAYER_2_UUID)).thenReturn(Optional.empty());
+        when(playerRepository.findById(UUID_2)).thenReturn(Optional.empty());
 
         assertThrows(
                 DataNotFoundException.class,
-                () -> playerService.deletePlayer(PLAYER_2_UUID, admin)
+                () -> playerService.deletePlayer(UUID_2, admin)
         );
 
-        verify(playerRepository, times(1)).findById(PLAYER_2_UUID);
-        verify(playerRepository, times(0)).disableUser(PLAYER_2_UUID);
+        verify(playerRepository, times(1)).findById(UUID_2);
+        verify(playerRepository, times(0)).disableUser(UUID_2);
     }
 
     @Test
     void givenDeletePlayer_whenUserInactive_thenThrowDataNotFoundException() {
-        when(playerRepository.findById(PLAYER_2_UUID))
-                .thenReturn(Optional.of(getPlayerModel(PLAYER_2_UUID, "user2", true, false)));
+        when(playerRepository.findById(UUID_2))
+                .thenReturn(Optional.of(getPlayerModel(UUID_2, "user2", true, false)));
 
         assertThrows(
                 DataNotFoundException.class,
-                () -> playerService.deletePlayer(PLAYER_2_UUID, admin)
+                () -> playerService.deletePlayer(UUID_2, admin)
         );
 
-        verify(playerRepository, times(1)).findById(PLAYER_2_UUID);
-        verify(playerRepository, times(0)).disableUser(PLAYER_2_UUID);
+        verify(playerRepository, times(1)).findById(UUID_2);
+        verify(playerRepository, times(0)).disableUser(UUID_2);
     }
 
     @Test
     void givenDeletePlayer_whenValid_thenDisableUser() {
-        when(playerRepository.findById(PLAYER_2_UUID))
-                .thenReturn(Optional.of(getPlayerModel(PLAYER_2_UUID, "user2", true, true)));
-        when(playerRepository.findById(PLAYER_UUID))
-                .thenReturn(Optional.of(getPlayerModel(PLAYER_UUID, "user", false, true)));
+        when(playerRepository.findById(UUID_2))
+                .thenReturn(Optional.of(getPlayerModel(UUID_2, "user2", true, true)));
+        when(playerRepository.findById(UUID_1))
+                .thenReturn(Optional.of(getPlayerModel(UUID_1, "user", false, true)));
 
-        playerService.deletePlayer(PLAYER_2_UUID, admin);
-        playerService.deletePlayer(PLAYER_UUID, user);
+        playerService.deletePlayer(UUID_2, admin);
+        playerService.deletePlayer(UUID_1, user);
 
-        verify(playerRepository, times(1)).findById(PLAYER_2_UUID);
-        verify(playerRepository, times(1)).findById(PLAYER_UUID);
+        verify(playerRepository, times(1)).findById(UUID_2);
+        verify(playerRepository, times(1)).findById(UUID_1);
         verify(playerRepository, times(2)).save(any());
     }
 
@@ -95,51 +95,51 @@ class PlayerServiceTests {
     void givenGetPlayer_whenUserNotAdminAndDifferentUUIDs_thenThrowUnauthorizedException() {
         assertThrows(
                 UnauthorizedException.class,
-                () -> playerService.getPlayer(PLAYER_2_UUID, user)
+                () -> playerService.getPlayer(UUID_2, user)
         );
 
-        verify(playerRepository, times(0)).findById(PLAYER_2_UUID);
+        verify(playerRepository, times(0)).findById(UUID_2);
     }
 
     @Test
     void givenGetPlayer_whenUserNotFoundOnDb_thenThrowDataNotFoundException() {
-        when(playerRepository.findById(PLAYER_2_UUID)).thenReturn(Optional.empty());
+        when(playerRepository.findById(UUID_2)).thenReturn(Optional.empty());
 
         assertThrows(
                 DataNotFoundException.class,
-                () -> playerService.getPlayer(PLAYER_2_UUID, admin)
+                () -> playerService.getPlayer(UUID_2, admin)
         );
 
-        verify(playerRepository, times(1)).findById(PLAYER_2_UUID);
+        verify(playerRepository, times(1)).findById(UUID_2);
     }
 
     @Test
     void givenGetPlayer_whenUserInactive_thenThrowDataNotFoundException() {
-        when(playerRepository.findById(PLAYER_2_UUID))
-                .thenReturn(Optional.of(getPlayerModel(PLAYER_2_UUID, "user2", true, false)));
+        when(playerRepository.findById(UUID_2))
+                .thenReturn(Optional.of(getPlayerModel(UUID_2, "user2", true, false)));
 
         assertThrows(
                 DataNotFoundException.class,
-                () -> playerService.getPlayer(PLAYER_2_UUID, admin)
+                () -> playerService.getPlayer(UUID_2, admin)
         );
 
-        verify(playerRepository, times(1)).findById(PLAYER_2_UUID);
+        verify(playerRepository, times(1)).findById(UUID_2);
     }
 
     @Test
     void givenGetPlayer_whenValid_thenDisableUser() {
-        PlayerModel expected = getPlayerModel(PLAYER_2_UUID, "user2", true, true);
-        when(playerRepository.findById(PLAYER_2_UUID))
+        PlayerModel expected = getPlayerModel(UUID_2, "user2", true, true);
+        when(playerRepository.findById(UUID_2))
                 .thenReturn(Optional.of(expected));
-        when(playerRepository.findById(PLAYER_UUID))
-                .thenReturn(Optional.of(getPlayerModel(PLAYER_UUID, "user", false, true)));
+        when(playerRepository.findById(UUID_1))
+                .thenReturn(Optional.of(getPlayerModel(UUID_1, "user", false, true)));
 
-        PlayerModel retrieved = playerService.getPlayer(PLAYER_2_UUID, admin);
-        PlayerModel retrievedOwn = playerService.getPlayer(PLAYER_UUID, user);
+        PlayerModel retrieved = playerService.getPlayer(UUID_2, admin);
+        PlayerModel retrievedOwn = playerService.getPlayer(UUID_1, user);
 
         assertEquals(expected, retrieved);
         assertEquals(user.getId(), retrievedOwn.getId());
-        verify(playerRepository, times(1)).findById(PLAYER_2_UUID);
+        verify(playerRepository, times(1)).findById(UUID_2);
     }
 
     @ParameterizedTest

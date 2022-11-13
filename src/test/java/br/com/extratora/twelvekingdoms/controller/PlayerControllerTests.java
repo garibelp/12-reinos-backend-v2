@@ -23,7 +23,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.Optional;
 
-import static br.com.extratora.twelvekingdoms.TestPayloads.PLAYER_UUID;
+import static br.com.extratora.twelvekingdoms.TestPayloads.UUID_1;
 import static br.com.extratora.twelvekingdoms.TestPayloads.getPlayerDtoPage;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
@@ -40,7 +40,7 @@ class PlayerControllerTests {
 
     @Test
     void givenDeleteCalled_whenValidRequest_thenShouldDeletePlayer() throws Exception {
-        RequestBuilder builder = MockMvcRequestBuilders.delete("/players/" + PLAYER_UUID.toString());
+        RequestBuilder builder = MockMvcRequestBuilders.delete("/players/" + UUID_1.toString());
 
         mockMvc.perform(builder).andExpect(status().isAccepted());
 
@@ -57,7 +57,7 @@ class PlayerControllerTests {
     @Test
     void givenDetailsCalled_whenValidRequest_thenShouldReturnPlayerInfo() throws Exception {
         RequestBuilder builder = MockMvcRequestBuilders.get("/players")
-                .param("id", PLAYER_UUID.toString());
+                .param("id", UUID_1.toString());
 
         mockMvc.perform(builder).andExpect(status().isOk());
 
@@ -68,7 +68,7 @@ class PlayerControllerTests {
     void givenDetailsCalled_whenMissingUserPermission_thenShouldReturnUnauthorized() throws Exception {
         when(playerService.getPlayer(any(), any())).thenThrow(new UnauthorizedException());
         RequestBuilder builder = MockMvcRequestBuilders.get("/players")
-                .param("id", PLAYER_UUID.toString());
+                .param("id", UUID_1.toString());
 
         mockMvc.perform(builder).andExpect(status().isUnauthorized());
 
@@ -79,7 +79,7 @@ class PlayerControllerTests {
     void givenDetailsCalled_whenNotFound_thenShouldReturnNotFound() throws Exception {
         when(playerService.getPlayer(any(), any())).thenThrow(new DataNotFoundException());
         RequestBuilder builder = MockMvcRequestBuilders.get("/players")
-                .param("id", PLAYER_UUID.toString());
+                .param("id", UUID_1.toString());
 
         mockMvc.perform(builder).andExpect(status().isNotFound());
 

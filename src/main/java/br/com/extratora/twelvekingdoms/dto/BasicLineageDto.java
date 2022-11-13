@@ -11,12 +11,7 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class BasicSheetDto {
+public class BasicLineageDto {
     private UUID id;
     private String name;
-    private int level;
-    private String lineage;
-    private boolean isActive;
-    private UUID userId;
-    private String userName;
 }

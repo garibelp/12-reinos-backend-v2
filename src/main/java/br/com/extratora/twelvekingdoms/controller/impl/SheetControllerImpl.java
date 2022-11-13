@@ -3,6 +3,7 @@ package br.com.extratora.twelvekingdoms.controller.impl;
 import br.com.extratora.twelvekingdoms.controller.SheetController;
 import br.com.extratora.twelvekingdoms.dto.BasicSheetDto;
 import br.com.extratora.twelvekingdoms.dto.request.CreateSheetRequest;
+import br.com.extratora.twelvekingdoms.dto.response.IdResponse;
 import br.com.extratora.twelvekingdoms.dto.response.MessageResponse;
 import br.com.extratora.twelvekingdoms.dto.response.SheetListResponse;
 import br.com.extratora.twelvekingdoms.enums.SheetSortEnum;
@@ -31,11 +32,12 @@ public class SheetControllerImpl implements SheetController {
     @Override
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @PostMapping
-    public ResponseEntity<SheetModel> create(
+    public ResponseEntity<IdResponse> create(
             @AuthenticationPrincipal UserDetailsImpl user,
             @RequestBody CreateSheetRequest request
     ) {
-        return ResponseEntity.ok(sheetService.createSheet(user, request));
+        var sheet = sheetService.createSheet(user, request);
+        return ResponseEntity.ok(new IdResponse(sheet.getId()));
     }
 
     @Override

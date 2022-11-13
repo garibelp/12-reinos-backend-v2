@@ -2,6 +2,7 @@ package br.com.extratora.twelvekingdoms.controller;
 
 import br.com.extratora.twelvekingdoms.dto.request.CreateSheetRequest;
 import br.com.extratora.twelvekingdoms.dto.response.ErrorResponse;
+import br.com.extratora.twelvekingdoms.dto.response.IdResponse;
 import br.com.extratora.twelvekingdoms.dto.response.MessageResponse;
 import br.com.extratora.twelvekingdoms.dto.response.SheetListResponse;
 import br.com.extratora.twelvekingdoms.enums.SheetSortEnum;
@@ -28,7 +29,7 @@ public interface SheetController {
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = SheetModel.class))
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = IdResponse.class))
             ),
             @ApiResponse(
                     responseCode = "400",
@@ -36,7 +37,7 @@ public interface SheetController {
             ),
             @ApiResponse(responseCode = "401")
     })
-    ResponseEntity<SheetModel> create(@Parameter(hidden = true) UserDetailsImpl user, @Valid CreateSheetRequest request);
+    ResponseEntity<IdResponse> create(@Parameter(hidden = true) UserDetailsImpl user, @Valid CreateSheetRequest request);
 
     @Operation(summary = "Retrieve sheet details", security = @SecurityRequirement(name = "bearerAuth"))
     @ApiResponses(value = {
