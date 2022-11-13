@@ -28,6 +28,9 @@ public class CreateSheetRequest {
     private UUID backgroundId;
 
     @NotNull
+    private UUID jobId;
+
+    @NotNull
     private DiceEnum intelligence;
 
     @NotNull

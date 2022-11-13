@@ -2,7 +2,7 @@ package br.com.extratora.twelvekingdoms.controller;
 
 import br.com.extratora.twelvekingdoms.dto.response.ErrorResponse;
 import br.com.extratora.twelvekingdoms.dto.response.IdNameListResponse;
-import br.com.extratora.twelvekingdoms.model.LineageModel;
+import br.com.extratora.twelvekingdoms.model.JobModel;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -15,7 +15,7 @@ import org.springframework.validation.annotation.Validated;
 import java.util.UUID;
 
 @Validated
-public interface LineageController {
+public interface JobController {
     @Operation(summary = "List lineages", security = @SecurityRequirement(name = "bearerAuth"))
     @ApiResponses(value = {
             @ApiResponse(
@@ -30,7 +30,7 @@ public interface LineageController {
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = LineageModel.class))
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = JobModel.class))
             ),
             @ApiResponse(
                     responseCode = "400",
@@ -38,5 +38,5 @@ public interface LineageController {
             ),
             @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(hidden = true)))
     })
-    ResponseEntity<LineageModel> details(UUID id);
+    ResponseEntity<JobModel> details(UUID id);
 }

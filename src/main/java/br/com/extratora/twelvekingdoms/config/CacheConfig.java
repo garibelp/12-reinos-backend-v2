@@ -14,11 +14,12 @@ import java.util.Arrays;
 public class CacheConfig {
     @Bean
     public CacheManager cacheManager() {
-        SimpleCacheManager cacheManager = new SimpleCacheManager();
+        var cacheManager = new SimpleCacheManager();
         cacheManager.setCaches(
                 Arrays.asList(
                         new ConcurrentMapCache("lineages"),
-                        new ConcurrentMapCache("backgrounds")
+                        new ConcurrentMapCache("backgrounds"),
+                        new ConcurrentMapCache("jobs")
                 )
         );
         return cacheManager;

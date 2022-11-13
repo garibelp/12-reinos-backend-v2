@@ -11,6 +11,7 @@ import br.com.extratora.twelvekingdoms.model.LineageModel;
 import br.com.extratora.twelvekingdoms.model.PlayerModel;
 import br.com.extratora.twelvekingdoms.model.SheetModel;
 import br.com.extratora.twelvekingdoms.repository.BackgroundRepository;
+import br.com.extratora.twelvekingdoms.repository.JobRepository;
 import br.com.extratora.twelvekingdoms.repository.LineageRepository;
 import br.com.extratora.twelvekingdoms.repository.SheetRepository;
 import br.com.extratora.twelvekingdoms.security.UserDetailsImpl;
@@ -37,15 +38,18 @@ public class SheetServiceImpl implements SheetService {
     private final SheetRepository sheetRepository;
     private final LineageRepository lineageRepository;
     private final BackgroundRepository backgroundRepository;
+    private final JobRepository jobRepository;
 
     public SheetServiceImpl(
             SheetRepository sheetRepository,
             LineageRepository lineageRepository,
-            BackgroundRepository backgroundRepository
+            BackgroundRepository backgroundRepository,
+            JobRepository jobRepository
     ) {
         this.sheetRepository = sheetRepository;
         this.lineageRepository = lineageRepository;
         this.backgroundRepository = backgroundRepository;
+        this.jobRepository = jobRepository;
     }
 
     @Override
@@ -62,6 +66,12 @@ public class SheetServiceImpl implements SheetService {
             throw new InvalidDataException(INVALID_CREATION_BACKGROUND);
         }
 
+        var jobOpt = jobRepository.findById(request.getJobId());
+
+        if (jobOpt.isEmpty()) {
+            throw new InvalidDataException(INVALID_CREATION_JOB);
+        }
+
         var player = new PlayerModel();
         player.setId(user.getId());
 
@@ -70,15 +80,23 @@ public class SheetServiceImpl implements SheetService {
 
         var background = backgroundOpt.get();
 
+        var job = jobOpt.get();
+
         var sheet = new SheetModel();
         sheet.setPlayer(player);
         sheet.setLineage(lineage);
         sheet.setBackground(background);
-        // Update with class points addition
-        sheet.setMentalCurrent(background.getMentalPoints());
-        sheet.setMentalTotal(background.getMentalPoints());
-        sheet.setPhysicalCurrent(background.getPhysicalPoints());
-        sheet.setPhysicalTotal(background.getPhysicalPoints());
+        sheet.setJob(job);
+
+        // Calculate attributes
+        int mental = background.getMentalPoints() + job.getMentalPoints();
+        int physical = background.getPhysicalPoints() + job.getPhysicalPoints();
+        sheet.setMentalCurrent(mental);
+        sheet.setMentalTotal(mental);
+        sheet.setPhysicalCurrent(physical);
+        sheet.setPhysicalTotal(physical);
+
+        // Set normal fields
         sheet.setName(request.getName());
         sheet.setIntelligence(request.getIntelligence());
         sheet.setCunning(request.getCunning());

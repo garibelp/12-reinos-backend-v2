@@ -91,6 +91,7 @@ public class TestPayloads {
                 .name("Valid")
                 .lineageId(UUID_1)
                 .backgroundId(UUID_2)
+                .jobId(UUID_2)
                 .intelligence(DiceEnum.D4)
                 .cunning(DiceEnum.D4)
                 .tenacity(DiceEnum.D6)
@@ -98,74 +99,32 @@ public class TestPayloads {
                 .build();
     }
 
-    public static Stream<CreateSheetRequest> getInvalidCreateSheetRequestStreamWithDiceValidation() {
-        return Stream.concat(
-                getInvalidCreateSheetRequestStream(),
-                Stream.of(
-                        CreateSheetRequest.builder()
-                                .name("Valid")
-                                .lineageId(UUID_1)
-                                .backgroundId(UUID_2)
-                                .intelligence(DiceEnum.D4)
-                                .cunning(DiceEnum.D4)
-                                .tenacity(DiceEnum.D4)
-                                .celerity(DiceEnum.D4)
-                                .build(),
-                        CreateSheetRequest.builder()
-                                .name("Valid")
-                                .lineageId(UUID_1)
-                                .backgroundId(UUID_2)
-                                .intelligence(DiceEnum.D4)
-                                .cunning(DiceEnum.D4)
-                                .tenacity(DiceEnum.D4)
-                                .celerity(DiceEnum.D6)
-                                .build(),
-                        CreateSheetRequest.builder()
-                                .name("Valid")
-                                .lineageId(UUID_1)
-                                .backgroundId(UUID_2)
-                                .intelligence(DiceEnum.D4)
-                                .cunning(DiceEnum.D4)
-                                .tenacity(DiceEnum.D6)
-                                .celerity(DiceEnum.D6)
-                                .build(),
-                        CreateSheetRequest.builder()
-                                .name("Valid")
-                                .lineageId(UUID_1)
-                                .backgroundId(UUID_2)
-                                .intelligence(DiceEnum.D4)
-                                .cunning(DiceEnum.D6)
-                                .tenacity(DiceEnum.D6)
-                                .celerity(DiceEnum.D6)
-                                .build(),
-                        CreateSheetRequest.builder()
-                                .name("Valid")
-                                .lineageId(UUID_1)
-                                .backgroundId(UUID_2)
-                                .intelligence(DiceEnum.D4)
-                                .cunning(DiceEnum.D6)
-                                .tenacity(DiceEnum.D6)
-                                .celerity(DiceEnum.D8)
-                                .build()
-                )
-        );
-    }
-
     public static Stream<CreateSheetRequest> getInvalidCreateSheetRequestStream() {
         return Stream.of(
                 CreateSheetRequest.builder().build(),
                 CreateSheetRequest.builder()
                         .name("")
+                        .lineageId(UUID_1)
+                        .backgroundId(UUID_2)
+                        .jobId(UUID_2)
                         .build(),
                 CreateSheetRequest.builder()
                         .name("Test")
+                        .lineageId(UUID_1)
+                        .backgroundId(UUID_2)
+                        .jobId(UUID_2)
                         .build(),
                 CreateSheetRequest.builder()
                         .name("Test max characters!!")
+                        .lineageId(UUID_1)
+                        .backgroundId(UUID_2)
+                        .jobId(UUID_2)
                         .build(),
                 CreateSheetRequest.builder()
                         .name("Valid")
                         .lineageId(UUID_1)
+                        .backgroundId(UUID_2)
+                        .jobId(UUID_2)
                         .build(),
                 CreateSheetRequest.builder()
                         .name("Valid")
@@ -177,6 +136,7 @@ public class TestPayloads {
                 CreateSheetRequest.builder()
                         .name("Valid")
                         .backgroundId(UUID_1)
+                        .jobId(UUID_2)
                         .intelligence(DiceEnum.D4)
                         .cunning(DiceEnum.D4)
                         .celerity(DiceEnum.D4)
@@ -185,6 +145,15 @@ public class TestPayloads {
                         .name("Valid")
                         .lineageId(UUID_1)
                         .backgroundId(UUID_1)
+                        .intelligence(DiceEnum.D4)
+                        .cunning(DiceEnum.D4)
+                        .celerity(DiceEnum.D4)
+                        .build(),
+                CreateSheetRequest.builder()
+                        .name("Valid")
+                        .lineageId(UUID_1)
+                        .backgroundId(UUID_1)
+                        .jobId(UUID_2)
                         .intelligence(DiceEnum.D4)
                         .cunning(DiceEnum.D4)
                         .tenacity(DiceEnum.D4)
@@ -233,6 +202,14 @@ public class TestPayloads {
                 .name("Fazendeiro")
                 .physicalPoints(4)
                 .mentalPoints(-1)
+                .build();
+    }
+
+    public static JobModel getJobModel() {
+        return JobModel.builder()
+                .name("Artífice")
+                .physicalPoints(5)
+                .mentalPoints(8)
                 .build();
     }
 }

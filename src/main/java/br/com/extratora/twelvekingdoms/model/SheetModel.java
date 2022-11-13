@@ -93,4 +93,8 @@ public class SheetModel implements Serializable {
     @ManyToOne
     @JoinColumn(name = "BACKGROUND_ID", nullable = false)
     private BackgroundModel background;
+
+    @ManyToOne
+    @JoinColumn(name = "JOB_ID", nullable = false)
+    private JobModel job;
 }

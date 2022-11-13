@@ -11,7 +11,7 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class BasicLineageDto {
+public class BasicIdNameDto {
     private UUID id;
     private String name;
 }

@@ -1,11 +1,10 @@
 package br.com.extratora.twelvekingdoms.service.impl;
 
-import br.com.extratora.twelvekingdoms.dto.BasicLineageDto;
+import br.com.extratora.twelvekingdoms.dto.BasicIdNameDto;
 import br.com.extratora.twelvekingdoms.exception.DataNotFoundException;
 import br.com.extratora.twelvekingdoms.model.LineageModel;
 import br.com.extratora.twelvekingdoms.repository.LineageRepository;
 import br.com.extratora.twelvekingdoms.service.LineageService;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +13,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
-@Slf4j
 public class LineageServiceImpl implements LineageService {
     private final LineageRepository lineageRepository;
 
@@ -24,7 +22,7 @@ public class LineageServiceImpl implements LineageService {
 
     @Override
     @Cacheable(value = "lineages")
-    public List<BasicLineageDto> lineageList() {
+    public List<BasicIdNameDto> lineageList() {
         return lineageRepository.listBasicLineages();
     }
 

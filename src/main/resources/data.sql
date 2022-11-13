@@ -192,3 +192,104 @@ VALUES
     ('4a4e7b7c-ea33-46bc-9030-5f1042616bf5', 'Técnico', 1, 2, '47fe0f9c-cc35-49bb-a513-360314533d93'),
     ('8d4f5995-4d05-403a-9d41-eb206f325294', 'Viajante', 3, 0, '4d5b3422-43bd-4cf3-9a17-f0399a122915')
 ON CONFLICT DO NOTHING;
+
+INSERT INTO
+    JOBS(id, name, description, main_attribute, physical_points, mental_points)
+VALUES
+    (
+        'eb98fa25-634a-4e93-8898-0c9dc7f01c01',
+        'Artífice',
+        'Quem precisa de magia quando se tem a tecnologia a seu dispor? Os Artífices são entusiastas, amantes das bugigangas, sonhadores e criativos. Podem ter algum tipo de rivalidade com conjuradores, talvez por inveja, talvez por desprezo.',
+        'INTELLIGENCE',
+        5,
+        8
+    ),
+    (
+        'c0169b57-d4d2-49f2-8abe-b0f87c5e9fae',
+        'Artista',
+        'A energia de um surto criativo pode ser tão avassaladora quanto uma Bola de Fogo bem dada. Pelo menos é nisso que os Artistas acreditam. Não importa a forma, suas obras sempre causam um impacto maior do que o esperado, imbuídas não apenas de sentimentos, como de magia. Não costumam ter rivalidade com uma classe específica, mas com aqueles que não apreciam arte.',
+        'CUNNING',
+        4,
+        9
+    ),
+    (
+        '9132517e-f3da-4321-905d-63a743d9344a',
+        'Atirador',
+        'Lâminas e magias nunca serão tão rápidas quanto um dedo em um gatilho. Atiradores contam com armas de fogo para resolver seus problemas e podem ter uma leve rivalidade com Guerreiros e Bárbaros. Ao contrário do que se pensaria, são as armas de fogo que são consideradas brutas e menos elegantes.',
+        'CELERITY',
+        8,
+        5
+    ),
+    (
+        'fd505408-014e-4ee7-96fb-ed577c0f3e93',
+        'Bárbaro',
+        'A melhor defesa é um ataque destruidor. Sem ferimentos e risco de vida, não há combate. Bárbaros são a linha de frente de grupos de aventureiros por sua capacidade de resistir a dano e punir seus oponentes. Podem ter rivalidade com Ladinos e Atiradores por não se arriscarem em batalha, mas entendem os conjuradores que querem se proteger.',
+        'TENACITY',
+        9,
+        4
+    ),
+    (
+        '787c91b7-ab88-4e50-bf5d-30c09204e74d',
+        'Diplomata',
+        'Ao fim da Grande Guerra Bartoloriana, os 12 Reinos viam-se pela primeira vez separados, rancorosos uns com os outros e na iminência de criarem novas alianças para travarem novos embates. Felizmente, os líderes do continente ouviram à razão através da palavra de políticos ascendidos do povo. Desde então, a diplomacia é vista como uma das maiores virtudes que uma pessoa pode ter, e a política dada como uma carreira de prestígio e honra. Diplomatas são treinados na arte da palavra. Costumam ter rivalidade com Bárbaros e Guerreiros, treinados na arte da guerra.',
+        'CUNNING',
+        5,
+        8
+    ),
+    (
+        '4c5e9d82-d2f9-452e-bbf1-585788816098',
+        'Druida',
+        'Aos que têm a paciência e a sensibilidade para escutar, a mãe natureza tem muito a dizer. Os Druidas juram poder ouvir sua voz, não como um som, mas expressa em diferentes formas. No vento, na terra, na água. O fato é que, indiscutivelmente, algo na natureza os tocou e abençoou com habilidades extraordinárias. Druidas podem ter rivalidades com Artífices, por vê-los como símbolo da expansão da tecnologia sobre a natureza.',
+        'TENACITY',
+        7,
+        6
+    ),
+    (
+        'a719d6dd-ef3d-4438-b834-3c7a399df384',
+        'Guerreiro',
+        'Treino e confiança em suas próprias habilidades são as duas principais características dos Guerreiros. Sem poderes, truques, bugigangas ou resistência extraordinária, eles contam apenas com sua própria garra e sua Arma Favorita. Não têm rivalidade com nenhuma outra classe, mas por pessoas que não prezam pelo trabalho em equipe.',
+        'TENACITY',
+        9,
+        4
+    ),
+    (
+        '339c9479-06c9-42d5-9920-535b34ace847',
+        'Ladino',
+        'Astutos combatentes que contam com sua sorte em batalha, os Ladinos são sorrateiros e perspicazes, embora não sejam necessariamente maus ou quebradores de regras. São supersticiosos, amantes e protegidos do acaso. Podem ter rivalidade com Sacerdotes por seguirem um código moral.',
+        'CELERITY',
+        8,
+        5
+    ),
+    (
+        '4a48caa2-7f79-435f-ad42-92359248093c',
+        'Mago',
+        'Magos eram mais comuns no passado. Houve um tempo em que Bartol tinha duas Academias de magia. Hoje, o Arcano é mantido vivo com o esforço de poucos, passado apenas de Mestre para Discípulo através de grimórios e métodos árduos de estudo incessante. Os que ascendem o posto de aprendizes têm em mãos poderes tão fortes quanto a responsabilidade que ganham de passá-los adiante. Os Magos podem ter rivalidade com Nexus por não terem adquirido suas habilidades através de estudo e esforço.',
+        'INTELLIGENCE',
+        4,
+        9
+    ),
+    (
+        '839eef4c-294c-4ac1-b1e2-317229ddb093',
+        'Nexus',
+        'Bartol ainda está à espera de quem possa explicar o fenômeno Nexus. Nas últimas décadas, incidentes envolvendo outros planos têm transformado pessoas comuns em seres extraordinários. Elas parecem voltar do pós-vida com habilidades que desafiam a realidade, distorcendo o tempo, alterando o espaço e manipulando a matéria. Nexus não costumam ter rivalidades por estarem muito ocupados tentando entender e aceitar a si mesmos.',
+        'INTELLIGENCE',
+        6,
+        7
+    ),
+    (
+        '47117c6c-27a4-42db-88f2-a0972a93eadf',
+        'Sacerdote',
+        'O divino em Bartol é misterioso e incerto. Desde a Queda dos Elfos, religiões deixaram de existir e crenças passaram a ter seus limites cada vez mais incertos e indefinidos. Cada habitante do continente tem seu próprio conjunto de entidades protetoras e guias energéticos. Alguns dizem poder sentir sua influência na vida mundana. Os Sacerdotes sabem usá-la a seu favor. Não têm rivalidades específicas.',
+        'CUNNING',
+        6,
+        7
+    ),
+    (
+        '3d14cb08-3391-418e-bd74-37d7737be28b',
+        'Sentinela',
+        'A Grande Guerra Bartoloriana deixou boa parte do continente devastada, separou famílias e feriu, mesmo que indiretamente, todos os seres vivos de Bartol. Com a missão de garantir que nenhuma pessoa precisasse passar por tamanho sofrimento novamente, uma Ordem foi estabelecida através de um código de honra. Não há instituição, liderança, treinamento ou iniciação para fazer parte dela. Basta juramentar o código para si e carregá-lo junto ao desejo de proteger e fazer o bem para tornar-se um Sentinela.',
+        'CELERITY',
+        4,
+        2
+    )
+ON CONFLICT DO NOTHING;
