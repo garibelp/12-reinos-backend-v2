@@ -3,10 +3,12 @@ package br.com.extratora.twelvekingdoms.model;
 import br.com.extratora.twelvekingdoms.enums.DiceEnum;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.io.Serial;
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.UUID;
 
 @Builder
@@ -15,7 +17,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Entity
-@Table(name = "SHEET")
+@Table(name = "SHEETS")
 public class SheetModel implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
@@ -69,8 +71,16 @@ public class SheetModel implements Serializable {
     @Column(name = "IS_ACTIVE", nullable = false)
     private boolean isActive = true;
 
+    @CreationTimestamp
+    @Column(name = "CREATED_AT", nullable = false)
+    private Timestamp createdAt;
+
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "PLAYER_ID", nullable = false)
     private PlayerModel player;
+
+    @ManyToOne
+    @JoinColumn(name = "LINEAGE_ID", nullable = false)
+    private LineageModel lineage;
 }
