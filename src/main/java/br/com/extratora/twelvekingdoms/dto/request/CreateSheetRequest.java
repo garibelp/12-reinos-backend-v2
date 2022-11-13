@@ -25,6 +25,9 @@ public class CreateSheetRequest {
     private UUID lineageId;
 
     @NotNull
+    private UUID backgroundId;
+
+    @NotNull
     private DiceEnum intelligence;
 
     @NotNull
@@ -41,4 +44,6 @@ public class CreateSheetRequest {
 
     @Max(200)
     private String motivation;
+
+    private String notes;
 }

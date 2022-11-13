@@ -33,8 +33,8 @@ public interface PlayerController {
                     responseCode = "400",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
             ),
-            @ApiResponse(responseCode = "401"),
-            @ApiResponse(responseCode = "403")
+            @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(hidden = true))),
+            @ApiResponse(responseCode = "403", content = @Content(schema = @Schema(hidden = true)))
     })
     ResponseEntity<MessageResponse> delete(@Parameter(hidden = true) UserDetailsImpl user, UUID id);
 
@@ -48,8 +48,8 @@ public interface PlayerController {
                     responseCode = "400",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
             ),
-            @ApiResponse(responseCode = "401"),
-            @ApiResponse(responseCode = "403")
+            @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(hidden = true))),
+            @ApiResponse(responseCode = "403", content = @Content(schema = @Schema(hidden = true)))
     })
     ResponseEntity<PlayerModel> details(@Parameter(hidden = true) UserDetailsImpl user, UUID id);
 
@@ -63,7 +63,7 @@ public interface PlayerController {
                     responseCode = "400",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
             ),
-            @ApiResponse(responseCode = "401")
+            @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(hidden = true)))
     })
     ResponseEntity<PlayerListResponse> list(
             @Min(0) int currentPage,

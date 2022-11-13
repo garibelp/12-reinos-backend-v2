@@ -3,7 +3,6 @@ package br.com.extratora.twelvekingdoms.controller;
 import br.com.extratora.twelvekingdoms.controller.impl.LineageControllerImpl;
 import br.com.extratora.twelvekingdoms.exception.DataNotFoundException;
 import br.com.extratora.twelvekingdoms.service.LineageService;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -25,7 +24,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(LineageControllerImpl.class)
 @AutoConfigureMockMvc(addFilters = false)
 class LineageControllerTests {
-    private final ObjectMapper objectMapper = new ObjectMapper();
     @Autowired
     private MockMvc mockMvc;
     @MockBean

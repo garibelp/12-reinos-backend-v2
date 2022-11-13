@@ -15,9 +15,12 @@ public class CacheConfig {
     @Bean
     public CacheManager cacheManager() {
         SimpleCacheManager cacheManager = new SimpleCacheManager();
-        cacheManager.setCaches(Arrays.asList(
-                new ConcurrentMapCache("lineages"),
-                new ConcurrentMapCache("backgrounds")));
+        cacheManager.setCaches(
+                Arrays.asList(
+                        new ConcurrentMapCache("lineages"),
+                        new ConcurrentMapCache("backgrounds")
+                )
+        );
         return cacheManager;
     }
 }

@@ -6,10 +6,7 @@ import br.com.extratora.twelvekingdoms.dto.request.CreateSheetRequest;
 import br.com.extratora.twelvekingdoms.dto.request.SignupRequest;
 import br.com.extratora.twelvekingdoms.enums.DiceEnum;
 import br.com.extratora.twelvekingdoms.enums.RolesEnum;
-import br.com.extratora.twelvekingdoms.model.LineageModel;
-import br.com.extratora.twelvekingdoms.model.PlayerModel;
-import br.com.extratora.twelvekingdoms.model.RoleModel;
-import br.com.extratora.twelvekingdoms.model.SheetModel;
+import br.com.extratora.twelvekingdoms.model.*;
 import br.com.extratora.twelvekingdoms.security.UserDetailsImpl;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -93,6 +90,7 @@ public class TestPayloads {
         return CreateSheetRequest.builder()
                 .name("Valid")
                 .lineageId(UUID_1)
+                .backgroundId(UUID_2)
                 .intelligence(DiceEnum.D4)
                 .cunning(DiceEnum.D4)
                 .tenacity(DiceEnum.D6)
@@ -107,6 +105,7 @@ public class TestPayloads {
                         CreateSheetRequest.builder()
                                 .name("Valid")
                                 .lineageId(UUID_1)
+                                .backgroundId(UUID_2)
                                 .intelligence(DiceEnum.D4)
                                 .cunning(DiceEnum.D4)
                                 .tenacity(DiceEnum.D4)
@@ -115,6 +114,7 @@ public class TestPayloads {
                         CreateSheetRequest.builder()
                                 .name("Valid")
                                 .lineageId(UUID_1)
+                                .backgroundId(UUID_2)
                                 .intelligence(DiceEnum.D4)
                                 .cunning(DiceEnum.D4)
                                 .tenacity(DiceEnum.D4)
@@ -123,6 +123,7 @@ public class TestPayloads {
                         CreateSheetRequest.builder()
                                 .name("Valid")
                                 .lineageId(UUID_1)
+                                .backgroundId(UUID_2)
                                 .intelligence(DiceEnum.D4)
                                 .cunning(DiceEnum.D4)
                                 .tenacity(DiceEnum.D6)
@@ -131,6 +132,7 @@ public class TestPayloads {
                         CreateSheetRequest.builder()
                                 .name("Valid")
                                 .lineageId(UUID_1)
+                                .backgroundId(UUID_2)
                                 .intelligence(DiceEnum.D4)
                                 .cunning(DiceEnum.D6)
                                 .tenacity(DiceEnum.D6)
@@ -139,6 +141,7 @@ public class TestPayloads {
                         CreateSheetRequest.builder()
                                 .name("Valid")
                                 .lineageId(UUID_1)
+                                .backgroundId(UUID_2)
                                 .intelligence(DiceEnum.D4)
                                 .cunning(DiceEnum.D6)
                                 .tenacity(DiceEnum.D6)
@@ -173,7 +176,15 @@ public class TestPayloads {
                         .build(),
                 CreateSheetRequest.builder()
                         .name("Valid")
+                        .backgroundId(UUID_1)
+                        .intelligence(DiceEnum.D4)
+                        .cunning(DiceEnum.D4)
+                        .celerity(DiceEnum.D4)
+                        .build(),
+                CreateSheetRequest.builder()
+                        .name("Valid")
                         .lineageId(UUID_1)
+                        .backgroundId(UUID_1)
                         .intelligence(DiceEnum.D4)
                         .cunning(DiceEnum.D4)
                         .tenacity(DiceEnum.D4)
@@ -181,6 +192,7 @@ public class TestPayloads {
                 CreateSheetRequest.builder()
                         .name("Valid")
                         .lineageId(UUID_1)
+                        .backgroundId(UUID_1)
                         .tenacity(DiceEnum.D4)
                         .cunning(DiceEnum.D4)
                         .celerity(DiceEnum.D4)
@@ -188,6 +200,7 @@ public class TestPayloads {
                 CreateSheetRequest.builder()
                         .name("Valid")
                         .lineageId(UUID_1)
+                        .backgroundId(UUID_1)
                         .intelligence(DiceEnum.D4)
                         .tenacity(DiceEnum.D4)
                         .celerity(DiceEnum.D4)
@@ -212,6 +225,14 @@ public class TestPayloads {
     public static LineageModel getLineageModel() {
         return LineageModel.builder()
                 .name("Anão")
+                .build();
+    }
+
+    public static BackgroundModel getBackgroundModel() {
+        return BackgroundModel.builder()
+                .name("Fazendeiro")
+                .physicalPoints(4)
+                .mentalPoints(-1)
                 .build();
     }
 }

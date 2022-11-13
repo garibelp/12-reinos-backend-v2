@@ -4,6 +4,7 @@ import br.com.extratora.twelvekingdoms.enums.DiceEnum;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.io.Serial;
@@ -20,7 +21,7 @@ import java.util.UUID;
 @Table(name = "SHEETS")
 public class SheetModel implements Serializable {
     @Serial
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 4L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -68,6 +69,10 @@ public class SheetModel implements Serializable {
     @Column(name = "MOTIVATION", length = 200)
     private String motivation;
 
+    @Type(type = "org.hibernate.type.TextType")
+    @Column(name = "NOTES")
+    private String notes;
+
     @Column(name = "IS_ACTIVE", nullable = false)
     private boolean isActive = true;
 
@@ -84,4 +89,8 @@ public class SheetModel implements Serializable {
     @ManyToOne
     @JoinColumn(name = "LINEAGE_ID", nullable = false)
     private LineageModel lineage;
+
+    @ManyToOne
+    @JoinColumn(name = "BACKGROUND_ID", nullable = false)
+    private BackgroundModel background;
 }

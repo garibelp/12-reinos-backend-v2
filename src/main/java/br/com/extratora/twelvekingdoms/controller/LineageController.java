@@ -22,7 +22,7 @@ public interface LineageController {
                     responseCode = "200",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = LineageListResponse.class))
             ),
-            @ApiResponse(responseCode = "401")
+            @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(hidden = true)))
     })
     ResponseEntity<LineageListResponse> list();
 
@@ -36,7 +36,7 @@ public interface LineageController {
                     responseCode = "400",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
             ),
-            @ApiResponse(responseCode = "401")
+            @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(hidden = true)))
     })
     ResponseEntity<LineageModel> details(UUID id);
 }

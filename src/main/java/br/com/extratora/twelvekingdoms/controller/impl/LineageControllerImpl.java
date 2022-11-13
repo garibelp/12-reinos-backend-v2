@@ -1,7 +1,6 @@
 package br.com.extratora.twelvekingdoms.controller.impl;
 
 import br.com.extratora.twelvekingdoms.controller.LineageController;
-import br.com.extratora.twelvekingdoms.dto.BasicLineageDto;
 import br.com.extratora.twelvekingdoms.dto.response.LineageListResponse;
 import br.com.extratora.twelvekingdoms.model.LineageModel;
 import br.com.extratora.twelvekingdoms.service.LineageService;
@@ -12,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -28,12 +26,7 @@ public class LineageControllerImpl implements LineageController {
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @GetMapping("/list")
     public ResponseEntity<LineageListResponse> list() {
-        List<BasicLineageDto> lineageList = lineageService.lineageList();
-
-        var lineageResponse = new LineageListResponse();
-        lineageResponse.setList(lineageList);
-
-        return ResponseEntity.ok(lineageResponse);
+        return ResponseEntity.ok(new LineageListResponse(lineageService.lineageList()));
     }
 
     @Override

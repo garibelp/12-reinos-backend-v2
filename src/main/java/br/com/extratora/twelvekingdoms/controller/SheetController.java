@@ -35,7 +35,7 @@ public interface SheetController {
                     responseCode = "400",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
             ),
-            @ApiResponse(responseCode = "401")
+            @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(hidden = true)))
     })
     ResponseEntity<IdResponse> create(@Parameter(hidden = true) UserDetailsImpl user, @Valid CreateSheetRequest request);
 
@@ -49,8 +49,8 @@ public interface SheetController {
                     responseCode = "400",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
             ),
-            @ApiResponse(responseCode = "401"),
-            @ApiResponse(responseCode = "403")
+            @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(hidden = true))),
+            @ApiResponse(responseCode = "403", content = @Content(schema = @Schema(hidden = true)))
     })
     ResponseEntity<SheetModel> details(@Parameter(hidden = true) UserDetailsImpl user, UUID id);
 
@@ -64,7 +64,7 @@ public interface SheetController {
                     responseCode = "400",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
             ),
-            @ApiResponse(responseCode = "401")
+            @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(hidden = true)))
     })
     ResponseEntity<SheetListResponse> list(
             @Min(0) int currentPage,
@@ -84,8 +84,8 @@ public interface SheetController {
                     responseCode = "400",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
             ),
-            @ApiResponse(responseCode = "401"),
-            @ApiResponse(responseCode = "403")
+            @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(hidden = true))),
+            @ApiResponse(responseCode = "403", content = @Content(schema = @Schema(hidden = true)))
     })
     ResponseEntity<MessageResponse> delete(@Parameter(hidden = true) UserDetailsImpl user, UUID id);
 }

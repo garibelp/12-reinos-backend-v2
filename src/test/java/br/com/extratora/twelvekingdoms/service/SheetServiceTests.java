@@ -7,6 +7,7 @@ import br.com.extratora.twelvekingdoms.exception.DataNotFoundException;
 import br.com.extratora.twelvekingdoms.exception.InvalidDataException;
 import br.com.extratora.twelvekingdoms.exception.UnauthorizedException;
 import br.com.extratora.twelvekingdoms.model.SheetModel;
+import br.com.extratora.twelvekingdoms.repository.BackgroundRepository;
 import br.com.extratora.twelvekingdoms.repository.LineageRepository;
 import br.com.extratora.twelvekingdoms.repository.SheetRepository;
 import br.com.extratora.twelvekingdoms.service.impl.SheetServiceImpl;
@@ -39,6 +40,8 @@ class SheetServiceTests {
     private SheetRepository sheetRepository;
     @Mock
     private LineageRepository lineageRepository;
+    @Mock
+    private BackgroundRepository backgroundRepository;
     @InjectMocks
     private SheetServiceImpl sheetService;
 
@@ -79,6 +82,7 @@ class SheetServiceTests {
         assertEquals(ErrorEnum.INVALID_CREATION_DICES.getDescription(), ex.getError().getDescription());
         verify(sheetRepository, times(0)).save(any());
         verify(lineageRepository, times(0)).existsById(any());
+        verify(backgroundRepository, times(0)).findById(any());
     }
 
     @Test
@@ -96,19 +100,47 @@ class SheetServiceTests {
         assertEquals(ErrorEnum.INVALID_CREATION_LINEAGE.getDescription(), ex.getError().getDescription());
         verify(sheetRepository, times(0)).save(any());
         verify(lineageRepository, times(1)).existsById(any());
+        verify(backgroundRepository, times(0)).findById(any());
+    }
+
+    @Test
+    void givenCreateSheet_whenBackgroundNotFoundOnDb_thenShouldThrowInvalidDataException() {
+        var user = getUserDetailsUser();
+        var sheet = getValidCreateSheetRequest();
+        when(lineageRepository.existsById(any())).thenReturn(true);
+        when(backgroundRepository.findById(any())).thenReturn(Optional.empty());
+
+        InvalidDataException ex = assertThrows(
+                InvalidDataException.class,
+                () -> sheetService.createSheet(user, sheet)
+        );
+
+        assertEquals(ErrorEnum.INVALID_CREATION_BACKGROUND.getName(), ex.getError().getName());
+        assertEquals(ErrorEnum.INVALID_CREATION_BACKGROUND.getDescription(), ex.getError().getDescription());
+        verify(sheetRepository, times(0)).save(any());
+        verify(lineageRepository, times(1)).existsById(any());
+        verify(backgroundRepository, times(1)).findById(any());
     }
 
     @Test
     void givenCreateSheet_whenValidPayload_thenShouldSaveData() {
         var user = getUserDetailsUser();
         var sheet = getValidCreateSheetRequest();
+        var background = getBackgroundModel();
         when(lineageRepository.existsById(any())).thenReturn(true);
+        when(backgroundRepository.findById(any())).thenReturn(Optional.of(background));
         ArgumentCaptor<SheetModel> captor = ArgumentCaptor.forClass(SheetModel.class);
 
         sheetService.createSheet(user, sheet);
 
         verify(sheetRepository, times(1)).save(captor.capture());
         assertEquals(user.getId(), captor.getValue().getPlayer().getId());
+        assertEquals(background.getPhysicalPoints(), captor.getValue().getPhysicalCurrent());
+        assertEquals(background.getPhysicalPoints(), captor.getValue().getPhysicalTotal());
+        assertEquals(background.getMentalPoints(), captor.getValue().getMentalCurrent());
+        assertEquals(background.getMentalPoints(), captor.getValue().getMentalTotal());
+        verify(lineageRepository, times(1)).existsById(any());
+        verify(backgroundRepository, times(1)).findById(any());
     }
 
     @Test

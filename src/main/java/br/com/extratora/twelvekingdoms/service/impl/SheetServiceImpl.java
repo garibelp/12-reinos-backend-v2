@@ -10,6 +10,7 @@ import br.com.extratora.twelvekingdoms.exception.UnauthorizedException;
 import br.com.extratora.twelvekingdoms.model.LineageModel;
 import br.com.extratora.twelvekingdoms.model.PlayerModel;
 import br.com.extratora.twelvekingdoms.model.SheetModel;
+import br.com.extratora.twelvekingdoms.repository.BackgroundRepository;
 import br.com.extratora.twelvekingdoms.repository.LineageRepository;
 import br.com.extratora.twelvekingdoms.repository.SheetRepository;
 import br.com.extratora.twelvekingdoms.security.UserDetailsImpl;
@@ -27,8 +28,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static br.com.extratora.twelvekingdoms.enums.DiceEnum.*;
-import static br.com.extratora.twelvekingdoms.enums.ErrorEnum.INVALID_CREATION_DICES;
-import static br.com.extratora.twelvekingdoms.enums.ErrorEnum.INVALID_CREATION_LINEAGE;
+import static br.com.extratora.twelvekingdoms.enums.ErrorEnum.*;
 
 @Service
 @Transactional
@@ -36,10 +36,16 @@ public class SheetServiceImpl implements SheetService {
 
     private final SheetRepository sheetRepository;
     private final LineageRepository lineageRepository;
+    private final BackgroundRepository backgroundRepository;
 
-    public SheetServiceImpl(SheetRepository sheetRepository, LineageRepository lineageRepository) {
+    public SheetServiceImpl(
+            SheetRepository sheetRepository,
+            LineageRepository lineageRepository,
+            BackgroundRepository backgroundRepository
+    ) {
         this.sheetRepository = sheetRepository;
         this.lineageRepository = lineageRepository;
+        this.backgroundRepository = backgroundRepository;
     }
 
     @Override
@@ -50,15 +56,29 @@ public class SheetServiceImpl implements SheetService {
             throw new InvalidDataException(INVALID_CREATION_LINEAGE);
         }
 
+        var backgroundOpt = backgroundRepository.findById(request.getBackgroundId());
+
+        if (backgroundOpt.isEmpty()) {
+            throw new InvalidDataException(INVALID_CREATION_BACKGROUND);
+        }
+
         var player = new PlayerModel();
         player.setId(user.getId());
 
         var lineage = new LineageModel();
         lineage.setId(request.getLineageId());
 
+        var background = backgroundOpt.get();
+
         var sheet = new SheetModel();
         sheet.setPlayer(player);
         sheet.setLineage(lineage);
+        sheet.setBackground(background);
+        // Update with class points addition
+        sheet.setMentalCurrent(background.getMentalPoints());
+        sheet.setMentalTotal(background.getMentalPoints());
+        sheet.setPhysicalCurrent(background.getPhysicalPoints());
+        sheet.setPhysicalTotal(background.getPhysicalPoints());
         sheet.setName(request.getName());
         sheet.setIntelligence(request.getIntelligence());
         sheet.setCunning(request.getCunning());
@@ -66,6 +86,7 @@ public class SheetServiceImpl implements SheetService {
         sheet.setCelerity(request.getCelerity());
         sheet.setBond(request.getBond());
         sheet.setMotivation(request.getMotivation());
+        sheet.setNotes(request.getNotes());
 
         return sheetRepository.save(sheet);
     }
