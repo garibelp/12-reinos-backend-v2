@@ -1,4 +1,4 @@
-# twelve-kingdoms
+# Twelve Kingdoms API
 
 Backend Application for RPG System 12 Kingdoms V2
 
@@ -24,3 +24,8 @@ like so:
 # Command to run development configuration
 mvn spring-boot:run -Dspring.profiles.active=dev
 ```
+
+## Accessing Swagger documentation
+
+- [Swagger UI](http://localhost:8080/swagger-ui/index.html#/)
+- [API Docs](http://http://localhost:8080/api-docs)
