@@ -1,3 +1,8 @@
+logging:
+  level:
+    org:
+      springframework: TRACE
+
 spring:
   datasource:
     show-sql: true
