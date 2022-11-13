@@ -25,8 +25,6 @@ public class LineageModel implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
-    @NotBlank
-    @Enumerated(EnumType.STRING)
     @Column(name = "NAME", nullable = false, unique = true, length = 20)
     private LineageEnum name;
 

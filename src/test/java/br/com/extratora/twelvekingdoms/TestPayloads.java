@@ -7,6 +7,7 @@ import br.com.extratora.twelvekingdoms.dto.request.SignupRequest;
 import br.com.extratora.twelvekingdoms.enums.DiceEnum;
 import br.com.extratora.twelvekingdoms.enums.LineageEnum;
 import br.com.extratora.twelvekingdoms.enums.RolesEnum;
+import br.com.extratora.twelvekingdoms.model.LineageModel;
 import br.com.extratora.twelvekingdoms.model.PlayerModel;
 import br.com.extratora.twelvekingdoms.model.RoleModel;
 import br.com.extratora.twelvekingdoms.model.SheetModel;
@@ -205,6 +206,12 @@ public class TestPayloads {
     public static SheetModel getSheetModel(UUID playerId) {
         return SheetModel.builder()
                 .player(getPlayerModel(playerId))
+                .build();
+    }
+
+    public static LineageModel getLineageModel(LineageEnum lineageEnum) {
+        return LineageModel.builder()
+                .name(lineageEnum)
                 .build();
     }
 }

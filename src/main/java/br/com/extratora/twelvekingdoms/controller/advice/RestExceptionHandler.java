@@ -77,7 +77,7 @@ public class RestExceptionHandler {
 
         String cause = ex.getCause().getLocalizedMessage();
         res.getErrorList().add(new ErrorDto(
-                cause.substring(cause.lastIndexOf("[") + 1, cause.lastIndexOf("]")).replaceAll("\"", ""),
+                cause.substring(cause.lastIndexOf("[") + 1, cause.lastIndexOf("]")).replace("\"", ""),
                 cause.substring(cause.indexOf("not one"), cause.indexOf("\n"))
         ));
 

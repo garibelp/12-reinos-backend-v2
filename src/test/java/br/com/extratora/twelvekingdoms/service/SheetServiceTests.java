@@ -7,6 +7,7 @@ import br.com.extratora.twelvekingdoms.exception.DataNotFoundException;
 import br.com.extratora.twelvekingdoms.exception.InvalidDataException;
 import br.com.extratora.twelvekingdoms.exception.UnauthorizedException;
 import br.com.extratora.twelvekingdoms.model.SheetModel;
+import br.com.extratora.twelvekingdoms.repository.LineageRepository;
 import br.com.extratora.twelvekingdoms.repository.SheetRepository;
 import br.com.extratora.twelvekingdoms.service.impl.SheetServiceImpl;
 import org.junit.jupiter.api.Test;
@@ -36,6 +37,8 @@ class SheetServiceTests {
     private ArgumentCaptor<PageRequest> pageRequestCaptor;
     @Mock
     private SheetRepository sheetRepository;
+    @Mock
+    private LineageRepository lineageRepository;
     @InjectMocks
     private SheetServiceImpl sheetService;
 
@@ -75,14 +78,34 @@ class SheetServiceTests {
         assertEquals(ErrorEnum.INVALID_CREATION_DICES.getName(), ex.getError().getName());
         assertEquals(ErrorEnum.INVALID_CREATION_DICES.getDescription(), ex.getError().getDescription());
         verify(sheetRepository, times(0)).save(any());
+        verify(lineageRepository, times(0)).findByName(any());
+    }
+
+    @Test
+    void givenCreateSheet_whenLineageNotFoundOnDb_thenShouldThrowInvalidDataException() {
+        var user = getUserDetailsUser();
+        var sheet = getValidCreateSheetRequest();
+        when(lineageRepository.findByName(any())).thenReturn(Optional.empty());
+
+        InvalidDataException ex = assertThrows(
+                InvalidDataException.class,
+                () -> sheetService.createSheet(user, sheet)
+        );
+
+        assertEquals(ErrorEnum.INVALID_CREATION_LINEAGE.getName(), ex.getError().getName());
+        assertEquals(ErrorEnum.INVALID_CREATION_LINEAGE.getDescription(), ex.getError().getDescription());
+        verify(sheetRepository, times(0)).save(any());
+        verify(lineageRepository, times(1)).findByName(any());
     }
 
     @Test
     void givenCreateSheet_whenValidPayload_thenShouldSaveData() {
         var user = getUserDetailsUser();
+        var sheet = getValidCreateSheetRequest();
+        when(lineageRepository.findByName(any())).thenReturn(Optional.ofNullable(getLineageModel(sheet.getLineage())));
         ArgumentCaptor<SheetModel> captor = ArgumentCaptor.forClass(SheetModel.class);
 
-        sheetService.createSheet(user, getValidCreateSheetRequest());
+        sheetService.createSheet(user, sheet);
 
         verify(sheetRepository, times(1)).save(captor.capture());
         assertEquals(user.getId(), captor.getValue().getPlayer().getId());

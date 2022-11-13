@@ -7,5 +7,5 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public class InvalidDataException extends RuntimeException {
-    ErrorEnum error;
+    private final ErrorEnum error;
 }

@@ -9,6 +9,7 @@ import br.com.extratora.twelvekingdoms.exception.InvalidDataException;
 import br.com.extratora.twelvekingdoms.exception.UnauthorizedException;
 import br.com.extratora.twelvekingdoms.model.PlayerModel;
 import br.com.extratora.twelvekingdoms.model.SheetModel;
+import br.com.extratora.twelvekingdoms.repository.LineageRepository;
 import br.com.extratora.twelvekingdoms.repository.SheetRepository;
 import br.com.extratora.twelvekingdoms.security.UserDetailsImpl;
 import br.com.extratora.twelvekingdoms.service.SheetService;
@@ -26,15 +27,18 @@ import java.util.stream.Stream;
 
 import static br.com.extratora.twelvekingdoms.enums.DiceEnum.*;
 import static br.com.extratora.twelvekingdoms.enums.ErrorEnum.INVALID_CREATION_DICES;
+import static br.com.extratora.twelvekingdoms.enums.ErrorEnum.INVALID_CREATION_LINEAGE;
 
 @Service
 @Transactional
 public class SheetServiceImpl implements SheetService {
 
     private final SheetRepository sheetRepository;
+    private final LineageRepository lineageRepository;
 
-    public SheetServiceImpl(SheetRepository sheetRepository) {
+    public SheetServiceImpl(SheetRepository sheetRepository, LineageRepository lineageRepository) {
         this.sheetRepository = sheetRepository;
+        this.lineageRepository = lineageRepository;
     }
 
     @Override
@@ -44,8 +48,15 @@ public class SheetServiceImpl implements SheetService {
         var player = new PlayerModel();
         player.setId(user.getId());
 
+        var lineageOpt = lineageRepository.findByName(request.getLineage());
+
+        if (lineageOpt.isEmpty()) {
+            throw new InvalidDataException(INVALID_CREATION_LINEAGE);
+        }
+
         var sheet = new SheetModel();
         sheet.setPlayer(player);
+        sheet.setLineage(lineageOpt.get());
         sheet.setName(request.getName());
         sheet.setIntelligence(request.getIntelligence());
         sheet.setCunning(request.getCunning());

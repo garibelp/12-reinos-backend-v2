@@ -71,6 +71,7 @@ public class SheetModel implements Serializable {
     @Column(name = "IS_ACTIVE", nullable = false)
     private boolean isActive = true;
 
+    @JsonIgnore
     @CreationTimestamp
     @Column(name = "CREATED_AT", nullable = false)
     private Timestamp createdAt;
