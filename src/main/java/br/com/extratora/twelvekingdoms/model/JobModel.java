@@ -55,8 +55,4 @@ public class JobModel implements Serializable {
             inverseJoinColumns = @JoinColumn(name = "APTITUDE_ID")
     )
     private Set<AptitudeModel> aptitudes = new HashSet<>();
-
-    public void addAptitude(AptitudeModel aptitude) {
-        aptitudes.add(aptitude);
-    }
 }

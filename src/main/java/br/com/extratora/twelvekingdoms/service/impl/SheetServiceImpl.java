@@ -7,9 +7,7 @@ import br.com.extratora.twelvekingdoms.enums.SheetSortEnum;
 import br.com.extratora.twelvekingdoms.exception.DataNotFoundException;
 import br.com.extratora.twelvekingdoms.exception.InvalidDataException;
 import br.com.extratora.twelvekingdoms.exception.UnauthorizedException;
-import br.com.extratora.twelvekingdoms.model.LineageModel;
-import br.com.extratora.twelvekingdoms.model.PlayerModel;
-import br.com.extratora.twelvekingdoms.model.SheetModel;
+import br.com.extratora.twelvekingdoms.model.*;
 import br.com.extratora.twelvekingdoms.repository.BackgroundRepository;
 import br.com.extratora.twelvekingdoms.repository.JobRepository;
 import br.com.extratora.twelvekingdoms.repository.LineageRepository;
@@ -22,6 +20,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -66,11 +65,16 @@ public class SheetServiceImpl implements SheetService {
             throw new InvalidDataException(INVALID_CREATION_BACKGROUND);
         }
 
-        var jobOpt = jobRepository.findById(request.getJobId());
+        var jobOpt = jobRepository.findByIdEager(request.getJobId());
 
         if (jobOpt.isEmpty()) {
             throw new InvalidDataException(INVALID_CREATION_JOB);
         }
+
+        var job = jobOpt.get();
+        var aptitudeList = request.getAptitudeList();
+
+        validateAptitudes(job, aptitudeList);
 
         var player = new PlayerModel();
         player.setId(user.getId());
@@ -80,13 +84,13 @@ public class SheetServiceImpl implements SheetService {
 
         var background = backgroundOpt.get();
 
-        var job = jobOpt.get();
 
         var sheet = new SheetModel();
         sheet.setPlayer(player);
         sheet.setLineage(lineage);
         sheet.setBackground(background);
         sheet.setJob(job);
+        aptitudeList.forEach(uuid -> sheet.addAptitude(AptitudeModel.builder().id(uuid).build()));
 
         // Calculate attributes
         int mental = background.getMentalPoints() + job.getMentalPoints();
@@ -157,8 +161,25 @@ public class SheetServiceImpl implements SheetService {
         }
     }
 
+    private void validateAptitudes(JobModel job, List<UUID> aptitudeList) {
+        var aptitudeListSize = aptitudeList.size();
+
+        if (aptitudeListSize != 3 || aptitudeList.stream().distinct().count() != aptitudeListSize) {
+            throw new InvalidDataException(INVALID_CREATION_APTITUDE_LIST);
+        }
+
+        var containsAllIds = job.getAptitudes()
+                .stream().map(AptitudeModel::getId)
+                .collect(Collectors.toSet())
+                .containsAll(aptitudeList);
+
+        if (!containsAllIds) {
+            throw new InvalidDataException(INVALID_CREATION_APTITUDE_JOB);
+        }
+    }
+
     private SheetModel validateAndRetrieveSheetForUser(UUID sheetId, UserDetailsImpl user) {
-        Optional<SheetModel> sheetOpt = sheetRepository.findById(sheetId);
+        Optional<SheetModel> sheetOpt = sheetRepository.findByIdEager(sheetId);
 
         if (sheetOpt.isEmpty()) {
             if (user.isAdmin()) throw new DataNotFoundException();

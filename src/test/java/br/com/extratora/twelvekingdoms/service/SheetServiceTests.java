@@ -6,6 +6,7 @@ import br.com.extratora.twelvekingdoms.enums.SheetSortEnum;
 import br.com.extratora.twelvekingdoms.exception.DataNotFoundException;
 import br.com.extratora.twelvekingdoms.exception.InvalidDataException;
 import br.com.extratora.twelvekingdoms.exception.UnauthorizedException;
+import br.com.extratora.twelvekingdoms.model.AptitudeModel;
 import br.com.extratora.twelvekingdoms.model.SheetModel;
 import br.com.extratora.twelvekingdoms.repository.BackgroundRepository;
 import br.com.extratora.twelvekingdoms.repository.JobRepository;
@@ -25,7 +26,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.Arrays;
 import java.util.Optional;
+import java.util.Set;
 
 import static br.com.extratora.twelvekingdoms.TestPayloads.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -86,7 +89,7 @@ class SheetServiceTests {
         verify(sheetRepository, times(0)).save(any());
         verify(lineageRepository, times(0)).existsById(any());
         verify(backgroundRepository, times(0)).findById(any());
-        verify(jobRepository, times(0)).findById(any());
+        verify(jobRepository, times(0)).findByIdEager(any());
     }
 
     @Test
@@ -105,7 +108,7 @@ class SheetServiceTests {
         verify(sheetRepository, times(0)).save(any());
         verify(lineageRepository, times(1)).existsById(any());
         verify(backgroundRepository, times(0)).findById(any());
-        verify(jobRepository, times(0)).findById(any());
+        verify(jobRepository, times(0)).findByIdEager(any());
     }
 
     @Test
@@ -125,7 +128,7 @@ class SheetServiceTests {
         verify(sheetRepository, times(0)).save(any());
         verify(lineageRepository, times(1)).existsById(any());
         verify(backgroundRepository, times(1)).findById(any());
-        verify(jobRepository, times(0)).findById(any());
+        verify(jobRepository, times(0)).findByIdEager(any());
     }
 
     @Test
@@ -134,7 +137,7 @@ class SheetServiceTests {
         var sheet = getValidCreateSheetRequest();
         when(lineageRepository.existsById(any())).thenReturn(true);
         when(backgroundRepository.findById(any())).thenReturn(Optional.of(getBackgroundModel()));
-        when(jobRepository.findById(any())).thenReturn(Optional.empty());
+        when(jobRepository.findByIdEager(any())).thenReturn(Optional.empty());
 
         InvalidDataException ex = assertThrows(
                 InvalidDataException.class,
@@ -146,7 +149,49 @@ class SheetServiceTests {
         verify(sheetRepository, times(0)).save(any());
         verify(lineageRepository, times(1)).existsById(any());
         verify(backgroundRepository, times(1)).findById(any());
-        verify(jobRepository, times(1)).findById(any());
+        verify(jobRepository, times(1)).findByIdEager(any());
+    }
+
+    @Test
+    void givenCreateSheet_whenInvalidAptitudes_thenShouldThrowInvalidDataException() {
+        var user = getUserDetailsUser();
+        var sheet = getValidCreateSheetRequest();
+        var background = getBackgroundModel();
+        var job = getJobModel();
+
+        when(lineageRepository.existsById(any())).thenReturn(true);
+        when(backgroundRepository.findById(any())).thenReturn(Optional.of(background));
+        when(jobRepository.findByIdEager(any())).thenReturn(Optional.of(job));
+
+        sheet.setAptitudeList(Arrays.asList(UUID_1));
+        InvalidDataException ex1 = assertThrows(
+                InvalidDataException.class,
+                () -> sheetService.createSheet(user, sheet)
+        );
+
+        sheet.setAptitudeList(Arrays.asList(UUID_1, UUID_2, UUID_2));
+        InvalidDataException ex2 = assertThrows(
+                InvalidDataException.class,
+                () -> sheetService.createSheet(user, sheet)
+        );
+
+        sheet.setAptitudeList(getValidAptitudeIdList());
+        job.setAptitudes(Set.of(
+                AptitudeModel.builder().id(UUID_1).build(),
+                AptitudeModel.builder().id(UUID_2).build()
+        ));
+        InvalidDataException ex3 = assertThrows(
+                InvalidDataException.class,
+                () -> sheetService.createSheet(user, sheet)
+        );
+
+        assertEquals(ErrorEnum.INVALID_CREATION_APTITUDE_LIST.getName(), ex1.getError().getName());
+        assertEquals(ErrorEnum.INVALID_CREATION_APTITUDE_LIST.getDescription(), ex1.getError().getDescription());
+        assertEquals(ErrorEnum.INVALID_CREATION_APTITUDE_LIST.getName(), ex2.getError().getName());
+        assertEquals(ErrorEnum.INVALID_CREATION_APTITUDE_LIST.getDescription(), ex2.getError().getDescription());
+        assertEquals(ErrorEnum.INVALID_CREATION_APTITUDE_JOB.getName(), ex3.getError().getName());
+        assertEquals(ErrorEnum.INVALID_CREATION_APTITUDE_JOB.getDescription(), ex3.getError().getDescription());
+
     }
 
     @Test
@@ -160,7 +205,7 @@ class SheetServiceTests {
 
         when(lineageRepository.existsById(any())).thenReturn(true);
         when(backgroundRepository.findById(any())).thenReturn(Optional.of(background));
-        when(jobRepository.findById(any())).thenReturn(Optional.of(job));
+        when(jobRepository.findByIdEager(any())).thenReturn(Optional.of(job));
         ArgumentCaptor<SheetModel> captor = ArgumentCaptor.forClass(SheetModel.class);
 
         sheetService.createSheet(user, sheet);
@@ -173,12 +218,12 @@ class SheetServiceTests {
         assertEquals(expectedMental, captor.getValue().getMentalTotal());
         verify(lineageRepository, times(1)).existsById(any());
         verify(backgroundRepository, times(1)).findById(any());
-        verify(jobRepository, times(1)).findById(any());
+        verify(jobRepository, times(1)).findByIdEager(any());
     }
 
     @Test
     void givenGetSheet_whenSheetNotFoundAndUserNotAdmin_thenShouldThrowUnauthorizedException() {
-        when(sheetRepository.findById(UUID_2)).thenReturn(Optional.empty());
+        when(sheetRepository.findByIdEager(UUID_2)).thenReturn(Optional.empty());
         var user = getUserDetailsUser();
 
         assertThrows(
@@ -189,7 +234,7 @@ class SheetServiceTests {
 
     @Test
     void givenGetSheet_whenSheetNotFoundAndUserAdmin_thenShouldThrowDataNotFoundException() {
-        when(sheetRepository.findById(UUID_2)).thenReturn(Optional.empty());
+        when(sheetRepository.findByIdEager(UUID_2)).thenReturn(Optional.empty());
         var user = getUserDetailsAdmin();
 
         assertThrows(
@@ -200,7 +245,7 @@ class SheetServiceTests {
 
     @Test
     void givenGetSheet_whenSheetNotFromUserAndUserNotAdmin_thenShouldThrowUnauthorizedException() {
-        when(sheetRepository.findById(UUID_2)).thenReturn(Optional.of(getSheetModel(UUID_2)));
+        when(sheetRepository.findByIdEager(UUID_2)).thenReturn(Optional.of(getSheetModel(UUID_2)));
         var user = getUserDetailsUser();
 
         assertThrows(
@@ -212,7 +257,7 @@ class SheetServiceTests {
     @Test
     void givenGetSheet_whenSheetNotFromUserAndUserAdmin_thenShouldReturnSheet() {
         var expectedSheet = getSheetModel(UUID_2);
-        when(sheetRepository.findById(UUID_2)).thenReturn(Optional.of(expectedSheet));
+        when(sheetRepository.findByIdEager(UUID_2)).thenReturn(Optional.of(expectedSheet));
 
         var receivedSheet = sheetService.getSheet(getUserDetailsAdmin(), UUID_2);
 
@@ -223,7 +268,7 @@ class SheetServiceTests {
     void givenGetSheet_whenSheetFromUser_thenShouldReturnSheet() {
         var user = getUserDetailsUser();
         var expectedSheet = getSheetModel(user.getId());
-        when(sheetRepository.findById(user.getId())).thenReturn(Optional.of(expectedSheet));
+        when(sheetRepository.findByIdEager(user.getId())).thenReturn(Optional.of(expectedSheet));
 
         var receivedSheet = sheetService.getSheet(user, user.getId());
 
@@ -232,24 +277,24 @@ class SheetServiceTests {
 
     @Test
     void givenDeleteSheet_whenUserNotAdminAndDifferentUUIDs_thenThrowUnauthorizedException() {
-        when(sheetRepository.findById(UUID_2)).thenReturn(Optional.of(getSheetModel(UUID_2)));
+        when(sheetRepository.findByIdEager(UUID_2)).thenReturn(Optional.of(getSheetModel(UUID_2)));
         var user = getUserDetailsUser();
         assertThrows(
                 UnauthorizedException.class,
                 () -> sheetService.deleteSheet(UUID_2, user)
         );
-        verify(sheetRepository, times(1)).findById(UUID_2);
+        verify(sheetRepository, times(1)).findByIdEager(UUID_2);
         verify(sheetRepository, times(0)).save(any());
     }
 
     @Test
     void givenDeleteSheet_whenUserAdminAndDifferentUUIDs_thenShouldDeleteSheet() {
-        when(sheetRepository.findById(UUID_2)).thenReturn(Optional.of(getSheetModel(UUID_2)));
+        when(sheetRepository.findByIdEager(UUID_2)).thenReturn(Optional.of(getSheetModel(UUID_2)));
         var user = getUserDetailsAdmin();
 
         sheetService.deleteSheet(UUID_2, user);
 
-        verify(sheetRepository, times(1)).findById(UUID_2);
+        verify(sheetRepository, times(1)).findByIdEager(UUID_2);
         verify(sheetRepository, times(1)).save(any());
     }
 
@@ -257,14 +302,14 @@ class SheetServiceTests {
     void givenDeleteSheet_whenSheetNotFoundOnDbAndUserNotAdmin_thenThrowUnauthorizedException() {
         var user = getUserDetailsUser();
         var userId = user.getId();
-        when(sheetRepository.findById(userId)).thenReturn(Optional.empty());
+        when(sheetRepository.findByIdEager(userId)).thenReturn(Optional.empty());
 
         assertThrows(
                 UnauthorizedException.class,
                 () -> sheetService.deleteSheet(userId, user)
         );
 
-        verify(sheetRepository, times(1)).findById(userId);
+        verify(sheetRepository, times(1)).findByIdEager(userId);
         verify(sheetRepository, times(0)).save(any());
     }
 
@@ -272,14 +317,14 @@ class SheetServiceTests {
     void givenDeleteSheet_whenSheetNotFoundOnDbAndUserAdmin_thenThrowDataNotFoundException() {
         var user = getUserDetailsAdmin();
         var userId = user.getId();
-        when(sheetRepository.findById(userId)).thenReturn(Optional.empty());
+        when(sheetRepository.findByIdEager(userId)).thenReturn(Optional.empty());
 
         assertThrows(
                 DataNotFoundException.class,
                 () -> sheetService.deleteSheet(userId, user)
         );
 
-        verify(sheetRepository, times(1)).findById(userId);
+        verify(sheetRepository, times(1)).findByIdEager(userId);
         verify(sheetRepository, times(0)).save(any());
     }
 
@@ -287,11 +332,11 @@ class SheetServiceTests {
     void givenDeleteSheet_whenSheetFoundOnDbAndUserNotAdminAndOwner_thenShouldDeleteSheet() {
         var user = getUserDetailsUser();
         var userId = user.getId();
-        when(sheetRepository.findById(any())).thenReturn(Optional.of(getSheetModel(userId)));
+        when(sheetRepository.findByIdEager(any())).thenReturn(Optional.of(getSheetModel(userId)));
 
         sheetService.deleteSheet(userId, user);
 
-        verify(sheetRepository, times(1)).findById(userId);
+        verify(sheetRepository, times(1)).findByIdEager(userId);
         verify(sheetRepository, times(1)).save(any());
     }
 

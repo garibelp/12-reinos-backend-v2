@@ -11,15 +11,13 @@ import br.com.extratora.twelvekingdoms.security.UserDetailsImpl;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Stream;
 
 public class TestPayloads {
     public static UUID UUID_1 = UUID.fromString("4c78842c-769b-4dc5-988a-234a438a4353");
-    public static UUID UUID_2 = UUID.fromString("4c78842a-769b-4dc5-988a-234a438a4353");
+    public static UUID UUID_2 = UUID.fromString("12e3aa6c-69ee-48c4-9ab6-96d2ac11a7ca");
+    public static UUID UUID_3 = UUID.fromString("920cf82c-c767-48ab-980e-f510bb136556");
 
     public static Page<BasicPlayerDto> getPlayerDtoPage() {
         return new PageImpl<>(List.of(getBasicPlayerDto()));
@@ -86,12 +84,17 @@ public class TestPayloads {
                 .build();
     }
 
+    public static List<UUID> getValidAptitudeIdList() {
+        return Arrays.asList(UUID_1, UUID_2, UUID_3);
+    }
+
     public static CreateSheetRequest getValidCreateSheetRequest() {
         return CreateSheetRequest.builder()
                 .name("Valid")
                 .lineageId(UUID_1)
                 .backgroundId(UUID_2)
                 .jobId(UUID_2)
+                .aptitudeList(getValidAptitudeIdList())
                 .intelligence(DiceEnum.D4)
                 .cunning(DiceEnum.D4)
                 .tenacity(DiceEnum.D6)
@@ -107,24 +110,28 @@ public class TestPayloads {
                         .lineageId(UUID_1)
                         .backgroundId(UUID_2)
                         .jobId(UUID_2)
+                        .aptitudeList(getValidAptitudeIdList())
                         .build(),
                 CreateSheetRequest.builder()
                         .name("Test")
                         .lineageId(UUID_1)
                         .backgroundId(UUID_2)
                         .jobId(UUID_2)
+                        .aptitudeList(getValidAptitudeIdList())
                         .build(),
                 CreateSheetRequest.builder()
                         .name("Test max characters!!")
                         .lineageId(UUID_1)
                         .backgroundId(UUID_2)
                         .jobId(UUID_2)
+                        .aptitudeList(getValidAptitudeIdList())
                         .build(),
                 CreateSheetRequest.builder()
                         .name("Valid")
                         .lineageId(UUID_1)
                         .backgroundId(UUID_2)
                         .jobId(UUID_2)
+                        .aptitudeList(getValidAptitudeIdList())
                         .build(),
                 CreateSheetRequest.builder()
                         .name("Valid")
@@ -132,6 +139,7 @@ public class TestPayloads {
                         .intelligence(DiceEnum.D4)
                         .cunning(DiceEnum.D4)
                         .celerity(DiceEnum.D4)
+                        .aptitudeList(getValidAptitudeIdList())
                         .build(),
                 CreateSheetRequest.builder()
                         .name("Valid")
@@ -140,6 +148,7 @@ public class TestPayloads {
                         .intelligence(DiceEnum.D4)
                         .cunning(DiceEnum.D4)
                         .celerity(DiceEnum.D4)
+                        .aptitudeList(getValidAptitudeIdList())
                         .build(),
                 CreateSheetRequest.builder()
                         .name("Valid")
@@ -148,6 +157,7 @@ public class TestPayloads {
                         .intelligence(DiceEnum.D4)
                         .cunning(DiceEnum.D4)
                         .celerity(DiceEnum.D4)
+                        .aptitudeList(getValidAptitudeIdList())
                         .build(),
                 CreateSheetRequest.builder()
                         .name("Valid")
@@ -157,6 +167,7 @@ public class TestPayloads {
                         .intelligence(DiceEnum.D4)
                         .cunning(DiceEnum.D4)
                         .tenacity(DiceEnum.D4)
+                        .aptitudeList(getValidAptitudeIdList())
                         .build(),
                 CreateSheetRequest.builder()
                         .name("Valid")
@@ -165,6 +176,7 @@ public class TestPayloads {
                         .tenacity(DiceEnum.D4)
                         .cunning(DiceEnum.D4)
                         .celerity(DiceEnum.D4)
+                        .aptitudeList(getValidAptitudeIdList())
                         .build(),
                 CreateSheetRequest.builder()
                         .name("Valid")
@@ -173,6 +185,7 @@ public class TestPayloads {
                         .intelligence(DiceEnum.D4)
                         .tenacity(DiceEnum.D4)
                         .celerity(DiceEnum.D4)
+                        .aptitudeList(getValidAptitudeIdList())
                         .build()
         );
     }
@@ -205,11 +218,20 @@ public class TestPayloads {
                 .build();
     }
 
+    public static Set<AptitudeModel> getAptitudeModelSet() {
+        return Set.of(
+                AptitudeModel.builder().id(UUID_1).build(),
+                AptitudeModel.builder().id(UUID_2).build(),
+                AptitudeModel.builder().id(UUID_3).build()
+        );
+    }
+
     public static JobModel getJobModel() {
         return JobModel.builder()
                 .name("Artífice")
                 .physicalPoints(5)
                 .mentalPoints(8)
+                .aptitudes(getAptitudeModelSet())
                 .build();
     }
 }

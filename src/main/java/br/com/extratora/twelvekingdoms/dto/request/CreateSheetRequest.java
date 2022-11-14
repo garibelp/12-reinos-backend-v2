@@ -10,6 +10,8 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -29,6 +31,8 @@ public class CreateSheetRequest {
 
     @NotNull
     private UUID jobId;
+
+    private List<UUID> aptitudeList = new ArrayList<>();
 
     @NotNull
     private DiceEnum intelligence;

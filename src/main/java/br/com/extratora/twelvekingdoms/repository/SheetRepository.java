@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -22,4 +23,7 @@ public interface SheetRepository extends JpaRepository<SheetModel, UUID> {
     @Query(value = SHEET_PAGINATED_BASE_SELECT + " from SheetModel s",
             countQuery = "select count(*) from SheetModel")
     Page<BasicSheetDto> findSheetsPaginated(Pageable pageable);
+
+    @Query(value = "select s from SheetModel s inner join fetch s.aptitudes where s.id = ?1")
+    Optional<SheetModel> findByIdEager(UUID id);
 }

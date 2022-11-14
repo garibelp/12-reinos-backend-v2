@@ -1,11 +1,13 @@
 package br.com.extratora.twelvekingdoms.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.Set;
 import java.util.UUID;
 
 @Builder
@@ -29,4 +31,12 @@ public class AptitudeModel implements Serializable {
     @NotBlank
     @Column(name = "DESCRIPTION", nullable = false, length = 1000)
     private String description;
+
+    @JsonIgnore
+    @ManyToMany(mappedBy = "aptitudes")
+    private Set<JobModel> jobs;
+
+    @JsonIgnore
+    @ManyToMany(mappedBy = "aptitudes")
+    private Set<SheetModel> sheets;
 }
