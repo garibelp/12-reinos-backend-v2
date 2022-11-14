@@ -33,24 +33,24 @@ class JobServiceTests {
 
     @Test
     void givenGetLineageCalled_whenUUIDNotFound_thenShouldThrowDataNotFoundException() {
-        when(jobRepository.findById(UUID_1)).thenReturn(Optional.empty());
+        when(jobRepository.findByIdEager(UUID_1)).thenReturn(Optional.empty());
 
         assertThrows(
                 DataNotFoundException.class,
                 () -> jobService.getJob(UUID_1)
         );
 
-        verify(jobRepository, times(1)).findById(UUID_1);
+        verify(jobRepository, times(1)).findByIdEager(UUID_1);
     }
 
     @Test
     void givenGetLineageCalled_whenUUIDFound_thenShouldReturnData() {
         var jobModel = getJobModel();
-        when(jobRepository.findById(UUID_1)).thenReturn(Optional.of(jobModel));
+        when(jobRepository.findByIdEager(UUID_1)).thenReturn(Optional.of(jobModel));
 
         var response = jobService.getJob(UUID_1);
 
         assertEquals(jobModel, response);
-        verify(jobRepository, times(1)).findById(UUID_1);
+        verify(jobRepository, times(1)).findByIdEager(UUID_1);
     }
 }

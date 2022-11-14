@@ -8,11 +8,13 @@ import br.com.extratora.twelvekingdoms.service.JobService;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@Transactional
 public class JobServiceImpl implements JobService {
     private final JobRepository jobRepository;
 
@@ -29,7 +31,7 @@ public class JobServiceImpl implements JobService {
     @Override
     @Cacheable(value = "jobs", key = "#id")
     public JobModel getJob(UUID id) {
-        Optional<JobModel> jobOpt = jobRepository.findById(id);
+        Optional<JobModel> jobOpt = jobRepository.findByIdEager(id);
 
         if (jobOpt.isEmpty()) {
             throw new DataNotFoundException();

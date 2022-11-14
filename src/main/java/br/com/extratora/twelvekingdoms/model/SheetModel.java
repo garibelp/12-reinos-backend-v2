@@ -10,6 +10,8 @@ import javax.persistence.*;
 import java.io.Serial;
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Builder
@@ -97,4 +99,16 @@ public class SheetModel implements Serializable {
     @ManyToOne
     @JoinColumn(name = "JOB_ID", nullable = false)
     private JobModel job;
+
+    @ManyToMany
+    @JoinTable(
+            name = "APTITUDE_SHEET",
+            joinColumns = @JoinColumn(name = "SHEET_ID"),
+            inverseJoinColumns = @JoinColumn(name = "APTITUDE_ID")
+    )
+    private Set<AptitudeModel> aptitudes = new HashSet<>();
+
+    public void addAptitude(AptitudeModel aptitude) {
+        aptitudes.add(aptitude);
+    }
 }

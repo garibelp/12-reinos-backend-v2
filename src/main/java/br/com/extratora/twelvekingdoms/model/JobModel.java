@@ -45,6 +45,18 @@ public class JobModel implements Serializable {
     @Column(name = "MENTAL_POINTS", nullable = false)
     private int mentalPoints;
 
-    @OneToMany(mappedBy = "job", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "job", fetch = FetchType.EAGER)
     private Set<SkillModel> skills = new HashSet<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "APTITUDE_JOB",
+            joinColumns = @JoinColumn(name = "JOB_ID"),
+            inverseJoinColumns = @JoinColumn(name = "APTITUDE_ID")
+    )
+    private Set<AptitudeModel> aptitudes = new HashSet<>();
+
+    public void addAptitude(AptitudeModel aptitude) {
+        aptitudes.add(aptitude);
+    }
 }
