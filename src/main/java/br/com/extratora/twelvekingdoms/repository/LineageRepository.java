@@ -1,6 +1,6 @@
 package br.com.extratora.twelvekingdoms.repository;
 
-import br.com.extratora.twelvekingdoms.dto.BasicIdNameDto;
+import br.com.extratora.twelvekingdoms.dto.IdNameDto;
 import br.com.extratora.twelvekingdoms.model.LineageModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -11,6 +11,6 @@ import java.util.UUID;
 
 @Repository
 public interface LineageRepository extends JpaRepository<LineageModel, UUID> {
-    @Query(value = "SELECT new br.com.extratora.twelvekingdoms.dto.BasicIdNameDto(id, name) FROM LineageModel")
-    List<BasicIdNameDto> listBasicLineages();
+    @Query(value = "SELECT new br.com.extratora.twelvekingdoms.dto.IdNameDto(id, name) FROM LineageModel")
+    List<IdNameDto> listBasicLineages();
 }

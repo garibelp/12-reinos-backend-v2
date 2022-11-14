@@ -8,6 +8,8 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Builder
@@ -42,4 +44,7 @@ public class JobModel implements Serializable {
 
     @Column(name = "MENTAL_POINTS", nullable = false)
     private int mentalPoints;
+
+    @OneToMany(mappedBy = "job", fetch = FetchType.LAZY)
+    private Set<SkillModel> skills = new HashSet<>();
 }

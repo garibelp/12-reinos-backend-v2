@@ -1,6 +1,6 @@
 package br.com.extratora.twelvekingdoms.dto.response;
 
-import br.com.extratora.twelvekingdoms.dto.BasicIdNameDto;
+import br.com.extratora.twelvekingdoms.dto.IdNameDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,5 +12,5 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class IdNameListResponse {
-    private List<BasicIdNameDto> list = new ArrayList<>();
+    private List<IdNameDto> list = new ArrayList<>();
 }

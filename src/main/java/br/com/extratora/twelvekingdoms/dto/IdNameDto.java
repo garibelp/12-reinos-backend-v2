@@ -11,7 +11,7 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class BasicIdNameDto {
+public class IdNameDto {
     private UUID id;
     private String name;
 }

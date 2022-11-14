@@ -21,7 +21,7 @@ import java.util.UUID;
 @Table(name = "SHEETS")
 public class SheetModel implements Serializable {
     @Serial
-    private static final long serialVersionUID = 4L;
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

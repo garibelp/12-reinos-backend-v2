@@ -1,6 +1,6 @@
 package br.com.extratora.twelvekingdoms.service.impl;
 
-import br.com.extratora.twelvekingdoms.dto.BasicIdNameDto;
+import br.com.extratora.twelvekingdoms.dto.IdNameDto;
 import br.com.extratora.twelvekingdoms.exception.DataNotFoundException;
 import br.com.extratora.twelvekingdoms.model.LineageModel;
 import br.com.extratora.twelvekingdoms.repository.LineageRepository;
@@ -22,7 +22,7 @@ public class LineageServiceImpl implements LineageService {
 
     @Override
     @Cacheable(value = "lineages")
-    public List<BasicIdNameDto> lineageList() {
+    public List<IdNameDto> lineageList() {
         return lineageRepository.listBasicLineages();
     }
 

@@ -1,6 +1,6 @@
 package br.com.extratora.twelvekingdoms.service.impl;
 
-import br.com.extratora.twelvekingdoms.dto.BasicIdNameDto;
+import br.com.extratora.twelvekingdoms.dto.IdNameDto;
 import br.com.extratora.twelvekingdoms.exception.DataNotFoundException;
 import br.com.extratora.twelvekingdoms.model.JobModel;
 import br.com.extratora.twelvekingdoms.repository.JobRepository;
@@ -22,7 +22,7 @@ public class JobServiceImpl implements JobService {
 
     @Override
     @Cacheable(value = "jobs")
-    public List<BasicIdNameDto> jobList() {
+    public List<IdNameDto> jobList() {
         return jobRepository.listBasicJobs();
     }
 
