@@ -49,3 +49,7 @@ With the application running, access the following URLs:
 
 - [Swagger UI](http://localhost:8080/swagger-ui/index.html#/)
 - [API Docs](http://http://localhost:8080/api-docs)
+
+## Trello Board
+
+- [12 Kingdoms](https://trello.com/b/wKoZUTPq/12-reinos-v2)
