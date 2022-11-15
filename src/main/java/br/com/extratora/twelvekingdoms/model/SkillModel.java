@@ -39,7 +39,7 @@ public class SkillModel implements Serializable {
     private int cost;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "ENERGY_TYPE", nullable = false)
+    @Column(name = "ENERGY_TYPE", nullable = false, length = 12)
     private EnergyTypeEnum energyType;
 
     @Enumerated(EnumType.STRING)

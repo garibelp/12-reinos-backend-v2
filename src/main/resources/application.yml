@@ -11,22 +11,8 @@ spring:
   output:
     ansi:
       enabled: ALWAYS
-  jpa:
-    hibernate:
-      ddl-auto: update
-    generate-ddl: true
-    defer-datasource-initialization: true
-    properties:
-      hibernate:
-        jdbc:
-          lob:
-            non_contextual_creation: true
   datasource:
-    initialization-mode: always
     platform: postgres
-  sql:
-    init:
-      mode: always
 
 # Config to allow execution of requests from Open API interface
 server:

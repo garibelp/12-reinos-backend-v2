@@ -47,7 +47,7 @@ public class PlayerModel implements Serializable {
     private String email;
 
     @JsonIgnore
-    @Column(name = "PASSWORD", nullable = false)
+    @Column(name = "PASSWORD", nullable = false, length = 60)
     private String password;
 
     @Column(name = "IS_ACTIVE", nullable = false)

@@ -24,6 +24,6 @@ public class RoleModel implements Serializable {
     private UUID id;
 
     @Enumerated(EnumType.STRING)
-    @Column(length = 20)
+    @Column(length = 20, nullable = false)
     private RolesEnum name;
 }
