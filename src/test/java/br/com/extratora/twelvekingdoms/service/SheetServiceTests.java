@@ -1,5 +1,6 @@
 package br.com.extratora.twelvekingdoms.service;
 
+import br.com.extratora.twelvekingdoms.dto.request.UpdateSheetCurrentPointsRequest;
 import br.com.extratora.twelvekingdoms.enums.DiceEnum;
 import br.com.extratora.twelvekingdoms.enums.ErrorEnum;
 import br.com.extratora.twelvekingdoms.enums.SheetSortEnum;
@@ -31,8 +32,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import static br.com.extratora.twelvekingdoms.TestPayloads.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -84,8 +84,8 @@ class SheetServiceTests {
                 () -> sheetService.createSheet(user, sheet)
         );
 
-        assertEquals(ErrorEnum.INVALID_CREATION_DICES.getName(), ex.getError().getName());
-        assertEquals(ErrorEnum.INVALID_CREATION_DICES.getDescription(), ex.getError().getDescription());
+        assertEquals(ErrorEnum.INVALID_CREATION_DICES.getName(), ex.getName());
+        assertEquals(ErrorEnum.INVALID_CREATION_DICES.getDescription(), ex.getDescription());
         verify(sheetRepository, times(0)).save(any());
         verify(lineageRepository, times(0)).existsById(any());
         verify(backgroundRepository, times(0)).findById(any());
@@ -103,8 +103,8 @@ class SheetServiceTests {
                 () -> sheetService.createSheet(user, sheet)
         );
 
-        assertEquals(ErrorEnum.INVALID_CREATION_LINEAGE.getName(), ex.getError().getName());
-        assertEquals(ErrorEnum.INVALID_CREATION_LINEAGE.getDescription(), ex.getError().getDescription());
+        assertEquals(ErrorEnum.INVALID_CREATION_LINEAGE.getName(), ex.getName());
+        assertEquals(ErrorEnum.INVALID_CREATION_LINEAGE.getDescription(), ex.getDescription());
         verify(sheetRepository, times(0)).save(any());
         verify(lineageRepository, times(1)).existsById(any());
         verify(backgroundRepository, times(0)).findById(any());
@@ -123,8 +123,8 @@ class SheetServiceTests {
                 () -> sheetService.createSheet(user, sheet)
         );
 
-        assertEquals(ErrorEnum.INVALID_CREATION_BACKGROUND.getName(), ex.getError().getName());
-        assertEquals(ErrorEnum.INVALID_CREATION_BACKGROUND.getDescription(), ex.getError().getDescription());
+        assertEquals(ErrorEnum.INVALID_CREATION_BACKGROUND.getName(), ex.getName());
+        assertEquals(ErrorEnum.INVALID_CREATION_BACKGROUND.getDescription(), ex.getDescription());
         verify(sheetRepository, times(0)).save(any());
         verify(lineageRepository, times(1)).existsById(any());
         verify(backgroundRepository, times(1)).findById(any());
@@ -144,8 +144,8 @@ class SheetServiceTests {
                 () -> sheetService.createSheet(user, sheet)
         );
 
-        assertEquals(ErrorEnum.INVALID_CREATION_JOB.getName(), ex.getError().getName());
-        assertEquals(ErrorEnum.INVALID_CREATION_JOB.getDescription(), ex.getError().getDescription());
+        assertEquals(ErrorEnum.INVALID_CREATION_JOB.getName(), ex.getName());
+        assertEquals(ErrorEnum.INVALID_CREATION_JOB.getDescription(), ex.getDescription());
         verify(sheetRepository, times(0)).save(any());
         verify(lineageRepository, times(1)).existsById(any());
         verify(backgroundRepository, times(1)).findById(any());
@@ -185,12 +185,12 @@ class SheetServiceTests {
                 () -> sheetService.createSheet(user, sheet)
         );
 
-        assertEquals(ErrorEnum.INVALID_CREATION_APTITUDE_LIST.getName(), ex1.getError().getName());
-        assertEquals(ErrorEnum.INVALID_CREATION_APTITUDE_LIST.getDescription(), ex1.getError().getDescription());
-        assertEquals(ErrorEnum.INVALID_CREATION_APTITUDE_LIST.getName(), ex2.getError().getName());
-        assertEquals(ErrorEnum.INVALID_CREATION_APTITUDE_LIST.getDescription(), ex2.getError().getDescription());
-        assertEquals(ErrorEnum.INVALID_CREATION_APTITUDE_JOB.getName(), ex3.getError().getName());
-        assertEquals(ErrorEnum.INVALID_CREATION_APTITUDE_JOB.getDescription(), ex3.getError().getDescription());
+        assertEquals(ErrorEnum.INVALID_CREATION_APTITUDE_LIST.getName(), ex1.getName());
+        assertEquals(ErrorEnum.INVALID_CREATION_APTITUDE_LIST.getDescription(), ex1.getDescription());
+        assertEquals(ErrorEnum.INVALID_CREATION_APTITUDE_LIST.getName(), ex2.getName());
+        assertEquals(ErrorEnum.INVALID_CREATION_APTITUDE_LIST.getDescription(), ex2.getDescription());
+        assertEquals(ErrorEnum.INVALID_CREATION_APTITUDE_JOB.getName(), ex3.getName());
+        assertEquals(ErrorEnum.INVALID_CREATION_APTITUDE_JOB.getDescription(), ex3.getDescription());
 
     }
 
@@ -386,6 +386,78 @@ class SheetServiceTests {
             Sort.Order sort = page.getSort().get().findFirst().get();
             assertEquals(sortDirection, sort.getDirection());
             assertEquals(sortField.name(), sort.getProperty().toUpperCase());
+        }
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            ",,",
+            ",,0",
+            "1,,",
+            ",1,",
+            "1,1,",
+            "1,,0",
+            ",1,0",
+            "1,1,0",
+    })
+    void givenUpdateCurrentPoints_whenValidPayload_thenShouldSaveData(
+            Integer mentalCurrent,
+            Integer physicalCurrent,
+            Integer heroismCurrent
+    ) {
+        var dbSheet = getSheetModel(UUID_1);
+        when(sheetRepository.findByIdEager(any())).thenReturn(Optional.of(dbSheet));
+        ArgumentCaptor<SheetModel> captor = ArgumentCaptor.forClass(SheetModel.class);
+
+        sheetService.updateCurrentPoints(
+                getUserDetailsAdmin(),
+                UUID_1,
+                new UpdateSheetCurrentPointsRequest(mentalCurrent, physicalCurrent, heroismCurrent)
+        );
+
+        int expectedMental = mentalCurrent != null ? mentalCurrent : dbSheet.getMentalCurrent();
+        int expectedPhysical = physicalCurrent != null ? physicalCurrent : dbSheet.getPhysicalCurrent();
+        int expectedHeroism = heroismCurrent != null ? heroismCurrent : dbSheet.getHeroismCurrent();
+
+        verify(sheetRepository, times(1)).save(captor.capture());
+        assertEquals(expectedMental, captor.getValue().getMentalCurrent());
+        assertEquals(expectedPhysical, captor.getValue().getPhysicalCurrent());
+        assertEquals(expectedHeroism, captor.getValue().getHeroismCurrent());
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "6,,,false",
+            "-1,,,true",
+            ",10,,false",
+            ",-1,,true",
+            ",,2,false",
+            ",,-1,true",
+    })
+    void givenUpdateCurrentPoints_whenInvalidPayload_thenShouldThrowInvalidDataException(
+            Integer mentalCurrent,
+            Integer physicalCurrent,
+            Integer heroismCurrent,
+            boolean isNegativeValueException
+    ) {
+        var dbSheet = getSheetModel(UUID_1);
+        var user = getUserDetailsAdmin();
+        var request = new UpdateSheetCurrentPointsRequest(mentalCurrent, physicalCurrent, heroismCurrent);
+        when(sheetRepository.findByIdEager(any())).thenReturn(Optional.of(dbSheet));
+
+        InvalidDataException ex = assertThrows(
+                InvalidDataException.class,
+                () -> sheetService.updateCurrentPoints(
+                        user,
+                        UUID_1,
+                        request
+                )
+        );
+
+        if (isNegativeValueException) {
+            assertEquals("value cannot be negative", ex.getDescription());
+        } else {
+            assertTrue(ex.getDescription().contains("value cannot be greater than maximum value "));
         }
     }
 }

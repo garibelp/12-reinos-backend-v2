@@ -3,6 +3,7 @@ package br.com.extratora.twelvekingdoms.controller.impl;
 import br.com.extratora.twelvekingdoms.controller.SheetController;
 import br.com.extratora.twelvekingdoms.dto.BasicSheetDto;
 import br.com.extratora.twelvekingdoms.dto.request.CreateSheetRequest;
+import br.com.extratora.twelvekingdoms.dto.request.UpdateSheetCurrentPointsRequest;
 import br.com.extratora.twelvekingdoms.dto.response.IdResponse;
 import br.com.extratora.twelvekingdoms.dto.response.MessageResponse;
 import br.com.extratora.twelvekingdoms.dto.response.SheetListResponse;
@@ -77,6 +78,18 @@ public class SheetControllerImpl implements SheetController {
     @DeleteMapping("/{id}")
     public ResponseEntity<MessageResponse> delete(@AuthenticationPrincipal UserDetailsImpl user, @PathVariable UUID id) {
         sheetService.deleteSheet(id, user);
-        return ResponseEntity.accepted().body(new MessageResponse("Sheet deleted successfully!"));
+        return ResponseEntity.ok(new MessageResponse("Sheet deleted successfully!"));
+    }
+
+    @Override
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    @PatchMapping("/{id}/currentPoints")
+    public ResponseEntity<MessageResponse> updateCurrentPoints(
+            @AuthenticationPrincipal UserDetailsImpl user,
+            @PathVariable UUID id,
+            @RequestBody UpdateSheetCurrentPointsRequest request
+    ) {
+        sheetService.updateCurrentPoints(user, id, request);
+        return ResponseEntity.ok(new MessageResponse("Sheet current points updated successfully!"));
     }
 }

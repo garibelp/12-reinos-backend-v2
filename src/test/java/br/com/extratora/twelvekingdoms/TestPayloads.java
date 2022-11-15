@@ -200,6 +200,12 @@ public class TestPayloads {
     public static SheetModel getSheetModel(UUID playerId) {
         return SheetModel.builder()
                 .id(UUID_1)
+                .mentalCurrent(5)
+                .mentalTotal(5)
+                .physicalCurrent(9)
+                .physicalTotal(9)
+                .heroismCurrent(1)
+                .heroismTotal(1)
                 .player(getPlayerModel(playerId))
                 .build();
     }

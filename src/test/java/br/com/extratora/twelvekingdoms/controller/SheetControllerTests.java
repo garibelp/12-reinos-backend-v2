@@ -3,6 +3,7 @@ package br.com.extratora.twelvekingdoms.controller;
 import br.com.extratora.twelvekingdoms.controller.impl.SheetControllerImpl;
 import br.com.extratora.twelvekingdoms.dto.BasicSheetDto;
 import br.com.extratora.twelvekingdoms.dto.request.CreateSheetRequest;
+import br.com.extratora.twelvekingdoms.dto.request.UpdateSheetCurrentPointsRequest;
 import br.com.extratora.twelvekingdoms.dto.response.ErrorResponse;
 import br.com.extratora.twelvekingdoms.enums.SheetSortEnum;
 import br.com.extratora.twelvekingdoms.exception.InvalidDataException;
@@ -104,7 +105,7 @@ class SheetControllerTests {
     void givenDeleteCalled_whenValidRequest_thenShouldDeleteSheet() throws Exception {
         RequestBuilder builder = MockMvcRequestBuilders.delete("/sheets/" + UUID_1.toString());
 
-        mockMvc.perform(builder).andExpect(status().isAccepted());
+        mockMvc.perform(builder).andExpect(status().isOk());
 
         verify(sheetService, times(1)).deleteSheet(any(), any());
     }
@@ -246,5 +247,34 @@ class SheetControllerTests {
                     ErrorResponse error = objectMapper.readValue(result.getResponse().getContentAsString(), ErrorResponse.class);
                     assertEquals(totalErrors, error.getErrorList().size());
                 });
+    }
+
+    @Test
+    void givenUpdateCurrentPoints_whenValidRequest_thenShouldUpdateSheetCurrentPoints() throws Exception {
+        RequestBuilder builder = MockMvcRequestBuilders.patch("/sheets/" + UUID_1.toString() + "/currentPoints")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(UpdateSheetCurrentPointsRequest.builder().build()));
+
+        mockMvc.perform(builder).andExpect(status().isOk());
+
+        verify(sheetService, times(1)).updateCurrentPoints(any(), any(), any());
+    }
+
+    @Test
+    void givenUpdateCurrentPoints_whenRequestWithoutBody_thenShouldReturnErrorResponse() throws Exception {
+        RequestBuilder builder = MockMvcRequestBuilders.patch("/sheets/" + UUID_1.toString() + "/currentPoints");
+
+        mockMvc.perform(builder).andExpect(status().isBadRequest());
+
+        verify(sheetService, times(0)).updateCurrentPoints(any(), any(), any());
+    }
+
+    @Test
+    void givenUpdateCurrentPointsCalled_whenInvalidUUIDFormat_thenShouldReturnErrorResponse() throws Exception {
+        RequestBuilder builder = MockMvcRequestBuilders.patch("/sheets/invalid/currentPoints");
+
+        mockMvc.perform(builder).andExpect(status().isBadRequest());
+
+        verify(sheetService, times(0)).updateCurrentPoints(any(), any(), any());
     }
 }

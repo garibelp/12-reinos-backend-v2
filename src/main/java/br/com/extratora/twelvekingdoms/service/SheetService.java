@@ -2,6 +2,7 @@ package br.com.extratora.twelvekingdoms.service;
 
 import br.com.extratora.twelvekingdoms.dto.BasicSheetDto;
 import br.com.extratora.twelvekingdoms.dto.request.CreateSheetRequest;
+import br.com.extratora.twelvekingdoms.dto.request.UpdateSheetCurrentPointsRequest;
 import br.com.extratora.twelvekingdoms.enums.SheetSortEnum;
 import br.com.extratora.twelvekingdoms.model.SheetModel;
 import br.com.extratora.twelvekingdoms.security.UserDetailsImpl;
@@ -24,5 +25,7 @@ public interface SheetService {
     );
 
     void deleteSheet(UUID id, UserDetailsImpl user);
+
+    void updateCurrentPoints(UserDetailsImpl user, UUID id, UpdateSheetCurrentPointsRequest request);
 
 }

@@ -75,11 +75,16 @@ public class RestExceptionHandler {
     public ResponseEntity<ErrorResponse> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
         var res = new ErrorResponse();
 
-        String cause = ex.getCause().getLocalizedMessage();
-        res.getErrorList().add(new ErrorDto(
-                cause.substring(cause.lastIndexOf("[") + 1, cause.lastIndexOf("]")).replace("\"", ""),
-                cause.substring(0, cause.indexOf("\n"))
-        ));
+        var cause = ex.getCause();
+        if (cause != null) {
+            var exceptionStr = cause.getLocalizedMessage();
+            res.getErrorList().add(new ErrorDto(
+                    exceptionStr.substring(exceptionStr.lastIndexOf("[") + 1, exceptionStr.lastIndexOf("]")).replace("\"", ""),
+                    exceptionStr.substring(0, exceptionStr.indexOf("\n"))
+            ));
+        } else {
+            res.getErrorList().add(new ErrorDto("body", ex.getMessage()));
+        }
 
         return ResponseEntity.badRequest().body(res);
     }
@@ -98,7 +103,7 @@ public class RestExceptionHandler {
     public ResponseEntity<ErrorResponse> handleInvalidDataException(InvalidDataException ex) {
         var res = new ErrorResponse();
 
-        res.getErrorList().add(new ErrorDto(ex.getError().getName(), ex.getError().getDescription()));
+        res.getErrorList().add(new ErrorDto(ex.getName(), ex.getDescription()));
 
         return ResponseEntity.badRequest().body(res);
     }

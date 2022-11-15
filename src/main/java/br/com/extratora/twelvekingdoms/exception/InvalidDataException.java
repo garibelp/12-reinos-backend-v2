@@ -7,5 +7,11 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public class InvalidDataException extends RuntimeException {
-    private final ErrorEnum error;
+    private final String name;
+    private final String description;
+
+    public InvalidDataException(ErrorEnum error) {
+        this.name = error.getName();
+        this.description = error.getDescription();
+    }
 }

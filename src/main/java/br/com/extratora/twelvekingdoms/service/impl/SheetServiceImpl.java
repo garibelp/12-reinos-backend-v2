@@ -2,6 +2,7 @@ package br.com.extratora.twelvekingdoms.service.impl;
 
 import br.com.extratora.twelvekingdoms.dto.BasicSheetDto;
 import br.com.extratora.twelvekingdoms.dto.request.CreateSheetRequest;
+import br.com.extratora.twelvekingdoms.dto.request.UpdateSheetCurrentPointsRequest;
 import br.com.extratora.twelvekingdoms.enums.DiceEnum;
 import br.com.extratora.twelvekingdoms.enums.SheetSortEnum;
 import br.com.extratora.twelvekingdoms.exception.DataNotFoundException;
@@ -144,6 +145,29 @@ public class SheetServiceImpl implements SheetService {
         SheetModel sheet = validateAndRetrieveSheetForUser(id, user);
         sheet.setActive(false);
         sheetRepository.save(sheet);
+    }
+
+    @Override
+    public void updateCurrentPoints(UserDetailsImpl user, UUID id, UpdateSheetCurrentPointsRequest request) {
+        SheetModel sheet = validateAndRetrieveSheetForUser(id, user);
+
+        validateCurrentPointsUpdate(request.getMentalCurrent(), sheet.getMentalTotal(), "mentalCurrent");
+        validateCurrentPointsUpdate(request.getPhysicalCurrent(), sheet.getPhysicalTotal(), "physicalCurrent");
+        validateCurrentPointsUpdate(request.getHeroismCurrent(), sheet.getHeroismTotal(), "heroismCurrent");
+
+        if (request.getMentalCurrent() != null) sheet.setMentalCurrent(request.getMentalCurrent());
+        if (request.getPhysicalCurrent() != null) sheet.setPhysicalCurrent(request.getPhysicalCurrent());
+        if (request.getHeroismCurrent() != null) sheet.setHeroismCurrent(request.getHeroismCurrent());
+
+        sheetRepository.save(sheet);
+    }
+
+    private void validateCurrentPointsUpdate(Integer updated, int maxValue, String field) {
+        if (updated != null) {
+            if (updated > maxValue)
+                throw new InvalidDataException(field, "value cannot be greater than maximum value " + maxValue);
+            if (updated < 0) throw new InvalidDataException(field, "value cannot be negative");
+        }
     }
 
     private void validateDiceAttributes(CreateSheetRequest request) {
