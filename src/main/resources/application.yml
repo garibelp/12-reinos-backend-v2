@@ -11,13 +11,16 @@ spring:
   output:
     ansi:
       enabled: ALWAYS
-  datasource:
-    platform: postgres
+  sql:
+    init:
+      platform: postgres
 
 # Config to allow execution of requests from Open API interface
 server:
   tomcat:
     relaxed-query-chars: '|,{,},[,]'
+  servlet:
+    context-path: /v2
 
 # Open API configuration
 springdoc:
