@@ -1,10 +1,6 @@
-logging:
-  level:
-    org:
-      springframework: ERROR
 spring:
   datasource:
-    url: jdbc:postgresql://${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_DB}
+    url: jdbc:postgresql://${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}
     username: ${DATABASE_USER}
     password: ${DATABASE_PWD}
 
