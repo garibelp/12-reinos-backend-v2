@@ -82,6 +82,7 @@ public class SheetControllerImpl implements SheetController {
     }
 
     @Override
+    @CrossOrigin(origins = "*")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @PatchMapping("/{id}/currentPoints")
     public ResponseEntity<MessageResponse> updateCurrentPoints(
