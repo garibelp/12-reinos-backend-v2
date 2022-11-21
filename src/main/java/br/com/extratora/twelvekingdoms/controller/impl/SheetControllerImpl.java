@@ -74,6 +74,7 @@ public class SheetControllerImpl implements SheetController {
     }
 
     @Override
+    @CrossOrigin(origins = "*")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<MessageResponse> delete(@AuthenticationPrincipal UserDetailsImpl user, @PathVariable UUID id) {
