@@ -40,7 +40,7 @@ like so:
 
 ```shell
 # Command to run with development profile
-mvn spring-boot:run -Dspring.profiles.active=dev
+mvn spring-boot:run -Dspring-boot.run.profiles=dev
 ```
 
 ## Accessing Swagger documentation
