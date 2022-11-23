@@ -48,7 +48,7 @@ mvn spring-boot:run -Dspring-boot.run.profiles=dev
 With the application running, access the following URLs:
 
 - [Swagger UI](http://localhost:8080/swagger-ui/index.html#/)
-- [API Docs](http://http://localhost:8080/api-docs)
+- [API Docs](http://localhost:8080/api-docs)
 
 ## Trello Board
 
