@@ -25,6 +25,7 @@ services:
   sonarqube:
     image: sonarqube:community
     container_name: sonar_container
+    restart: on-failure
     depends_on:
       - db
     environment:
