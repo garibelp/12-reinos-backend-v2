@@ -31,7 +31,7 @@ public class PlayerControllerImpl implements PlayerController {
     @DeleteMapping("/{id}")
     public ResponseEntity<MessageResponse> delete(@AuthenticationPrincipal UserDetailsImpl user, @PathVariable UUID id) {
         playerService.deletePlayer(id, user);
-        return ResponseEntity.accepted().body(new MessageResponse("User deleted successfully!"));
+        return ResponseEntity.ok(new MessageResponse("User deleted successfully!"));
     }
 
     @Override

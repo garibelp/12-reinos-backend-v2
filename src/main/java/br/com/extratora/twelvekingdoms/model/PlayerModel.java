@@ -23,7 +23,7 @@ import java.util.UUID;
 @Table(name = "PLAYER")
 public class PlayerModel implements Serializable {
     @Serial
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 2L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -67,4 +67,7 @@ public class PlayerModel implements Serializable {
 
     @OneToMany(mappedBy = "player", fetch = FetchType.LAZY)
     private Set<SheetModel> sheets = new HashSet<>();
+
+    @OneToMany(mappedBy = "player", fetch = FetchType.LAZY)
+    private Set<CampaignModel> campaigns = new HashSet<>();
 }

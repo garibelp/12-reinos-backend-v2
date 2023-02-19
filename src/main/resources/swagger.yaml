@@ -1,7 +1,7 @@
 openapi: 3.0.1
 info:
-  title: 12 Kingdoms Backend V2
-  version: 1.0.0
+  title: 12 Kingdoms Backend
+  version: V2
 servers:
   - url: http://localhost:8080
     description: Generated server url
@@ -20,22 +20,22 @@ paths:
             type: string
             format: uuid
       responses:
-        "401":
-          description: Unauthorized
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/SheetModel'
-        "403":
-          description: Forbidden
-        "400":
+        '400':
           description: Bad Request
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
       security:
         - bearerAuth: [ ]
     post:
@@ -50,20 +50,80 @@ paths:
               $ref: '#/components/schemas/CreateSheetRequest'
         required: true
       responses:
-        "401":
-          description: Unauthorized
-        "400":
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/IdResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+      security:
+        - bearerAuth: [ ]
+  /campaigns:
+    get:
+      tags:
+        - campaign-controller-impl
+      summary: Retrieve sheet details
+      operationId: details_4
+      parameters:
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignDetailsResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+        - bearerAuth: [ ]
+    post:
+      tags:
+        - campaign-controller-impl
+      summary: Create a campaign
+      operationId: create_1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCampaignRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
       security:
         - bearerAuth: [ ]
   /auth/signup:
@@ -79,13 +139,13 @@ paths:
               $ref: '#/components/schemas/SignupRequest'
         required: true
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/MessageResponse'
-        "400":
+        '400':
           description: Bad Request
           content:
             application/json:
@@ -104,18 +164,128 @@ paths:
               $ref: '#/components/schemas/LoginRequest'
         required: true
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/JwtResponse'
-        "400":
+        '400':
           description: Bad Request
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+  /sheets/{id}/currentPoints:
+    patch:
+      tags:
+        - sheet-controller-impl
+      summary: Update current physical, mental and heroism points of a sheet
+      operationId: updateCurrentPoints
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateSheetCurrentPointsRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+        - bearerAuth: [ ]
+  /campaigns/removeSheets/{campaignId}:
+    patch:
+      tags:
+        - campaign-controller-impl
+      summary: Remove sheets from an existing campaign
+      operationId: removeSheets
+      parameters:
+        - name: campaignId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IdListRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+      security:
+        - bearerAuth: [ ]
+  /campaigns/addSheets/{campaignId}:
+    patch:
+      tags:
+        - campaign-controller-impl
+      summary: Add sheets to an existing campaign
+      operationId: addSheets
+      parameters:
+        - name: campaignId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IdListRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+      security:
+        - bearerAuth: [ ]
   /sheets/list:
     get:
       tags:
@@ -150,20 +320,20 @@ paths:
           schema:
             type: string
       responses:
-        "401":
-          description: Unauthorized
-        "400":
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/SheetListResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
       security:
         - bearerAuth: [ ]
   /players:
@@ -180,22 +350,22 @@ paths:
             type: string
             format: uuid
       responses:
-        "401":
-          description: Unauthorized
-        "403":
-          description: Forbidden
-        "400":
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/PlayerModel'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
       security:
         - bearerAuth: [ ]
   /players/list:
@@ -232,20 +402,20 @@ paths:
           schema:
             type: string
       responses:
-        "401":
-          description: Unauthorized
-        "400":
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/PlayerListResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
       security:
         - bearerAuth: [ ]
   /lineages:
@@ -262,20 +432,20 @@ paths:
             type: string
             format: uuid
       responses:
-        "401":
-          description: Unauthorized
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/LineageModel'
-        "400":
+        '400':
           description: Bad Request
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
       security:
         - bearerAuth: [ ]
   /lineages/list:
@@ -285,14 +455,14 @@ paths:
       summary: List lineages
       operationId: list_2
       responses:
-        "401":
-          description: Unauthorized
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/IdNameListResponse'
+        '401':
+          description: Unauthorized
       security:
         - bearerAuth: [ ]
   /jobs:
@@ -309,20 +479,20 @@ paths:
             type: string
             format: uuid
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/JobModel'
-        "401":
-          description: Unauthorized
-        "400":
+        '400':
           description: Bad Request
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
       security:
         - bearerAuth: [ ]
   /jobs/list:
@@ -332,14 +502,54 @@ paths:
       summary: List lineages
       operationId: list_3
       responses:
-        "401":
-          description: Unauthorized
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/IdNameListResponse'
+        '401':
+          description: Unauthorized
+      security:
+        - bearerAuth: [ ]
+  /campaigns/list:
+    get:
+      tags:
+        - campaign-controller-impl
+      summary: List campaigns
+      operationId: list_4
+      parameters:
+        - name: currentPage
+          in: query
+          required: false
+          schema:
+            minimum: 0
+            type: integer
+            format: int32
+            default: 0
+        - name: pageSize
+          in: query
+          required: false
+          schema:
+            minimum: 1
+            type: integer
+            format: int32
+            default: 5
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignListResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
       security:
         - bearerAuth: [ ]
   /backgrounds/list:
@@ -347,16 +557,16 @@ paths:
       tags:
         - background-controller-impl
       summary: List backgrounds
-      operationId: list_4
+      operationId: list_5
       responses:
-        "401":
-          description: Unauthorized
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/BackgroundListResponse'
+        '401':
+          description: Unauthorized
       security:
         - bearerAuth: [ ]
   /sheets/{id}:
@@ -373,22 +583,22 @@ paths:
             type: string
             format: uuid
       responses:
-        "401":
-          description: Unauthorized
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/MessageResponse'
-        "403":
-          description: Forbidden
-        "400":
+        '400':
           description: Bad Request
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
       security:
         - bearerAuth: [ ]
   /players/{id}:
@@ -405,22 +615,54 @@ paths:
             type: string
             format: uuid
       responses:
-        "401":
-          description: Unauthorized
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/MessageResponse'
-        "403":
-          description: Forbidden
-        "400":
+        '400':
           description: Bad Request
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+        - bearerAuth: [ ]
+  /campaigns/{id}:
+    delete:
+      tags:
+        - campaign-controller-impl
+      summary: Delete a campaign
+      operationId: delete_2
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
       security:
         - bearerAuth: [ ]
 components:
@@ -493,6 +735,12 @@ components:
           type: string
         notes:
           type: string
+    IdResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
     ErrorDto:
       type: object
       properties:
@@ -507,12 +755,22 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ErrorDto'
-    IdResponse:
+    CreateCampaignRequest:
+      required:
+        - name
       type: object
       properties:
-        id:
+        name:
+          maxLength: 30
+          minLength: 5
           type: string
-          format: uuid
+        notes:
+          type: string
+        sheetList:
+          type: array
+          items:
+            type: string
+            format: uuid
     SignupRequest:
       required:
         - email
@@ -527,7 +785,7 @@ components:
           minLength: 5
           type: string
         password:
-          pattern: "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()?[{}]:;',?/*~$^+=<>]).{8,20}$"
+          pattern: ^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>]).{8,20}$
           type: string
         firstName:
           maxLength: 20
@@ -555,7 +813,7 @@ components:
           minLength: 5
           type: string
         password:
-          pattern: "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()?[{}]:;',?/*~$^+=<>]).{8,20}$"
+          pattern: ^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>]).{8,20}$
           type: string
     JwtResponse:
       type: object
@@ -575,6 +833,28 @@ components:
           type: array
           items:
             type: string
+    UpdateSheetCurrentPointsRequest:
+      type: object
+      properties:
+        mentalCurrent:
+          type: integer
+          format: int32
+        physicalCurrent:
+          type: integer
+          format: int32
+        heroismCurrent:
+          type: integer
+          format: int32
+    IdListRequest:
+      required:
+        - idList
+      type: object
+      properties:
+        idList:
+          type: array
+          items:
+            type: string
+            format: uuid
     AdvantageModel:
       required:
         - description
@@ -615,6 +895,34 @@ components:
           format: int32
         advantage:
           $ref: '#/components/schemas/AdvantageModel'
+    CampaignModel:
+      required:
+        - active
+        - name
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        notes:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        player:
+          $ref: '#/components/schemas/PlayerModel'
+        sheets:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/SheetModel'
+        active:
+          type: boolean
     JobModel:
       required:
         - description
@@ -683,6 +991,56 @@ components:
           type: string
         negativeTraitDescription:
           type: string
+    PlayerModel:
+      required:
+        - email
+        - firstName
+        - lastName
+        - username
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        username:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        roles:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/RoleModel'
+        sheets:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/SheetModel'
+        campaigns:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/CampaignModel'
+        active:
+          type: boolean
+    RoleModel:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          enum:
+            - ROLE_USER
+            - ROLE_ADMIN
     SheetModel:
       type: object
       properties:
@@ -761,6 +1119,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/AptitudeModel'
+        campaign:
+          $ref: '#/components/schemas/CampaignModel'
         active:
           type: boolean
     SkillModel:
@@ -831,51 +1191,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/BasicSheetDto'
-    PlayerModel:
-      required:
-        - email
-        - firstName
-        - lastName
-        - username
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        username:
-          type: string
-        firstName:
-          type: string
-        lastName:
-          type: string
-        email:
-          type: string
-        createdAt:
-          type: string
-          format: date-time
-        roles:
-          uniqueItems: true
-          type: array
-          items:
-            $ref: '#/components/schemas/RoleModel'
-        sheets:
-          uniqueItems: true
-          type: array
-          items:
-            $ref: '#/components/schemas/SheetModel'
-        active:
-          type: boolean
-    RoleModel:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        name:
-          type: string
-          enum:
-            - ROLE_USER
-            - ROLE_ADMIN
     BasicPlayerDto:
       type: object
       properties:
@@ -922,6 +1237,61 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/IdNameDto'
+    CampaignDetailsResponse:
+      type: object
+      properties:
+        sheets:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/CampaignSheetDto'
+    CampaignSheetDto:
+      type: object
+      properties:
+        name:
+          type: string
+        level:
+          type: integer
+          format: int32
+        mentalCurrent:
+          type: integer
+          format: int32
+        mentalTotal:
+          type: integer
+          format: int32
+        physicalCurrent:
+          type: integer
+          format: int32
+        physicalTotal:
+          type: integer
+          format: int32
+    BasicCampaignDto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+    CampaignListResponse:
+      type: object
+      properties:
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int32
+        currentPage:
+          type: integer
+          format: int32
+        pageSize:
+          type: integer
+          format: int32
+        list:
+          type: array
+          items:
+            $ref: '#/components/schemas/BasicCampaignDto'
     BackgroundListResponse:
       type: object
       properties:

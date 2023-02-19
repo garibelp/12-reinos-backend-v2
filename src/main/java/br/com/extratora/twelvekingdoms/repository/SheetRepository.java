@@ -1,6 +1,7 @@
 package br.com.extratora.twelvekingdoms.repository;
 
 import br.com.extratora.twelvekingdoms.dto.BasicSheetDto;
+import br.com.extratora.twelvekingdoms.dto.CampaignSheetDto;
 import br.com.extratora.twelvekingdoms.model.SheetModel;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -8,7 +9,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 @Repository
@@ -26,4 +29,12 @@ public interface SheetRepository extends JpaRepository<SheetModel, UUID> {
 
     @Query(value = "select s from SheetModel s inner join fetch s.aptitudes where s.id = ?1")
     Optional<SheetModel> findByIdEager(UUID id);
+
+    Long countByIdIn(List<UUID> ids);
+
+    @Query(value = "select new br.com.extratora.twelvekingdoms.dto.CampaignSheetDto" +
+            "(s.name, s.level, s.mentalCurrent, s.mentalTotal, s.physicalCurrent, s.physicalTotal)" +
+            " from SheetModel s where s.campaign.id = ?1 order by s.name asc")
+    Set<CampaignSheetDto> findCampaignSheetByCampaignId(UUID campaignId);
+
 }

@@ -42,7 +42,7 @@ class PlayerControllerTests {
     void givenDeleteCalled_whenValidRequest_thenShouldDeletePlayer() throws Exception {
         RequestBuilder builder = MockMvcRequestBuilders.delete("/players/" + UUID_1.toString());
 
-        mockMvc.perform(builder).andExpect(status().isAccepted());
+        mockMvc.perform(builder).andExpect(status().isOk());
 
         verify(playerService, times(1)).deletePlayer(any(), any());
     }

@@ -14,10 +14,6 @@ spring:
   sql:
     init:
       platform: postgres
-# Logging config
-logging:
-  pattern:
-    console: "{\"time\": \"%d\", \"level\": \"%p\", \"correlation-id\": \"%X{X-Correlation-Id}\", \"source\": \"%logger{63}:%L\", \"message\": \"%replace(%m%wEx{6}){'[\r\n]+', '\\n'}%nopex\"}%n"
 
 # Config to allow execution of requests from Open API interface
 server:

@@ -23,7 +23,7 @@ import java.util.UUID;
 @Table(name = "SHEETS")
 public class SheetModel implements Serializable {
     @Serial
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 2L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -107,6 +107,10 @@ public class SheetModel implements Serializable {
             inverseJoinColumns = @JoinColumn(name = "APTITUDE_ID")
     )
     private Set<AptitudeModel> aptitudes = new HashSet<>();
+
+    @ManyToOne
+    @JoinColumn(name = "CAMPAIGN_ID", insertable = false, updatable = false)
+    private CampaignModel campaign;
 
     public void addAptitude(AptitudeModel aptitude) {
         aptitudes.add(aptitude);

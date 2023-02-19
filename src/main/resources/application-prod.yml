@@ -14,3 +14,8 @@ springdoc:
     enabled: false
   swagger-ui:
     enabled: false
+
+# Logging config
+logging:
+  pattern:
+    console: "{\"time\": \"%d\", \"level\": \"%p\", \"source\": \"%logger{63}:%L\", \"message\": \"%m\"}%n"
