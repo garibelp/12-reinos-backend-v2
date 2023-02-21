@@ -30,11 +30,12 @@ public interface SheetRepository extends JpaRepository<SheetModel, UUID> {
     @Query(value = "select s from SheetModel s inner join fetch s.aptitudes where s.id = ?1")
     Optional<SheetModel> findByIdEager(UUID id);
 
-    Long countByIdIn(List<UUID> ids);
+    @Query(value = "select count(*) from SheetModel s where s.id in ?1 and s.isActive = true")
+    Long countActiveByIdIn(List<UUID> ids);
 
     @Query(value = "select new br.com.extratora.twelvekingdoms.dto.CampaignSheetDto" +
             "(s.name, s.level, s.mentalCurrent, s.mentalTotal, s.physicalCurrent, s.physicalTotal)" +
-            " from SheetModel s where s.campaign.id = ?1 order by s.name asc")
+            " from SheetModel s where s.campaign.id = ?1 and s.isActive = true order by s.name asc")
     Set<CampaignSheetDto> findCampaignSheetByCampaignId(UUID campaignId);
 
 }

@@ -45,7 +45,7 @@ class CampaignServiceTests {
     @Test
     void givenCreateCampaign_whenExistingSheetsData_thenShouldSaveData() {
         var campaign = getValidCreateCampaignRequest();
-        when(sheetRepository.countByIdIn(any())).thenReturn(Long.valueOf(campaign.getSheetList().size()));
+        when(sheetRepository.countActiveByIdIn(any())).thenReturn(Long.valueOf(campaign.getSheetList().size()));
 
         campaignService.createCampaign(user, campaign);
 
@@ -60,7 +60,7 @@ class CampaignServiceTests {
     @Test
     void givenCreateCampaign_whenNonExistingSheetsData_thenShouldThrowException() {
         var campaign = getValidCreateCampaignRequest();
-        when(sheetRepository.countByIdIn(any())).thenReturn(0L);
+        when(sheetRepository.countActiveByIdIn(any())).thenReturn(0L);
 
         var thrownExc = assertThrows(
                 InvalidDataException.class,
@@ -77,7 +77,7 @@ class CampaignServiceTests {
         var campaign = CampaignModel.builder().sheets(new HashSet<>()).build();
         var sheetList = getValidIdListRequest();
         when(campaignRepository.findActiveById(any())).thenReturn(Optional.of(campaign));
-        when(sheetRepository.countByIdIn(any())).thenReturn(Long.valueOf(sheetList.getIdList().size()));
+        when(sheetRepository.countActiveByIdIn(any())).thenReturn(Long.valueOf(sheetList.getIdList().size()));
 
         campaignService.addSheetsToCampaign(user, UUID_1, sheetList);
 
@@ -102,7 +102,7 @@ class CampaignServiceTests {
         var campaign = CampaignModel.builder().sheets(new HashSet<>()).build();
         var sheetList = getValidIdListRequest();
         when(campaignRepository.findActiveById(any())).thenReturn(Optional.of(campaign));
-        when(sheetRepository.countByIdIn(any())).thenReturn(0L);
+        when(sheetRepository.countActiveByIdIn(any())).thenReturn(0L);
 
         var thrownExc = assertThrows(
                 InvalidDataException.class,
@@ -165,7 +165,7 @@ class CampaignServiceTests {
     void givenCampaignsPaginated_whenCalled_thenShouldFetchData() {
         campaignService.campaignsPaginated(user, 1, 2);
 
-        verify(campaignRepository, times(1)).findCampaignsPaginated(
+        verify(campaignRepository, times(1)).findActiveCampaignsPaginated(
                 pageRequestCaptor.capture(),
                 idCaptor.capture()
         );

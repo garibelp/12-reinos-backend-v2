@@ -107,7 +107,7 @@ public class CampaignServiceImpl implements CampaignService {
 
     @Override
     public Page<BasicCampaignDto> campaignsPaginated(UserDetailsImpl user, int currentPage, int pageSize) {
-        return campaignRepository.findCampaignsPaginated(
+        return campaignRepository.findActiveCampaignsPaginated(
                 PageRequest.of(currentPage, pageSize),
                 user.getId()
         );
@@ -119,7 +119,7 @@ public class CampaignServiceImpl implements CampaignService {
     }
 
     private void validateSheetListId(List<UUID> ids) {
-        if (sheetRepository.countByIdIn(ids) != ids.size()) {
+        if (sheetRepository.countActiveByIdIn(ids) != ids.size()) {
             throw new InvalidDataException(INVALID_CAMPAIGN_SHEET_LIST);
         }
     }

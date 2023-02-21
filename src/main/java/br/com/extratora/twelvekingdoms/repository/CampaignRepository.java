@@ -21,8 +21,8 @@ public interface CampaignRepository extends JpaRepository<CampaignModel, UUID> {
 
     @Query(value = "select new br.com.extratora.twelvekingdoms.dto.BasicCampaignDto" +
             "(c.id, c.name) from CampaignModel c " +
-            "where c.player.id = ?1",
+            "where c.player.id = ?1 and c.isActive = true",
             countQuery = "select count(*) from CampaignModel c where c.player.id = ?1")
-    Page<BasicCampaignDto> findCampaignsPaginated(Pageable pageable, UUID playerId);
+    Page<BasicCampaignDto> findActiveCampaignsPaginated(Pageable pageable, UUID playerId);
 
 }
