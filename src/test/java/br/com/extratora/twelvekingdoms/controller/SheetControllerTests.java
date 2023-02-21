@@ -229,7 +229,7 @@ class SheetControllerTests {
             "-1,0,inv,inv,1",
             "-1,-1,inv,inv,1",
     })
-    void givenListCalled_whenInvalidParameters_thenShouldReturnUnauthorized(
+    void givenListCalled_whenInvalidParameters_thenShouldReturnBadRequest(
             String currentPage,
             String pageSize,
             String sortDirection,

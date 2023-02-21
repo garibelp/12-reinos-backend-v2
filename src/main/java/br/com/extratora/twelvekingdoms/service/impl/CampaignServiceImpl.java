@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static br.com.extratora.twelvekingdoms.enums.ErrorEnum.INVALID_CREATION_CAMPAIGN_SHEET_LIST;
+import static br.com.extratora.twelvekingdoms.enums.ErrorEnum.INVALID_CAMPAIGN_SHEET_LIST;
 
 @Service
 public class CampaignServiceImpl implements CampaignService {
@@ -120,7 +120,7 @@ public class CampaignServiceImpl implements CampaignService {
 
     private void validateSheetListId(List<UUID> ids) {
         if (sheetRepository.countByIdIn(ids) != ids.size()) {
-            throw new InvalidDataException(INVALID_CREATION_CAMPAIGN_SHEET_LIST);
+            throw new InvalidDataException(INVALID_CAMPAIGN_SHEET_LIST);
         }
     }
 }

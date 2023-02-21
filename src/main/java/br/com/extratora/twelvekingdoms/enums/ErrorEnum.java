@@ -7,7 +7,7 @@ public enum ErrorEnum {
     INVALID_CREATION_JOB("job", "job couldn't be retrieved on database"),
     INVALID_CREATION_APTITUDE_LIST("aptitude", "must choose 3 distinct aptitudes"),
     INVALID_CREATION_APTITUDE_JOB("aptitude", "aptitudes not found on job aptitude list"),
-    INVALID_CREATION_CAMPAIGN_SHEET_LIST("sheetList", "sheet list couldn't be retrieved on database");
+    INVALID_CAMPAIGN_SHEET_LIST("sheetList", "sheet list couldn't be retrieved on database");
 
     private final String name;
     private final String description;

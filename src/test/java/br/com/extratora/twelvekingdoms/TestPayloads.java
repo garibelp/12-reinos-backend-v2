@@ -1,8 +1,11 @@
 package br.com.extratora.twelvekingdoms;
 
+import br.com.extratora.twelvekingdoms.dto.BasicCampaignDto;
 import br.com.extratora.twelvekingdoms.dto.BasicPlayerDto;
 import br.com.extratora.twelvekingdoms.dto.BasicSheetDto;
+import br.com.extratora.twelvekingdoms.dto.request.CreateCampaignRequest;
 import br.com.extratora.twelvekingdoms.dto.request.CreateSheetRequest;
+import br.com.extratora.twelvekingdoms.dto.request.IdListRequest;
 import br.com.extratora.twelvekingdoms.dto.request.SignupRequest;
 import br.com.extratora.twelvekingdoms.enums.DiceEnum;
 import br.com.extratora.twelvekingdoms.enums.RolesEnum;
@@ -238,6 +241,39 @@ public class TestPayloads {
                 .physicalPoints(5)
                 .mentalPoints(8)
                 .aptitudes(getAptitudeModelSet())
+                .build();
+    }
+
+    public static BasicCampaignDto getBasicCampaignDto() {
+        return BasicCampaignDto.builder()
+                .id(UUID_1)
+                .name("Test mesa")
+                .build();
+    }
+
+    public static Page<BasicCampaignDto> getBasicCampaignDtoPage() {
+        return new PageImpl<>(List.of(getBasicCampaignDto()));
+    }
+
+    public static IdListRequest getValidIdListRequest() {
+        return IdListRequest.builder()
+                .idList(List.of(UUID_1, UUID_2, UUID_3))
+                .build();
+    }
+
+    public static CreateCampaignRequest getValidCreateCampaignRequest() {
+        return CreateCampaignRequest.builder()
+                .name("Test mesa")
+                .notes("Some notes to test")
+                .sheetList(getValidIdListRequest().getIdList())
+                .build();
+    }
+
+    public static CampaignModel getCampaignModel() {
+        return CampaignModel.builder()
+                .id(UUID_1)
+                .name("Test mesa")
+                .sheets(Set.of(getSheetModel(UUID_2)))
                 .build();
     }
 }
