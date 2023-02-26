@@ -234,7 +234,8 @@ class SheetControllerTests {
                 anyInt(),
                 any(),
                 any(),
-                anyBoolean()
+                anyBoolean(),
+                any()
         )).thenReturn(dbData);
         RequestBuilder builder = MockMvcRequestBuilders.get("/sheets/list")
                 .param("currentPage", currentPage)
@@ -257,7 +258,8 @@ class SheetControllerTests {
                 pageSizeCaptor.capture(),
                 sortDirectionCaptor.capture(),
                 sortFieldCaptor.capture(),
-                usePlayerProfileCaptor.capture()
+                usePlayerProfileCaptor.capture(),
+                any()
         );
 
         assertEquals(expectedPageNumber, pageNumberCaptor.getValue());

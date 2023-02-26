@@ -73,6 +73,7 @@ public interface SheetController {
             Sort.Direction sortDirection,
             SheetSortEnum sortField,
             boolean usePlayerProfile,
+            String nameFilter,
             @Parameter(hidden = true) UserDetailsImpl user
     );
 

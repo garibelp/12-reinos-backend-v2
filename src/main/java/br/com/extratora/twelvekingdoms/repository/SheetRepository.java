@@ -22,18 +22,17 @@ public interface SheetRepository extends JpaRepository<SheetModel, UUID> {
     String SHEET_DETAILS_BASE_SELECT = "select new br.com.extratora.twelvekingdoms.dto.CampaignSheetDto" +
             "(s.name, s.level, s.mentalCurrent, s.mentalTotal, s.physicalCurrent, s.physicalTotal, s.lineage.name, s.background.name)";
 
-    @Query(value = SHEET_PAGINATED_BASE_SELECT + " from SheetModel s where s.player.id = ?1 and s.isActive = true",
-            countQuery = "select count(*) from SheetModel s where s.player.id = ?1 and s.isActive = true")
-    Page<BasicSheetDto> findActivePlayerSheetsPaginated(Pageable pageable, UUID playerId);
+    @Query(value = SHEET_PAGINATED_BASE_SELECT + " from SheetModel s where s.player.id = ?1 and s.isActive = true and s.name like %?2%",
+            countQuery = "select count(*) from SheetModel s where s.player.id = ?1 and s.isActive = true and s.name like %?2%")
+    Page<BasicSheetDto> findActivePlayerSheetsPaginatedFilterByNameOpt(Pageable pageable, UUID playerId, String name);
 
+    @Query(value = SHEET_PAGINATED_BASE_SELECT + " from SheetModel s where s.isActive = true and s.name like %?1%",
+            countQuery = "select count(*) from SheetModel s where s.isActive = true and s.name like %?1%")
+    Page<BasicSheetDto> findActiveSheetsPaginatedFilterByNameOpt(Pageable pageable, String name);
 
-    @Query(value = SHEET_PAGINATED_BASE_SELECT + " from SheetModel s where s.isActive = true",
-            countQuery = "select count(*) from SheetModel s where s.isActive = true")
-    Page<BasicSheetDto> findActiveSheetsPaginated(Pageable pageable);
-
-    @Query(value = SHEET_PAGINATED_BASE_SELECT + " from SheetModel s",
-            countQuery = "select count(*) from SheetModel")
-    Page<BasicSheetDto> findSheetsPaginated(Pageable pageable);
+    @Query(value = SHEET_PAGINATED_BASE_SELECT + " from SheetModel s where s.name like %?1%",
+            countQuery = "select count(*) from SheetModel s where s.name like %?1%")
+    Page<BasicSheetDto> findSheetsPaginatedFilterByNameOpt(Pageable pageable, String name);
 
     @Query(value = "select s from SheetModel s inner join fetch s.aptitudes where s.id = ?1")
     Optional<SheetModel> findByIdEager(UUID id);

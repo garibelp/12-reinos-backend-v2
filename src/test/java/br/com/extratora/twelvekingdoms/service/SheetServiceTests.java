@@ -401,18 +401,18 @@ class SheetServiceTests {
             default -> getUserDetailsAdmin();
         };
 
-        sheetService.sheetsPaginated(user, currentPage, pageSize, sortDirection, sortField, usePlayerProfile);
+        sheetService.sheetsPaginated(user, currentPage, pageSize, sortDirection, sortField, usePlayerProfile, null);
 
         if (ROLE_ADMIN.equals(profile) && !usePlayerProfile) {
-            verify(sheetRepository, times(1)).findSheetsPaginated(pageRequestCaptor.capture());
+            verify(sheetRepository, times(1)).findSheetsPaginatedFilterByNameOpt(pageRequestCaptor.capture(), any());
         }
 
         if (ROLE_GM.equals(profile) && !usePlayerProfile) {
-            verify(sheetRepository, times(1)).findActiveSheetsPaginated(pageRequestCaptor.capture());
+            verify(sheetRepository, times(1)).findActiveSheetsPaginatedFilterByNameOpt(pageRequestCaptor.capture(), any());
         }
 
         if (ROLE_USER.equals(profile) || usePlayerProfile) {
-            verify(sheetRepository, times(1)).findActivePlayerSheetsPaginated(pageRequestCaptor.capture(), any());
+            verify(sheetRepository, times(1)).findActivePlayerSheetsPaginatedFilterByNameOpt(pageRequestCaptor.capture(), any(), any());
         }
 
         Pageable page = pageRequestCaptor.getValue();

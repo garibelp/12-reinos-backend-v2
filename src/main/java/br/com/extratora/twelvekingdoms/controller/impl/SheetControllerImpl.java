@@ -60,6 +60,7 @@ public class SheetControllerImpl implements SheetController {
             @RequestParam(required = false) Sort.Direction sortDirection,
             @RequestParam(required = false) SheetSortEnum sortField,
             @RequestParam(defaultValue = "false") boolean usePlayerProfile,
+            @RequestParam(defaultValue = "") String nameFilter,
             @AuthenticationPrincipal UserDetailsImpl user
     ) {
         Page<BasicSheetDto> sheetList = sheetService.sheetsPaginated(
@@ -68,7 +69,8 @@ public class SheetControllerImpl implements SheetController {
                 pageSize,
                 sortDirection,
                 sortField,
-                usePlayerProfile
+                usePlayerProfile,
+                nameFilter
         );
         return ResponseEntity.ok(
                 new SheetListResponse(

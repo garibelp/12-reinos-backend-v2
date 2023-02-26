@@ -22,8 +22,8 @@ public interface SheetService {
             int pageSize,
             Sort.Direction sortDirection,
             SheetSortEnum sortField,
-            boolean usePlayerProfile
-    );
+            boolean usePlayerProfile,
+            String nameFilter);
 
     void deleteSheet(UUID id, UserDetailsImpl user);
 
