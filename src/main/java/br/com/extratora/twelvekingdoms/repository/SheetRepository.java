@@ -20,7 +20,7 @@ public interface SheetRepository extends JpaRepository<SheetModel, UUID> {
             "(s.id, s.name, s.level, s.lineage.name as lineage, s.isActive as active, s.player.id, s.player.username as username)";
 
     String SHEET_DETAILS_BASE_SELECT = "select new br.com.extratora.twelvekingdoms.dto.CampaignSheetDto" +
-            "(s.name, s.level, s.mentalCurrent, s.mentalTotal, s.physicalCurrent, s.physicalTotal)";
+            "(s.name, s.level, s.mentalCurrent, s.mentalTotal, s.physicalCurrent, s.physicalTotal, s.lineage.name, s.background.name)";
 
     @Query(value = SHEET_PAGINATED_BASE_SELECT + " from SheetModel s where s.player.id = ?1 and s.isActive = true",
             countQuery = "select count(*) from SheetModel s where s.player.id = ?1 and s.isActive = true")

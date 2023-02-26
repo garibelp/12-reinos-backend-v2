@@ -14,4 +14,6 @@ public class CampaignSheetDto {
     private int mentalTotal;
     private int physicalCurrent;
     private int physicalTotal;
+    private String lineage;
+    private String background;
 }

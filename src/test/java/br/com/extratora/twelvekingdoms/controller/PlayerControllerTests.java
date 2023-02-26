@@ -70,7 +70,7 @@ class PlayerControllerTests {
         RequestBuilder builder = MockMvcRequestBuilders.get("/players")
                 .param("id", UUID_1.toString());
 
-        mockMvc.perform(builder).andExpect(status().isUnauthorized());
+        mockMvc.perform(builder).andExpect(status().isForbidden());
 
         verify(playerService, times(1)).getPlayer(any(), any());
     }
