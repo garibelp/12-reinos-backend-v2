@@ -6,6 +6,7 @@ import br.com.extratora.twelvekingdoms.dto.request.IdListRequest;
 import br.com.extratora.twelvekingdoms.dto.response.CampaignDetailsResponse;
 import br.com.extratora.twelvekingdoms.exception.DataNotFoundException;
 import br.com.extratora.twelvekingdoms.exception.InvalidDataException;
+import br.com.extratora.twelvekingdoms.exception.UnauthorizedException;
 import br.com.extratora.twelvekingdoms.model.CampaignModel;
 import br.com.extratora.twelvekingdoms.model.PlayerModel;
 import br.com.extratora.twelvekingdoms.model.SheetModel;
@@ -18,7 +19,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import static br.com.extratora.twelvekingdoms.enums.ErrorEnum.INVALID_CAMPAIGN_SHEET_LIST;
@@ -57,17 +57,15 @@ public class CampaignServiceImpl implements CampaignService {
 
     @Override
     public void addSheetsToCampaign(UserDetailsImpl user, UUID campaignId, IdListRequest request) {
-        Optional<CampaignModel> modelOpt = campaignRepository.findActiveById(campaignId);
-        if (modelOpt.isEmpty()) {
-            throw new DataNotFoundException();
-        }
+        var model = retrieveCampaignEager(user, campaignId);
         validateSheetListId(request.getIdList());
 
-        var model = modelOpt.get();
         request.getIdList().forEach(id -> {
-            var sheet = new SheetModel();
-            sheet.setId(id);
-            model.addSheet(sheet);
+            if (model.getSheets().stream().noneMatch(s -> s.getId().equals(id))) {
+                var sheet = new SheetModel();
+                sheet.setId(id);
+                model.addSheet(sheet);
+            }
         });
 
         campaignRepository.save(model);
@@ -75,11 +73,7 @@ public class CampaignServiceImpl implements CampaignService {
 
     @Override
     public void removeSheetsFromCampaign(UserDetailsImpl user, UUID campaignId, IdListRequest request) {
-        Optional<CampaignModel> modelOpt = campaignRepository.findActiveByIdEager(campaignId);
-        if (modelOpt.isEmpty()) {
-            throw new DataNotFoundException();
-        }
-        var model = modelOpt.get();
+        var model = retrieveCampaignEager(user, campaignId);
         var sheetList = model.getSheets();
 
         request.getIdList().forEach(id -> sheetList.stream()
@@ -93,11 +87,7 @@ public class CampaignServiceImpl implements CampaignService {
 
     @Override
     public void deleteCampaign(UserDetailsImpl user, UUID campaignId) {
-        Optional<CampaignModel> modelOpt = campaignRepository.findActiveByIdEager(campaignId);
-        if (modelOpt.isEmpty()) {
-            throw new DataNotFoundException();
-        }
-        var model = modelOpt.get();
+        var model = retrieveCampaignEager(user, campaignId);
 
         model.setActive(false);
         model.getSheets().forEach(model::removeSheet);
@@ -107,15 +97,35 @@ public class CampaignServiceImpl implements CampaignService {
 
     @Override
     public Page<BasicCampaignDto> campaignsPaginated(UserDetailsImpl user, int currentPage, int pageSize) {
-        return campaignRepository.findActiveCampaignsPaginated(
+        if (user.isAdmin()) {
+            return campaignRepository.findActiveCampaignsPaginated(PageRequest.of(currentPage, pageSize));
+        }
+        return campaignRepository.findActiveCampaignsByPlayerPaginated(
                 PageRequest.of(currentPage, pageSize),
                 user.getId()
         );
     }
 
     @Override
-    public CampaignDetailsResponse campaignDetails(UUID campaignId) {
+    public CampaignDetailsResponse campaignDetails(UserDetailsImpl user, UUID campaignId) {
+        if (!user.isAdmin()) {
+            var isUserCampaign = campaignRepository.existsByIdAndPlayerId(campaignId, user.getId());
+            if (!isUserCampaign) throw new UnauthorizedException();
+        }
         return new CampaignDetailsResponse(sheetRepository.findCampaignSheetByCampaignId(campaignId));
+    }
+
+    private CampaignModel retrieveCampaignEager(UserDetailsImpl user, UUID campaignId) {
+        var campaignOpt = user.isAdmin() ?
+                campaignRepository.findActiveByIdEager(campaignId) :
+                campaignRepository.findActiveByIdAndPlayerIdEager(campaignId, user.getId());
+
+        if (campaignOpt.isEmpty()) {
+            if (user.isAdmin()) throw new DataNotFoundException();
+            throw new UnauthorizedException();
+        }
+
+        return campaignOpt.get();
     }
 
     private void validateSheetListId(List<UUID> ids) {

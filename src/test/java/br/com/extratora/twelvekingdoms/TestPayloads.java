@@ -47,34 +47,41 @@ public class TestPayloads {
                 .build();
     }
 
-    public static Set<RoleModel> getRoleSet(boolean isAdmin) {
+    public static Set<RoleModel> getRoleSet(boolean isAdmin, boolean isGm) {
         Set<RoleModel> roleModels = new HashSet<>();
         roleModels.add(RoleModel.builder().id(UUID.randomUUID()).name(RolesEnum.ROLE_USER).build());
         if (isAdmin) {
             roleModels.add(RoleModel.builder().id(UUID.randomUUID()).name(RolesEnum.ROLE_ADMIN).build());
         }
+        if (isGm) {
+            roleModels.add(RoleModel.builder().id(UUID.randomUUID()).name(RolesEnum.ROLE_GM).build());
+        }
         return roleModels;
     }
 
-    public static PlayerModel getPlayerModel(UUID id, String username, boolean isAdmin, boolean isActive) {
+    public static PlayerModel getPlayerModel(UUID id, String username, boolean isAdmin, boolean isGm, boolean isActive) {
         return PlayerModel.builder()
                 .id(id)
                 .username(username)
                 .isActive(isActive)
-                .roles(getRoleSet(isAdmin))
+                .roles(getRoleSet(isAdmin, isGm))
                 .build();
     }
 
     public static UserDetailsImpl getUserDetailsAdmin() {
-        return getUserDetails(UUID_1, "admin", true, true);
+        return getUserDetails(UUID_1, "admin", true, false, true);
+    }
+
+    public static UserDetailsImpl getUserDetailsGm() {
+        return getUserDetails(UUID_1, "user", false, true, true);
     }
 
     public static UserDetailsImpl getUserDetailsUser() {
-        return getUserDetails(UUID_1, "user", false, true);
+        return getUserDetails(UUID_1, "user", false, false, true);
     }
 
-    public static UserDetailsImpl getUserDetails(UUID id, String username, boolean isAdmin, boolean isActive) {
-        return UserDetailsImpl.build(getPlayerModel(id, username, isAdmin, isActive));
+    public static UserDetailsImpl getUserDetails(UUID id, String username, boolean isAdmin, boolean isGm, boolean isActive) {
+        return UserDetailsImpl.build(getPlayerModel(id, username, isAdmin, isGm, isActive));
     }
 
     public static SignupRequest getSignupRequest() {

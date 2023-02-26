@@ -65,7 +65,7 @@ class PlayerServiceTests {
     @Test
     void givenDeletePlayer_whenUserInactive_thenThrowDataNotFoundException() {
         when(playerRepository.findById(UUID_2))
-                .thenReturn(Optional.of(getPlayerModel(UUID_2, "user2", true, false)));
+                .thenReturn(Optional.of(getPlayerModel(UUID_2, "user2", true, false, false)));
 
         assertThrows(
                 DataNotFoundException.class,
@@ -79,9 +79,9 @@ class PlayerServiceTests {
     @Test
     void givenDeletePlayer_whenValid_thenDisableUser() {
         when(playerRepository.findById(UUID_2))
-                .thenReturn(Optional.of(getPlayerModel(UUID_2, "user2", true, true)));
+                .thenReturn(Optional.of(getPlayerModel(UUID_2, "user2", true, false, true)));
         when(playerRepository.findById(UUID_1))
-                .thenReturn(Optional.of(getPlayerModel(UUID_1, "user", false, true)));
+                .thenReturn(Optional.of(getPlayerModel(UUID_1, "user", false, false, true)));
 
         playerService.deletePlayer(UUID_2, admin);
         playerService.deletePlayer(UUID_1, user);
@@ -116,7 +116,7 @@ class PlayerServiceTests {
     @Test
     void givenGetPlayer_whenUserInactive_thenThrowDataNotFoundException() {
         when(playerRepository.findById(UUID_2))
-                .thenReturn(Optional.of(getPlayerModel(UUID_2, "user2", true, false)));
+                .thenReturn(Optional.of(getPlayerModel(UUID_2, "user2", true, false, false)));
 
         assertThrows(
                 DataNotFoundException.class,
@@ -128,11 +128,11 @@ class PlayerServiceTests {
 
     @Test
     void givenGetPlayer_whenValid_thenDisableUser() {
-        PlayerModel expected = getPlayerModel(UUID_2, "user2", true, true);
+        PlayerModel expected = getPlayerModel(UUID_2, "user2", true, false, true);
         when(playerRepository.findById(UUID_2))
                 .thenReturn(Optional.of(expected));
         when(playerRepository.findById(UUID_1))
-                .thenReturn(Optional.of(getPlayerModel(UUID_1, "user", false, true)));
+                .thenReturn(Optional.of(getPlayerModel(UUID_1, "user", false, false, true)));
 
         PlayerModel retrieved = playerService.getPlayer(UUID_2, admin);
         PlayerModel retrievedOwn = playerService.getPlayer(UUID_1, user);

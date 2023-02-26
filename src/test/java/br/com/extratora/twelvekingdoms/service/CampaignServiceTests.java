@@ -2,6 +2,7 @@ package br.com.extratora.twelvekingdoms.service;
 
 import br.com.extratora.twelvekingdoms.exception.DataNotFoundException;
 import br.com.extratora.twelvekingdoms.exception.InvalidDataException;
+import br.com.extratora.twelvekingdoms.exception.UnauthorizedException;
 import br.com.extratora.twelvekingdoms.model.CampaignModel;
 import br.com.extratora.twelvekingdoms.repository.CampaignRepository;
 import br.com.extratora.twelvekingdoms.repository.SheetRepository;
@@ -9,6 +10,8 @@ import br.com.extratora.twelvekingdoms.security.UserDetailsImpl;
 import br.com.extratora.twelvekingdoms.service.impl.CampaignServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
@@ -28,7 +31,8 @@ import static org.mockito.Mockito.*;
 @ExtendWith(SpringExtension.class)
 class CampaignServiceTests {
 
-    private final UserDetailsImpl user = getUserDetailsUser();
+    private final UserDetailsImpl ADMIN_USER = getUserDetailsAdmin();
+    private final UserDetailsImpl GM_USER = getUserDetailsGm();
     @Captor
     private ArgumentCaptor<CampaignModel> campaignCaptor;
     @Captor
@@ -42,18 +46,19 @@ class CampaignServiceTests {
     @InjectMocks
     private CampaignServiceImpl campaignService;
 
-    @Test
-    void givenCreateCampaign_whenExistingSheetsData_thenShouldSaveData() {
+    @ParameterizedTest
+    @CsvSource({"true", "false"})
+    void givenCreateCampaign_whenExistingSheetsDataAndValidRoles_thenShouldSaveData(boolean isAdmin) {
         var campaign = getValidCreateCampaignRequest();
         when(sheetRepository.countActiveByIdIn(any())).thenReturn(Long.valueOf(campaign.getSheetList().size()));
 
-        campaignService.createCampaign(user, campaign);
+        campaignService.createCampaign(isAdmin ? ADMIN_USER : GM_USER, campaign);
 
         verify(campaignRepository, times(1)).save(campaignCaptor.capture());
         var model = campaignCaptor.getValue();
         assertEquals(campaign.getName(), model.getName());
         assertEquals(campaign.getNotes(), model.getNotes());
-        assertEquals(user.getId(), model.getPlayer().getId());
+        assertEquals(ADMIN_USER.getId(), model.getPlayer().getId());
         assertEquals(campaign.getSheetList().size(), model.getSheets().size());
     }
 
@@ -64,7 +69,7 @@ class CampaignServiceTests {
 
         var thrownExc = assertThrows(
                 InvalidDataException.class,
-                () -> campaignService.createCampaign(user, campaign)
+                () -> campaignService.createCampaign(ADMIN_USER, campaign)
         );
 
         verify(campaignRepository, times(0)).save(any());
@@ -72,26 +77,46 @@ class CampaignServiceTests {
         assertEquals(INVALID_CAMPAIGN_SHEET_LIST.getDescription(), thrownExc.getDescription());
     }
 
-    @Test
-    void givenAddSheetsToCampaign_whenValidData_thenShouldSaveData() {
+    @ParameterizedTest
+    @CsvSource({"true", "false"})
+    void givenAddSheetsToCampaign_whenValidData_thenShouldSaveData(boolean isAdmin) {
         var campaign = CampaignModel.builder().sheets(new HashSet<>()).build();
         var sheetList = getValidIdListRequest();
-        when(campaignRepository.findActiveById(any())).thenReturn(Optional.of(campaign));
+        if (isAdmin) {
+            when(campaignRepository.findActiveByIdEager(any())).thenReturn(Optional.of(campaign));
+        } else {
+            when(campaignRepository.findActiveByIdAndPlayerIdEager(any(), any())).thenReturn(Optional.of(campaign));
+        }
         when(sheetRepository.countActiveByIdIn(any())).thenReturn(Long.valueOf(sheetList.getIdList().size()));
 
-        campaignService.addSheetsToCampaign(user, UUID_1, sheetList);
+        campaignService.addSheetsToCampaign(isAdmin ? ADMIN_USER : GM_USER, UUID_1, sheetList);
 
         verify(campaignRepository, times(1)).save(any());
+        verify(campaignRepository, times(isAdmin ? 1 : 0)).findActiveByIdEager(any());
+        verify(campaignRepository, times(isAdmin ? 0 : 1)).findActiveByIdAndPlayerIdEager(any(), any());
     }
 
     @Test
     void givenAddSheetsToCampaign_whenInvalidCampaignId_thenShouldThrowException() {
         var sheetList = getValidIdListRequest();
-        when(campaignRepository.findActiveById(any())).thenReturn(Optional.empty());
+        when(campaignRepository.findActiveByIdEager(any())).thenReturn(Optional.empty());
 
         assertThrows(
                 DataNotFoundException.class,
-                () -> campaignService.addSheetsToCampaign(user, UUID_1, sheetList)
+                () -> campaignService.addSheetsToCampaign(ADMIN_USER, UUID_1, sheetList)
+        );
+
+        verify(campaignRepository, times(0)).save(any());
+    }
+
+    @Test
+    void givenAddSheetsToCampaign_whenCampaignFromPlayerNotFound_thenShouldThrowException() {
+        var sheetList = getValidIdListRequest();
+        when(campaignRepository.findActiveByIdAndPlayerIdEager(any(), any())).thenReturn(Optional.empty());
+
+        assertThrows(
+                UnauthorizedException.class,
+                () -> campaignService.addSheetsToCampaign(GM_USER, UUID_1, sheetList)
         );
 
         verify(campaignRepository, times(0)).save(any());
@@ -101,12 +126,12 @@ class CampaignServiceTests {
     void givenAddSheetsToCampaign_whenInvalidSheetsIds_thenShouldThrowException() {
         var campaign = CampaignModel.builder().sheets(new HashSet<>()).build();
         var sheetList = getValidIdListRequest();
-        when(campaignRepository.findActiveById(any())).thenReturn(Optional.of(campaign));
+        when(campaignRepository.findActiveByIdEager(any())).thenReturn(Optional.of(campaign));
         when(sheetRepository.countActiveByIdIn(any())).thenReturn(0L);
 
         var thrownExc = assertThrows(
                 InvalidDataException.class,
-                () -> campaignService.addSheetsToCampaign(user, UUID_1, sheetList)
+                () -> campaignService.addSheetsToCampaign(ADMIN_USER, UUID_1, sheetList)
         );
 
         verify(campaignRepository, times(0)).save(any());
@@ -120,7 +145,7 @@ class CampaignServiceTests {
         var sheetList = getValidIdListRequest();
         when(campaignRepository.findActiveByIdEager(any())).thenReturn(Optional.of(campaign));
 
-        campaignService.removeSheetsFromCampaign(user, UUID_1, sheetList);
+        campaignService.removeSheetsFromCampaign(ADMIN_USER, UUID_1, sheetList);
 
         verify(campaignRepository, times(1)).save(any());
     }
@@ -132,7 +157,20 @@ class CampaignServiceTests {
 
         assertThrows(
                 DataNotFoundException.class,
-                () -> campaignService.removeSheetsFromCampaign(user, UUID_1, sheetList)
+                () -> campaignService.removeSheetsFromCampaign(ADMIN_USER, UUID_1, sheetList)
+        );
+
+        verify(campaignRepository, times(0)).save(any());
+    }
+
+    @Test
+    void givenRemoveSheetsFromCampaign_whenCampaignFromPlayerNotFound_thenShouldThrowException() {
+        var sheetList = getValidIdListRequest();
+        when(campaignRepository.findActiveByIdAndPlayerIdEager(any(), any())).thenReturn(Optional.empty());
+
+        assertThrows(
+                UnauthorizedException.class,
+                () -> campaignService.removeSheetsFromCampaign(GM_USER, UUID_1, sheetList)
         );
 
         verify(campaignRepository, times(0)).save(any());
@@ -143,7 +181,7 @@ class CampaignServiceTests {
         var campaign = CampaignModel.builder().isActive(true).sheets(new HashSet<>()).build();
         when(campaignRepository.findActiveByIdEager(any())).thenReturn(Optional.of(campaign));
 
-        campaignService.deleteCampaign(getUserDetailsUser(), UUID_1);
+        campaignService.deleteCampaign(ADMIN_USER, UUID_1);
 
         verify(campaignRepository, times(1)).save(campaignCaptor.capture());
         assertFalse(campaignCaptor.getValue().isActive());
@@ -155,33 +193,81 @@ class CampaignServiceTests {
 
         assertThrows(
                 DataNotFoundException.class,
-                () -> campaignService.deleteCampaign(user, UUID_1)
+                () -> campaignService.deleteCampaign(ADMIN_USER, UUID_1)
         );
 
         verify(campaignRepository, times(0)).save(any());
     }
 
     @Test
-    void givenCampaignsPaginated_whenCalled_thenShouldFetchData() {
+    void givenDeleteCampaign_whenCampaignNotFromPlayer_thenShouldThrowException() {
+        when(campaignRepository.findActiveByIdAndPlayerIdEager(any(), any())).thenReturn(Optional.empty());
+
+        assertThrows(
+                UnauthorizedException.class,
+                () -> campaignService.deleteCampaign(GM_USER, UUID_1)
+        );
+
+        verify(campaignRepository, times(0)).save(any());
+    }
+
+    @ParameterizedTest
+    @CsvSource({"true", "false"})
+    void givenCampaignsPaginated_whenCalled_thenShouldFetchData(boolean isAdmin) {
+        var user = isAdmin ? ADMIN_USER : GM_USER;
+
         campaignService.campaignsPaginated(user, 1, 2);
 
-        verify(campaignRepository, times(1)).findActiveCampaignsPaginated(
-                pageRequestCaptor.capture(),
-                idCaptor.capture()
-        );
+        if (isAdmin) {
+            verify(campaignRepository, times(1)).findActiveCampaignsPaginated(
+                    pageRequestCaptor.capture()
+            );
+            verify(campaignRepository, times(0)).findActiveCampaignsByPlayerPaginated(any(), any());
+        } else {
+            verify(campaignRepository, times(1)).findActiveCampaignsByPlayerPaginated(
+                    pageRequestCaptor.capture(),
+                    idCaptor.capture()
+            );
+            assertEquals(user.getId(), idCaptor.getValue());
+            verify(campaignRepository, times(0)).findActiveCampaignsPaginated(any());
+        }
         var page = pageRequestCaptor.getValue();
         assertEquals(2, page.getPageSize());
         assertEquals(1, page.getPageNumber());
-        assertEquals(user.getId(), idCaptor.getValue());
     }
 
     @Test
-    void givenCampaignDetails_whenCalled_thenShouldFetchData() {
-        campaignService.campaignDetails(UUID_1);
+    void givenCampaignDetails_whenCalledAndAdmin_thenShouldFetchData() {
+        when(campaignRepository.existsByIdAndPlayerId(any(), any())).thenReturn(true);
 
+        campaignService.campaignDetails(ADMIN_USER, UUID_1);
+
+        verify(campaignRepository, times(0)).existsByIdAndPlayerId(any(), any());
         verify(sheetRepository, times(1)).findCampaignSheetByCampaignId(
                 idCaptor.capture()
         );
         assertEquals(UUID_1, idCaptor.getValue());
+    }
+
+    @Test
+    void givenCampaignDetails_whenNotFoundAndGm_thenShouldThrowException() {
+        when(campaignRepository.existsByIdAndPlayerId(any(), any())).thenReturn(false);
+
+        assertThrows(
+                UnauthorizedException.class,
+                () -> campaignService.campaignDetails(GM_USER, UUID_1)
+        );
+
+        verify(sheetRepository, times(0)).findCampaignSheetByCampaignId(any());
+    }
+
+    @Test
+    void givenCampaignDetails_whenCalledAndGm_thenShouldFetchData() {
+        when(campaignRepository.existsByIdAndPlayerId(any(), any())).thenReturn(true);
+
+        campaignService.campaignDetails(GM_USER, UUID_1);
+
+        verify(campaignRepository, times(1)).existsByIdAndPlayerId(any(), any());
+        verify(sheetRepository, times(1)).findCampaignSheetByCampaignId(any());
     }
 }

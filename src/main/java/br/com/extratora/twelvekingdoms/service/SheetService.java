@@ -21,7 +21,8 @@ public interface SheetService {
             int currentPage,
             int pageSize,
             Sort.Direction sortDirection,
-            SheetSortEnum sortField
+            SheetSortEnum sortField,
+            boolean usePlayerProfile
     );
 
     void deleteSheet(UUID id, UserDetailsImpl user);

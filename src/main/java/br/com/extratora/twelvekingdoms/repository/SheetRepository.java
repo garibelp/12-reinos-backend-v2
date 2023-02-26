@@ -19,9 +19,17 @@ public interface SheetRepository extends JpaRepository<SheetModel, UUID> {
     String SHEET_PAGINATED_BASE_SELECT = "select new br.com.extratora.twelvekingdoms.dto.BasicSheetDto" +
             "(s.id, s.name, s.level, s.lineage.name as lineage, s.isActive as active, s.player.id, s.player.username as username)";
 
+    String SHEET_DETAILS_BASE_SELECT = "select new br.com.extratora.twelvekingdoms.dto.CampaignSheetDto" +
+            "(s.name, s.level, s.mentalCurrent, s.mentalTotal, s.physicalCurrent, s.physicalTotal)";
+
     @Query(value = SHEET_PAGINATED_BASE_SELECT + " from SheetModel s where s.player.id = ?1 and s.isActive = true",
             countQuery = "select count(*) from SheetModel s where s.player.id = ?1 and s.isActive = true")
     Page<BasicSheetDto> findActivePlayerSheetsPaginated(Pageable pageable, UUID playerId);
+
+
+    @Query(value = SHEET_PAGINATED_BASE_SELECT + " from SheetModel s where s.isActive = true",
+            countQuery = "select count(*) from SheetModel s where s.isActive = true")
+    Page<BasicSheetDto> findActiveSheetsPaginated(Pageable pageable);
 
     @Query(value = SHEET_PAGINATED_BASE_SELECT + " from SheetModel s",
             countQuery = "select count(*) from SheetModel")
@@ -33,9 +41,7 @@ public interface SheetRepository extends JpaRepository<SheetModel, UUID> {
     @Query(value = "select count(*) from SheetModel s where s.id in ?1 and s.isActive = true")
     Long countActiveByIdIn(List<UUID> ids);
 
-    @Query(value = "select new br.com.extratora.twelvekingdoms.dto.CampaignSheetDto" +
-            "(s.name, s.level, s.mentalCurrent, s.mentalTotal, s.physicalCurrent, s.physicalTotal)" +
-            " from SheetModel s where s.campaign.id = ?1 and s.isActive = true order by s.name asc")
+    @Query(value = SHEET_DETAILS_BASE_SELECT + " from SheetModel s where s.campaign.id = ?1 and s.isActive = true order by s.name asc")
     Set<CampaignSheetDto> findCampaignSheetByCampaignId(UUID campaignId);
 
 }

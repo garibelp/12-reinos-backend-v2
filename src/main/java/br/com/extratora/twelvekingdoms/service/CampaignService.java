@@ -25,5 +25,5 @@ public interface CampaignService {
             int pageSize
     );
 
-    CampaignDetailsResponse campaignDetails(UUID campaignId);
+    CampaignDetailsResponse campaignDetails(UserDetailsImpl user, UUID campaignId);
 }

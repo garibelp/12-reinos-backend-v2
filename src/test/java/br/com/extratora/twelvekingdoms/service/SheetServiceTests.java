@@ -3,6 +3,7 @@ package br.com.extratora.twelvekingdoms.service;
 import br.com.extratora.twelvekingdoms.dto.request.UpdateSheetCurrentPointsRequest;
 import br.com.extratora.twelvekingdoms.enums.DiceEnum;
 import br.com.extratora.twelvekingdoms.enums.ErrorEnum;
+import br.com.extratora.twelvekingdoms.enums.RolesEnum;
 import br.com.extratora.twelvekingdoms.enums.SheetSortEnum;
 import br.com.extratora.twelvekingdoms.exception.DataNotFoundException;
 import br.com.extratora.twelvekingdoms.exception.InvalidDataException;
@@ -32,6 +33,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import static br.com.extratora.twelvekingdoms.TestPayloads.*;
+import static br.com.extratora.twelvekingdoms.enums.RolesEnum.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -342,38 +344,75 @@ class SheetServiceTests {
 
     @ParameterizedTest
     @CsvSource({
-            "0,1,,,true",
-            "0,1,,,false",
-            "0,1,ASC,,true",
-            "0,1,ASC,,false",
-            "0,1,,NAME,true",
-            "0,1,,NAME,false",
-            "0,1,ASC,NAME,true",
-            "0,1,ASC,NAME,false",
-            "0,1,DESC,NAME,true",
-            "0,1,DESC,NAME,false",
-            "0,1,ASC,LEVEL,true",
-            "0,1,ASC,LEVEL,false",
-            "0,1,DESC,LEVEL,true",
-            "0,1,DESC,LEVEL,false",
+            "0,1,,,ROLE_USER,false",
+            "0,1,,,ROLE_GM,false",
+            "0,1,,,ROLE_ADMIN,false",
+            "0,1,ASC,,ROLE_USER,false",
+            "0,1,ASC,,ROLE_GM,false",
+            "0,1,ASC,,ROLE_ADMIN,false",
+            "0,1,,NAME,ROLE_USER,false",
+            "0,1,,NAME,ROLE_GM,false",
+            "0,1,,NAME,ROLE_ADMIN,false",
+            "0,1,ASC,NAME,ROLE_USER,false",
+            "0,1,ASC,NAME,ROLE_GM,false",
+            "0,1,ASC,NAME,ROLE_ADMIN,false",
+            "0,1,DESC,NAME,ROLE_USER,false",
+            "0,1,DESC,NAME,ROLE_GM,false",
+            "0,1,DESC,NAME,ROLE_ADMIN,false",
+            "0,1,ASC,LEVEL,ROLE_USER,false",
+            "0,1,ASC,LEVEL,ROLE_GM,false",
+            "0,1,ASC,LEVEL,ROLE_ADMIN,false",
+            "0,1,DESC,LEVEL,ROLE_USER,false",
+            "0,1,DESC,LEVEL,ROLE_GM,false",
+            "0,1,DESC,LEVEL,ROLE_ADMIN,false",
+            "0,1,,,ROLE_USER,true",
+            "0,1,,,ROLE_GM,true",
+            "0,1,,,ROLE_ADMIN,true",
+            "0,1,ASC,,ROLE_USER,true",
+            "0,1,ASC,,ROLE_GM,true",
+            "0,1,ASC,,ROLE_ADMIN,true",
+            "0,1,,NAME,ROLE_USER,true",
+            "0,1,,NAME,ROLE_GM,true",
+            "0,1,,NAME,ROLE_ADMIN,true",
+            "0,1,ASC,NAME,ROLE_USER,true",
+            "0,1,ASC,NAME,ROLE_GM,true",
+            "0,1,ASC,NAME,ROLE_ADMIN,true",
+            "0,1,DESC,NAME,ROLE_USER,true",
+            "0,1,DESC,NAME,ROLE_GM,true",
+            "0,1,DESC,NAME,ROLE_ADMIN,true",
+            "0,1,ASC,LEVEL,ROLE_USER,true",
+            "0,1,ASC,LEVEL,ROLE_GM,true",
+            "0,1,ASC,LEVEL,ROLE_ADMIN,true",
+            "0,1,DESC,LEVEL,ROLE_USER,true",
+            "0,1,DESC,LEVEL,ROLE_GM,true",
+            "0,1,DESC,LEVEL,ROLE_ADMIN,true",
     })
     void givenSheetsPaginated_whenValid_thenCallWithPagination(
             int currentPage,
             int pageSize,
             Sort.Direction sortDirection,
             SheetSortEnum sortField,
-            boolean adminUser
+            RolesEnum profile,
+            boolean usePlayerProfile
     ) {
-        var user = adminUser ? getUserDetailsAdmin() : getUserDetailsUser();
-        sheetService.sheetsPaginated(user, currentPage, pageSize, sortDirection, sortField);
+        var user = switch (profile) {
+            case ROLE_USER -> getUserDetailsUser();
+            case ROLE_GM -> getUserDetailsGm();
+            default -> getUserDetailsAdmin();
+        };
 
-        if (adminUser) {
+        sheetService.sheetsPaginated(user, currentPage, pageSize, sortDirection, sortField, usePlayerProfile);
 
-            verify(sheetRepository, times(1))
-                    .findSheetsPaginated(pageRequestCaptor.capture());
-        } else {
-            verify(sheetRepository, times(1))
-                    .findActivePlayerSheetsPaginated(pageRequestCaptor.capture(), any());
+        if (ROLE_ADMIN.equals(profile) && !usePlayerProfile) {
+            verify(sheetRepository, times(1)).findSheetsPaginated(pageRequestCaptor.capture());
+        }
+
+        if (ROLE_GM.equals(profile) && !usePlayerProfile) {
+            verify(sheetRepository, times(1)).findActiveSheetsPaginated(pageRequestCaptor.capture());
+        }
+
+        if (ROLE_USER.equals(profile) || usePlayerProfile) {
+            verify(sheetRepository, times(1)).findActivePlayerSheetsPaginated(pageRequestCaptor.capture(), any());
         }
 
         Pageable page = pageRequestCaptor.getValue();

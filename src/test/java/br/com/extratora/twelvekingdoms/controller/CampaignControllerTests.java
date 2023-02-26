@@ -252,7 +252,7 @@ class CampaignControllerTests {
 
         mockMvc.perform(builder).andExpect(status().isBadRequest());
 
-        verify(campaignService, times(0)).campaignDetails(any());
+        verify(campaignService, times(0)).campaignDetails(any(), any());
     }
 
     @Test
@@ -261,6 +261,6 @@ class CampaignControllerTests {
 
         mockMvc.perform(builder).andExpect(status().isOk());
 
-        verify(campaignService, times(1)).campaignDetails(any());
+        verify(campaignService, times(1)).campaignDetails(any(), any());
     }
 }

@@ -100,7 +100,7 @@ class AuthControllerTests {
     ) throws Exception {
         when(playerRepository.existsByUsername(any())).thenReturn(existsByUsernameResponse);
         when(playerRepository.existsByEmail(any())).thenReturn(existsByEmailResponse);
-        when(roleRepository.findByName(any())).thenReturn(getRoleSet(false).stream().findFirst());
+        when(roleRepository.findByName(any())).thenReturn(getRoleSet(false, false).stream().findFirst());
 
         RequestBuilder builder = MockMvcRequestBuilders.post("/auth/signup")
                 .content(objectMapper.writeValueAsString(getSignupRequest()))

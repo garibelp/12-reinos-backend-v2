@@ -120,5 +120,5 @@ public interface CampaignController {
             @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(hidden = true))),
             @ApiResponse(responseCode = "403", content = @Content(schema = @Schema(hidden = true)))
     })
-    ResponseEntity<CampaignDetailsResponse> details(UUID id);
+    ResponseEntity<CampaignDetailsResponse> details(@Parameter(hidden = true) UserDetailsImpl user, UUID id);
 }

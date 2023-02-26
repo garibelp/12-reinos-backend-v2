@@ -52,16 +52,24 @@ public class SheetControllerImpl implements SheetController {
     }
 
     @Override
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('USER','GM','ADMIN')")
     @GetMapping("/list")
     public ResponseEntity<SheetListResponse> list(
             @RequestParam(defaultValue = "0") int currentPage,
             @RequestParam(defaultValue = "5") int pageSize,
             @RequestParam(required = false) Sort.Direction sortDirection,
             @RequestParam(required = false) SheetSortEnum sortField,
+            @RequestParam(defaultValue = "false") boolean usePlayerProfile,
             @AuthenticationPrincipal UserDetailsImpl user
     ) {
-        Page<BasicSheetDto> sheetList = sheetService.sheetsPaginated(user, currentPage, pageSize, sortDirection, sortField);
+        Page<BasicSheetDto> sheetList = sheetService.sheetsPaginated(
+                user,
+                currentPage,
+                pageSize,
+                sortDirection,
+                sortField,
+                usePlayerProfile
+        );
         return ResponseEntity.ok(
                 new SheetListResponse(
                         sheetList.getTotalElements(),

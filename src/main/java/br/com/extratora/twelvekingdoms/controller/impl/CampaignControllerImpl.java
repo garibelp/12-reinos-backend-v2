@@ -26,7 +26,7 @@ public class CampaignControllerImpl implements CampaignController {
     }
 
     @Override
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('GM','ADMIN')")
     @PostMapping
     public ResponseEntity<IdResponse> create(
             @AuthenticationPrincipal UserDetailsImpl user,
@@ -37,7 +37,7 @@ public class CampaignControllerImpl implements CampaignController {
     }
 
     @Override
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('GM','ADMIN')")
     @PatchMapping("/addSheets/{campaignId}")
     public ResponseEntity<MessageResponse> addSheets(
             @AuthenticationPrincipal UserDetailsImpl user,
@@ -49,7 +49,7 @@ public class CampaignControllerImpl implements CampaignController {
     }
 
     @Override
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('GM','ADMIN')")
     @PatchMapping("/removeSheets/{campaignId}")
     public ResponseEntity<MessageResponse> removeSheets(
             @AuthenticationPrincipal UserDetailsImpl user,
@@ -61,7 +61,7 @@ public class CampaignControllerImpl implements CampaignController {
     }
 
     @Override
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('GM','ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<MessageResponse> delete(
             @AuthenticationPrincipal UserDetailsImpl user,
@@ -72,7 +72,7 @@ public class CampaignControllerImpl implements CampaignController {
     }
 
     @Override
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('GM','ADMIN')")
     @GetMapping("/list")
     public ResponseEntity<CampaignListResponse> list(
             @RequestParam(defaultValue = "0") int currentPage,
@@ -92,9 +92,12 @@ public class CampaignControllerImpl implements CampaignController {
     }
 
     @Override
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('GM','ADMIN')")
     @GetMapping
-    public ResponseEntity<CampaignDetailsResponse> details(@RequestParam UUID id) {
-        return ResponseEntity.ok(campaignService.campaignDetails(id));
+    public ResponseEntity<CampaignDetailsResponse> details(
+            @AuthenticationPrincipal UserDetailsImpl user,
+            @RequestParam UUID id
+    ) {
+        return ResponseEntity.ok(campaignService.campaignDetails(user, id));
     }
 }

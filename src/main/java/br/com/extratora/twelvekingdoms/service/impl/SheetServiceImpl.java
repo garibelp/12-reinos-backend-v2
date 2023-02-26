@@ -125,7 +125,8 @@ public class SheetServiceImpl implements SheetService {
             int currentPage,
             int pageSize,
             Sort.Direction sortDirection,
-            SheetSortEnum sortField
+            SheetSortEnum sortField,
+            boolean usePlayerProfile
     ) {
         var pageRequest = PageRequest.of(currentPage, pageSize);
 
@@ -133,8 +134,12 @@ public class SheetServiceImpl implements SheetService {
             pageRequest = pageRequest.withSort(sortDirection, sortField.toString().toLowerCase());
         }
 
-        if (user.isAdmin()) {
+        if (user.isAdmin() && !usePlayerProfile) {
             return sheetRepository.findSheetsPaginated(pageRequest);
+        }
+
+        if (user.isGm() && !usePlayerProfile) {
+            return sheetRepository.findActiveSheetsPaginated(pageRequest);
         }
 
         return sheetRepository.findActivePlayerSheetsPaginated(pageRequest, user.getId());

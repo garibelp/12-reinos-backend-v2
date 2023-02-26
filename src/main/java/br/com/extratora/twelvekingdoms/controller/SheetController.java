@@ -72,6 +72,7 @@ public interface SheetController {
             @Min(1) int pageSize,
             Sort.Direction sortDirection,
             SheetSortEnum sortField,
+            boolean usePlayerProfile,
             @Parameter(hidden = true) UserDetailsImpl user
     );
 
