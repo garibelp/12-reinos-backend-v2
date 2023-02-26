@@ -1,8 +1,8 @@
 package br.com.extratora.twelvekingdoms.service;
 
 import br.com.extratora.twelvekingdoms.exception.DataNotFoundException;
+import br.com.extratora.twelvekingdoms.exception.ForbiddenException;
 import br.com.extratora.twelvekingdoms.exception.InvalidDataException;
-import br.com.extratora.twelvekingdoms.exception.UnauthorizedException;
 import br.com.extratora.twelvekingdoms.model.CampaignModel;
 import br.com.extratora.twelvekingdoms.repository.CampaignRepository;
 import br.com.extratora.twelvekingdoms.repository.SheetRepository;
@@ -115,7 +115,7 @@ class CampaignServiceTests {
         when(campaignRepository.findActiveByIdAndPlayerIdEager(any(), any())).thenReturn(Optional.empty());
 
         assertThrows(
-                UnauthorizedException.class,
+                ForbiddenException.class,
                 () -> campaignService.addSheetsToCampaign(GM_USER, UUID_1, sheetList)
         );
 
@@ -169,7 +169,7 @@ class CampaignServiceTests {
         when(campaignRepository.findActiveByIdAndPlayerIdEager(any(), any())).thenReturn(Optional.empty());
 
         assertThrows(
-                UnauthorizedException.class,
+                ForbiddenException.class,
                 () -> campaignService.removeSheetsFromCampaign(GM_USER, UUID_1, sheetList)
         );
 
@@ -204,7 +204,7 @@ class CampaignServiceTests {
         when(campaignRepository.findActiveByIdAndPlayerIdEager(any(), any())).thenReturn(Optional.empty());
 
         assertThrows(
-                UnauthorizedException.class,
+                ForbiddenException.class,
                 () -> campaignService.deleteCampaign(GM_USER, UUID_1)
         );
 
@@ -254,7 +254,7 @@ class CampaignServiceTests {
         when(campaignRepository.existsByIdAndPlayerId(any(), any())).thenReturn(false);
 
         assertThrows(
-                UnauthorizedException.class,
+                ForbiddenException.class,
                 () -> campaignService.campaignDetails(GM_USER, UUID_1)
         );
 

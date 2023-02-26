@@ -6,8 +6,8 @@ import br.com.extratora.twelvekingdoms.enums.ErrorEnum;
 import br.com.extratora.twelvekingdoms.enums.RolesEnum;
 import br.com.extratora.twelvekingdoms.enums.SheetSortEnum;
 import br.com.extratora.twelvekingdoms.exception.DataNotFoundException;
+import br.com.extratora.twelvekingdoms.exception.ForbiddenException;
 import br.com.extratora.twelvekingdoms.exception.InvalidDataException;
-import br.com.extratora.twelvekingdoms.exception.UnauthorizedException;
 import br.com.extratora.twelvekingdoms.model.AptitudeModel;
 import br.com.extratora.twelvekingdoms.model.SheetModel;
 import br.com.extratora.twelvekingdoms.repository.BackgroundRepository;
@@ -229,7 +229,7 @@ class SheetServiceTests {
         var user = getUserDetailsUser();
 
         assertThrows(
-                UnauthorizedException.class,
+                ForbiddenException.class,
                 () -> sheetService.getSheet(user, UUID_2)
         );
     }
@@ -251,7 +251,7 @@ class SheetServiceTests {
         var user = getUserDetailsUser();
 
         assertThrows(
-                UnauthorizedException.class,
+                ForbiddenException.class,
                 () -> sheetService.getSheet(user, UUID_2)
         );
     }
@@ -282,7 +282,7 @@ class SheetServiceTests {
         when(sheetRepository.findByIdEager(UUID_2)).thenReturn(Optional.of(getSheetModel(UUID_2)));
         var user = getUserDetailsUser();
         assertThrows(
-                UnauthorizedException.class,
+                ForbiddenException.class,
                 () -> sheetService.deleteSheet(UUID_2, user)
         );
         verify(sheetRepository, times(1)).findByIdEager(UUID_2);
@@ -307,7 +307,7 @@ class SheetServiceTests {
         when(sheetRepository.findByIdEager(userId)).thenReturn(Optional.empty());
 
         assertThrows(
-                UnauthorizedException.class,
+                ForbiddenException.class,
                 () -> sheetService.deleteSheet(userId, user)
         );
 

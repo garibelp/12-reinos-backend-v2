@@ -5,7 +5,7 @@ import br.com.extratora.twelvekingdoms.dto.BasicPlayerDto;
 import br.com.extratora.twelvekingdoms.dto.response.ErrorResponse;
 import br.com.extratora.twelvekingdoms.enums.PlayerSortEnum;
 import br.com.extratora.twelvekingdoms.exception.DataNotFoundException;
-import br.com.extratora.twelvekingdoms.exception.UnauthorizedException;
+import br.com.extratora.twelvekingdoms.exception.ForbiddenException;
 import br.com.extratora.twelvekingdoms.service.PlayerService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -66,7 +66,7 @@ class PlayerControllerTests {
 
     @Test
     void givenDetailsCalled_whenMissingUserPermission_thenShouldReturnUnauthorized() throws Exception {
-        when(playerService.getPlayer(any(), any())).thenThrow(new UnauthorizedException());
+        when(playerService.getPlayer(any(), any())).thenThrow(new ForbiddenException());
         RequestBuilder builder = MockMvcRequestBuilders.get("/players")
                 .param("id", UUID_1.toString());
 

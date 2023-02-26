@@ -6,8 +6,8 @@ import br.com.extratora.twelvekingdoms.dto.request.UpdateSheetCurrentPointsReque
 import br.com.extratora.twelvekingdoms.enums.DiceEnum;
 import br.com.extratora.twelvekingdoms.enums.SheetSortEnum;
 import br.com.extratora.twelvekingdoms.exception.DataNotFoundException;
+import br.com.extratora.twelvekingdoms.exception.ForbiddenException;
 import br.com.extratora.twelvekingdoms.exception.InvalidDataException;
-import br.com.extratora.twelvekingdoms.exception.UnauthorizedException;
 import br.com.extratora.twelvekingdoms.model.*;
 import br.com.extratora.twelvekingdoms.repository.BackgroundRepository;
 import br.com.extratora.twelvekingdoms.repository.JobRepository;
@@ -212,13 +212,13 @@ public class SheetServiceImpl implements SheetService {
 
         if (sheetOpt.isEmpty()) {
             if (user.isAdmin()) throw new DataNotFoundException();
-            throw new UnauthorizedException();
+            throw new ForbiddenException();
         }
 
         SheetModel sheet = sheetOpt.get();
 
         if (!(user.isAdmin() || sheet.getPlayer().getId().equals(user.getId()))) {
-            throw new UnauthorizedException();
+            throw new ForbiddenException();
         }
 
         return sheet;

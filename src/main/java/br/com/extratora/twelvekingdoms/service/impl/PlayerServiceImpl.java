@@ -3,7 +3,7 @@ package br.com.extratora.twelvekingdoms.service.impl;
 import br.com.extratora.twelvekingdoms.dto.BasicPlayerDto;
 import br.com.extratora.twelvekingdoms.enums.PlayerSortEnum;
 import br.com.extratora.twelvekingdoms.exception.DataNotFoundException;
-import br.com.extratora.twelvekingdoms.exception.UnauthorizedException;
+import br.com.extratora.twelvekingdoms.exception.ForbiddenException;
 import br.com.extratora.twelvekingdoms.model.PlayerModel;
 import br.com.extratora.twelvekingdoms.repository.PlayerRepository;
 import br.com.extratora.twelvekingdoms.security.UserDetailsImpl;
@@ -56,7 +56,7 @@ public class PlayerServiceImpl implements PlayerService {
 
     private PlayerModel validateAndRetrievePlayerById(UUID id, UserDetailsImpl user) {
         if (!(id.equals(user.getId()) || user.isAdmin())) {
-            throw new UnauthorizedException();
+            throw new ForbiddenException();
         }
 
         Optional<PlayerModel> playerOpt = playerRepository.findById(id);

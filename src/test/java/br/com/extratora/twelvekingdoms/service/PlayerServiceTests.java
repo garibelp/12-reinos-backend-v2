@@ -2,7 +2,7 @@ package br.com.extratora.twelvekingdoms.service;
 
 import br.com.extratora.twelvekingdoms.enums.PlayerSortEnum;
 import br.com.extratora.twelvekingdoms.exception.DataNotFoundException;
-import br.com.extratora.twelvekingdoms.exception.UnauthorizedException;
+import br.com.extratora.twelvekingdoms.exception.ForbiddenException;
 import br.com.extratora.twelvekingdoms.model.PlayerModel;
 import br.com.extratora.twelvekingdoms.repository.PlayerRepository;
 import br.com.extratora.twelvekingdoms.security.UserDetailsImpl;
@@ -41,7 +41,7 @@ class PlayerServiceTests {
     @Test
     void givenDeletePlayer_whenUserNotAdminAndDifferentUUIDs_thenThrowUnauthorizedException() {
         assertThrows(
-                UnauthorizedException.class,
+                ForbiddenException.class,
                 () -> playerService.deletePlayer(UUID_2, user)
         );
 
@@ -94,7 +94,7 @@ class PlayerServiceTests {
     @Test
     void givenGetPlayer_whenUserNotAdminAndDifferentUUIDs_thenThrowUnauthorizedException() {
         assertThrows(
-                UnauthorizedException.class,
+                ForbiddenException.class,
                 () -> playerService.getPlayer(UUID_2, user)
         );
 

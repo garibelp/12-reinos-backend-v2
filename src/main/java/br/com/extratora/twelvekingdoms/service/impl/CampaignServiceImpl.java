@@ -5,8 +5,8 @@ import br.com.extratora.twelvekingdoms.dto.request.CreateCampaignRequest;
 import br.com.extratora.twelvekingdoms.dto.request.IdListRequest;
 import br.com.extratora.twelvekingdoms.dto.response.CampaignDetailsResponse;
 import br.com.extratora.twelvekingdoms.exception.DataNotFoundException;
+import br.com.extratora.twelvekingdoms.exception.ForbiddenException;
 import br.com.extratora.twelvekingdoms.exception.InvalidDataException;
-import br.com.extratora.twelvekingdoms.exception.UnauthorizedException;
 import br.com.extratora.twelvekingdoms.model.CampaignModel;
 import br.com.extratora.twelvekingdoms.model.PlayerModel;
 import br.com.extratora.twelvekingdoms.model.SheetModel;
@@ -110,7 +110,7 @@ public class CampaignServiceImpl implements CampaignService {
     public CampaignDetailsResponse campaignDetails(UserDetailsImpl user, UUID campaignId) {
         if (!user.isAdmin()) {
             var isUserCampaign = campaignRepository.existsByIdAndPlayerId(campaignId, user.getId());
-            if (!isUserCampaign) throw new UnauthorizedException();
+            if (!isUserCampaign) throw new ForbiddenException();
         }
         return new CampaignDetailsResponse(sheetRepository.findCampaignSheetByCampaignId(campaignId));
     }
@@ -122,7 +122,7 @@ public class CampaignServiceImpl implements CampaignService {
 
         if (campaignOpt.isEmpty()) {
             if (user.isAdmin()) throw new DataNotFoundException();
-            throw new UnauthorizedException();
+            throw new ForbiddenException();
         }
 
         return campaignOpt.get();

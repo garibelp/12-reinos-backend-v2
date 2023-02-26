@@ -32,6 +32,6 @@ public interface CampaignRepository extends JpaRepository<CampaignModel, UUID> {
     @Query(value = "select c from CampaignModel c inner join fetch c.sheets where c.id = ?1 and c.player.id = ?2 and c.isActive = true")
     Optional<CampaignModel> findActiveByIdAndPlayerIdEager(UUID campaignId, UUID playerId);
 
-    @Query(value = "select count(1) from CampaignModel c where c.id = ?1 and c.player.id = ?2")
+    @Query(value = "select count(*) > 0 from CampaignModel c where c.id = ?1 and c.player.id = ?2")
     boolean existsByIdAndPlayerId(UUID campaignId, UUID playerId);
 }

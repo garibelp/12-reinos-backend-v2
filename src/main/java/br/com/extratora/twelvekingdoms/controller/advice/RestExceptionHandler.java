@@ -3,9 +3,9 @@ package br.com.extratora.twelvekingdoms.controller.advice;
 import br.com.extratora.twelvekingdoms.dto.ErrorDto;
 import br.com.extratora.twelvekingdoms.dto.response.ErrorResponse;
 import br.com.extratora.twelvekingdoms.exception.DataNotFoundException;
+import br.com.extratora.twelvekingdoms.exception.ForbiddenException;
 import br.com.extratora.twelvekingdoms.exception.InvalidDataException;
 import br.com.extratora.twelvekingdoms.exception.ResponseFieldStatusException;
-import br.com.extratora.twelvekingdoms.exception.UnauthorizedException;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -89,9 +89,9 @@ public class RestExceptionHandler {
         return ResponseEntity.badRequest().body(res);
     }
 
-    @ExceptionHandler(UnauthorizedException.class)
-    public ResponseEntity<Void> handleUnauthorizedException(UnauthorizedException ex) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    @ExceptionHandler(ForbiddenException.class)
+    public ResponseEntity<Void> handleUnauthorizedException(ForbiddenException ex) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 
     @ExceptionHandler(DataNotFoundException.class)
