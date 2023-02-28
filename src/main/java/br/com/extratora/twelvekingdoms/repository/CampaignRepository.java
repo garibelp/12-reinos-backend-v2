@@ -13,6 +13,8 @@ import java.util.UUID;
 
 @Repository
 public interface CampaignRepository extends JpaRepository<CampaignModel, UUID> {
+    @Query(value = "select c from CampaignModel c where c.id = ?1 and c.isActive = true")
+    Optional<CampaignModel> findActiveById(UUID id);
 
     @Query(value = "select c from CampaignModel c inner join fetch c.sheets where c.id = ?1 and c.isActive = true")
     Optional<CampaignModel> findActiveByIdEager(UUID id);
@@ -28,6 +30,9 @@ public interface CampaignRepository extends JpaRepository<CampaignModel, UUID> {
             "where c.isActive = true",
             countQuery = "select count(*) from CampaignModel c where c.isActive = true")
     Page<BasicCampaignDto> findActiveCampaignsPaginated(Pageable pageable);
+
+    @Query(value = "select c from CampaignModel c where c.id = ?1 and c.player.id = ?2 and c.isActive = true")
+    Optional<CampaignModel> findActiveByIdAndPlayerId(UUID campaignId, UUID playerId);
 
     @Query(value = "select c from CampaignModel c inner join fetch c.sheets where c.id = ?1 and c.player.id = ?2 and c.isActive = true")
     Optional<CampaignModel> findActiveByIdAndPlayerIdEager(UUID campaignId, UUID playerId);

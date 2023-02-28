@@ -237,12 +237,27 @@ class CampaignServiceTests {
     }
 
     @Test
-    void givenCampaignDetails_whenCalledAndAdmin_thenShouldFetchData() {
-        when(campaignRepository.existsByIdAndPlayerId(any(), any())).thenReturn(true);
+    void givenCampaignDetails_whenAdminAndNotFound_thenShouldThrowException() {
+        when(campaignRepository.findActiveById(any())).thenReturn(Optional.empty());
+
+        assertThrows(
+                DataNotFoundException.class,
+                () -> campaignService.campaignDetails(ADMIN_USER, UUID_1)
+        );
+
+        verify(campaignRepository, times(1)).findActiveById(any());
+        verify(campaignRepository, times(0)).findActiveByIdAndPlayerId(any(), any());
+        verify(sheetRepository, times(0)).findCampaignSheetByCampaignId(any());
+    }
+
+    @Test
+    void givenCampaignDetails_whenFound_thenShouldFetchData() {
+        when(campaignRepository.findActiveById(any())).thenReturn(Optional.of(getCampaignModel()));
 
         campaignService.campaignDetails(ADMIN_USER, UUID_1);
 
-        verify(campaignRepository, times(0)).existsByIdAndPlayerId(any(), any());
+        verify(campaignRepository, times(1)).findActiveById(any());
+        verify(campaignRepository, times(0)).findActiveByIdAndPlayerId(any(), any());
         verify(sheetRepository, times(1)).findCampaignSheetByCampaignId(
                 idCaptor.capture()
         );
@@ -250,24 +265,30 @@ class CampaignServiceTests {
     }
 
     @Test
-    void givenCampaignDetails_whenNotFoundAndGm_thenShouldThrowException() {
-        when(campaignRepository.existsByIdAndPlayerId(any(), any())).thenReturn(false);
+    void givenCampaignDetails_whenGmAndNotFound_thenShouldThrowException() {
+        when(campaignRepository.findActiveByIdAndPlayerId(any(), any())).thenReturn(Optional.empty());
 
         assertThrows(
                 ForbiddenException.class,
                 () -> campaignService.campaignDetails(GM_USER, UUID_1)
         );
 
+        verify(campaignRepository, times(0)).findActiveById(any());
+        verify(campaignRepository, times(1)).findActiveByIdAndPlayerId(any(), any());
         verify(sheetRepository, times(0)).findCampaignSheetByCampaignId(any());
     }
 
     @Test
-    void givenCampaignDetails_whenCalledAndGm_thenShouldFetchData() {
-        when(campaignRepository.existsByIdAndPlayerId(any(), any())).thenReturn(true);
+    void givenCampaignDetails_whenGmAndFound_thenShouldFetchData() {
+        when(campaignRepository.findActiveByIdAndPlayerId(any(), any())).thenReturn(Optional.of(getCampaignModel()));
 
         campaignService.campaignDetails(GM_USER, UUID_1);
 
-        verify(campaignRepository, times(1)).existsByIdAndPlayerId(any(), any());
-        verify(sheetRepository, times(1)).findCampaignSheetByCampaignId(any());
+        verify(campaignRepository, times(0)).findActiveById(any());
+        verify(campaignRepository, times(1)).findActiveByIdAndPlayerId(any(), any());
+        verify(sheetRepository, times(1)).findCampaignSheetByCampaignId(
+                idCaptor.capture()
+        );
+        assertEquals(UUID_1, idCaptor.getValue());
     }
 }

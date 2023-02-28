@@ -108,11 +108,19 @@ public class CampaignServiceImpl implements CampaignService {
 
     @Override
     public CampaignDetailsResponse campaignDetails(UserDetailsImpl user, UUID campaignId) {
-        if (!user.isAdmin()) {
-            var isUserCampaign = campaignRepository.existsByIdAndPlayerId(campaignId, user.getId());
-            if (!isUserCampaign) throw new ForbiddenException();
+        var campaignOpt = user.isAdmin() ?
+                campaignRepository.findActiveById(campaignId) :
+                campaignRepository.findActiveByIdAndPlayerId(campaignId, user.getId());
+
+        if (campaignOpt.isEmpty()) {
+            if (user.isAdmin()) throw new DataNotFoundException();
+            throw new ForbiddenException();
         }
-        return new CampaignDetailsResponse(sheetRepository.findCampaignSheetByCampaignId(campaignId));
+
+        var campaign = campaignOpt.get();
+        var sheets = sheetRepository.findCampaignSheetByCampaignId(campaignId);
+
+        return new CampaignDetailsResponse(campaign.getId(), campaign.getName(), campaign.getNotes(), sheets);
     }
 
     private CampaignModel retrieveCampaignEager(UserDetailsImpl user, UUID campaignId) {
