@@ -16,7 +16,7 @@ public interface CampaignRepository extends JpaRepository<CampaignModel, UUID> {
     @Query(value = "select c from CampaignModel c where c.id = ?1 and c.isActive = true")
     Optional<CampaignModel> findActiveById(UUID id);
 
-    @Query(value = "select c from CampaignModel c inner join fetch c.sheets where c.id = ?1 and c.isActive = true")
+    @Query(value = "select c from CampaignModel c left join fetch c.sheets where c.id = ?1 and c.isActive = true")
     Optional<CampaignModel> findActiveByIdEager(UUID id);
 
     @Query(value = "select new br.com.extratora.twelvekingdoms.dto.BasicCampaignDto" +
@@ -34,7 +34,7 @@ public interface CampaignRepository extends JpaRepository<CampaignModel, UUID> {
     @Query(value = "select c from CampaignModel c where c.id = ?1 and c.player.id = ?2 and c.isActive = true")
     Optional<CampaignModel> findActiveByIdAndPlayerId(UUID campaignId, UUID playerId);
 
-    @Query(value = "select c from CampaignModel c inner join fetch c.sheets where c.id = ?1 and c.player.id = ?2 and c.isActive = true")
+    @Query(value = "select c from CampaignModel c left join fetch c.sheets where c.id = ?1 and c.player.id = ?2 and c.isActive = true")
     Optional<CampaignModel> findActiveByIdAndPlayerIdEager(UUID campaignId, UUID playerId);
 
     @Query(value = "select count(*) > 0 from CampaignModel c where c.id = ?1 and c.player.id = ?2")

@@ -18,12 +18,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.UUID;
 
 import static br.com.extratora.twelvekingdoms.enums.ErrorEnum.INVALID_CAMPAIGN_SHEET_LIST;
 
 @Service
+@Transactional
 public class CampaignServiceImpl implements CampaignService {
     private final CampaignRepository campaignRepository;
     private final SheetRepository sheetRepository;
