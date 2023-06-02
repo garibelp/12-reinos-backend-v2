@@ -28,7 +28,7 @@ properties or execute the docker-compose file on the root of the repository:
 
 ### - Docker compose for application execution
 
-If the user is using docker-compose, there a dockerfile on the project root with both adminer and  PostgreSQL already
+If the user is using docker-compose, there a dockerfile on the project root with both adminer and PostgreSQL already
 configured for the dev profile. To run the stack, just execute the following command on the root folder of the project:
 
 ```shell
@@ -46,13 +46,24 @@ To keep the quality of the code, sonarqube is needed to check the coverage and f
 already creates a sonar instance to be used.
 
 To use the sonar, follow the steps:
+
 - Access `http://localhost:9000` and login with the default user `admin` and password `admin`
 - Change the password on the first login
 - Execute command on the project:
+
 ```shell
 # Change value NEW_PWD to the updated password after the first login
 $ mvn clean jacoco:prepare-agent install jacoco:report -Dsonar.host.url=http://localhost:9000 -Dsonar.log.level=TRACE
  -Dsonar.verbose=true -Dsonar.login=admin -Dsonar.password=NEW_PWD -Dsonar.projectName=twelve-kingdoms-api sonar:sonar
+```
+
+In case of failure of sonar not starting due to vm.max_map_count too low error in Windows, execute the following
+commands in the Windows powershell:
+
+```shell
+# Command to 
+$ wsl -d docker-desktop
+$ sysctl -w vm.max_map_count=262144
 ```
 
 ### - Executing Backend
