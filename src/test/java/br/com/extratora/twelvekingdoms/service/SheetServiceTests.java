@@ -33,6 +33,8 @@ import java.util.Optional;
 import java.util.Set;
 
 import static br.com.extratora.twelvekingdoms.TestPayloads.*;
+import static br.com.extratora.twelvekingdoms.enums.ErrorEnum.INVALID_CAMPAIGN_SHEET_LIST;
+import static br.com.extratora.twelvekingdoms.enums.ErrorEnum.INVALID_SHEET_LEVEL_UP;
 import static br.com.extratora.twelvekingdoms.enums.RolesEnum.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -42,6 +44,8 @@ import static org.mockito.Mockito.*;
 class SheetServiceTests {
     @Captor
     private ArgumentCaptor<PageRequest> pageRequestCaptor;
+    @Captor
+    private ArgumentCaptor<SheetModel> sheetCaptor;
     @Mock
     private SheetRepository sheetRepository;
     @Mock
@@ -225,7 +229,7 @@ class SheetServiceTests {
 
     @Test
     void givenGetSheet_whenSheetNotFoundAndUserNotAdmin_thenShouldThrowUnauthorizedException() {
-        when(sheetRepository.findByIdEager(UUID_2)).thenReturn(Optional.empty());
+        when(sheetRepository.findActiveByIdEager(UUID_2)).thenReturn(Optional.empty());
         var user = getUserDetailsUser();
 
         assertThrows(
@@ -236,7 +240,7 @@ class SheetServiceTests {
 
     @Test
     void givenGetSheet_whenSheetNotFoundAndUserAdmin_thenShouldThrowDataNotFoundException() {
-        when(sheetRepository.findByIdEager(UUID_2)).thenReturn(Optional.empty());
+        when(sheetRepository.findActiveByIdEager(UUID_2)).thenReturn(Optional.empty());
         var user = getUserDetailsAdmin();
 
         assertThrows(
@@ -247,7 +251,7 @@ class SheetServiceTests {
 
     @Test
     void givenGetSheet_whenSheetNotFromUserAndUserNotAdmin_thenShouldThrowUnauthorizedException() {
-        when(sheetRepository.findByIdEager(UUID_2)).thenReturn(Optional.of(getSheetModel(UUID_2)));
+        when(sheetRepository.findActiveByIdEager(UUID_2)).thenReturn(Optional.of(getSheetModel(UUID_2)));
         var user = getUserDetailsUser();
 
         assertThrows(
@@ -259,7 +263,7 @@ class SheetServiceTests {
     @Test
     void givenGetSheet_whenSheetNotFromUserAndUserAdmin_thenShouldReturnSheet() {
         var expectedSheet = getSheetModel(UUID_2);
-        when(sheetRepository.findByIdEager(UUID_2)).thenReturn(Optional.of(expectedSheet));
+        when(sheetRepository.findActiveByIdEager(UUID_2)).thenReturn(Optional.of(expectedSheet));
 
         var receivedSheet = sheetService.getSheet(getUserDetailsAdmin(), UUID_2);
 
@@ -270,7 +274,7 @@ class SheetServiceTests {
     void givenGetSheet_whenSheetFromUser_thenShouldReturnSheet() {
         var user = getUserDetailsUser();
         var expectedSheet = getSheetModel(user.getId());
-        when(sheetRepository.findByIdEager(user.getId())).thenReturn(Optional.of(expectedSheet));
+        when(sheetRepository.findActiveByIdEager(user.getId())).thenReturn(Optional.of(expectedSheet));
 
         var receivedSheet = sheetService.getSheet(user, user.getId());
 
@@ -279,39 +283,39 @@ class SheetServiceTests {
 
     @Test
     void givenDeleteSheet_whenUserNotAdminAndDifferentUUIDs_thenThrowUnauthorizedException() {
-        when(sheetRepository.findByIdEager(UUID_2)).thenReturn(Optional.of(getSheetModel(UUID_2)));
+        when(sheetRepository.findActiveByIdEager(UUID_2)).thenReturn(Optional.of(getSheetModel(UUID_2)));
         var user = getUserDetailsUser();
         assertThrows(
                 ForbiddenException.class,
                 () -> sheetService.deleteSheet(UUID_2, user)
         );
-        verify(sheetRepository, times(1)).findByIdEager(UUID_2);
+        verify(sheetRepository, times(1)).findActiveByIdEager(UUID_2);
         verify(sheetRepository, times(0)).save(any());
     }
 
     @Test
     void givenDeleteSheet_whenUserAdminAndDifferentUUIDs_thenShouldDeleteSheet() {
-        when(sheetRepository.findByIdEager(UUID_2)).thenReturn(Optional.of(getSheetModel(UUID_2)));
+        when(sheetRepository.findActiveByIdEager(UUID_2)).thenReturn(Optional.of(getSheetModel(UUID_2)));
         var user = getUserDetailsAdmin();
 
         sheetService.deleteSheet(UUID_2, user);
 
-        verify(sheetRepository, times(1)).findByIdEager(UUID_2);
-        verify(sheetRepository, times(1)).save(any());
+        verify(sheetRepository, times(1)).findActiveByIdEager(UUID_2);
+        verify(sheetRepository, times(1)).save(sheetCaptor.capture());
     }
 
     @Test
     void givenDeleteSheet_whenSheetNotFoundOnDbAndUserNotAdmin_thenThrowUnauthorizedException() {
         var user = getUserDetailsUser();
         var userId = user.getId();
-        when(sheetRepository.findByIdEager(userId)).thenReturn(Optional.empty());
+        when(sheetRepository.findActiveByIdEager(userId)).thenReturn(Optional.empty());
 
         assertThrows(
                 ForbiddenException.class,
                 () -> sheetService.deleteSheet(userId, user)
         );
 
-        verify(sheetRepository, times(1)).findByIdEager(userId);
+        verify(sheetRepository, times(1)).findActiveByIdEager(userId);
         verify(sheetRepository, times(0)).save(any());
     }
 
@@ -319,14 +323,14 @@ class SheetServiceTests {
     void givenDeleteSheet_whenSheetNotFoundOnDbAndUserAdmin_thenThrowDataNotFoundException() {
         var user = getUserDetailsAdmin();
         var userId = user.getId();
-        when(sheetRepository.findByIdEager(userId)).thenReturn(Optional.empty());
+        when(sheetRepository.findActiveByIdEager(userId)).thenReturn(Optional.empty());
 
         assertThrows(
                 DataNotFoundException.class,
                 () -> sheetService.deleteSheet(userId, user)
         );
 
-        verify(sheetRepository, times(1)).findByIdEager(userId);
+        verify(sheetRepository, times(1)).findActiveByIdEager(userId);
         verify(sheetRepository, times(0)).save(any());
     }
 
@@ -334,11 +338,11 @@ class SheetServiceTests {
     void givenDeleteSheet_whenSheetFoundOnDbAndUserNotAdminAndOwner_thenShouldDeleteSheet() {
         var user = getUserDetailsUser();
         var userId = user.getId();
-        when(sheetRepository.findByIdEager(any())).thenReturn(Optional.of(getSheetModel(userId)));
+        when(sheetRepository.findActiveByIdEager(any())).thenReturn(Optional.of(getSheetModel(userId)));
 
         sheetService.deleteSheet(userId, user);
 
-        verify(sheetRepository, times(1)).findByIdEager(userId);
+        verify(sheetRepository, times(1)).findActiveByIdEager(userId);
         verify(sheetRepository, times(1)).save(any());
     }
 
@@ -445,7 +449,7 @@ class SheetServiceTests {
             Integer heroismCurrent
     ) {
         var dbSheet = getSheetModel(UUID_1);
-        when(sheetRepository.findByIdEager(any())).thenReturn(Optional.of(dbSheet));
+        when(sheetRepository.findActiveByIdEager(any())).thenReturn(Optional.of(dbSheet));
         ArgumentCaptor<SheetModel> captor = ArgumentCaptor.forClass(SheetModel.class);
 
         sheetService.updateCurrentPoints(
@@ -482,7 +486,7 @@ class SheetServiceTests {
         var dbSheet = getSheetModel(UUID_1);
         var user = getUserDetailsAdmin();
         var request = new UpdateSheetCurrentPointsRequest(mentalCurrent, physicalCurrent, heroismCurrent);
-        when(sheetRepository.findByIdEager(any())).thenReturn(Optional.of(dbSheet));
+        when(sheetRepository.findActiveByIdEager(any())).thenReturn(Optional.of(dbSheet));
 
         InvalidDataException ex = assertThrows(
                 InvalidDataException.class,
@@ -498,5 +502,106 @@ class SheetServiceTests {
         } else {
             assertTrue(ex.getDescription().contains("value cannot be greater than maximum value "));
         }
+    }
+
+    @Test
+    void givenLevelUp_whenUserNotAdminAndDifferentUUIDs_thenThrowUnauthorizedException() {
+        when(sheetRepository.findActiveByIdEager(UUID_2)).thenReturn(Optional.of(getSheetModel(UUID_2)));
+        var user = getUserDetailsUser();
+        assertThrows(
+                ForbiddenException.class,
+                () -> sheetService.levelUp(UUID_2, user)
+        );
+        verify(sheetRepository, times(1)).findActiveByIdEager(UUID_2);
+        verify(sheetRepository, times(0)).save(any());
+    }
+
+    @Test
+    void givenLevelUp_whenUserAdminAndDifferentUUIDs_thenShouldLevelUp() {
+        var sheet = getSheetModel(UUID_2);
+        var job = sheet.getJob();
+        var expectedLevel = sheet.getLevel() + 1;
+        var expectedPhysical = sheet.getPhysicalTotal() + job.getPhysicalPerLevel();
+        var expectedMental = sheet.getMentalTotal() + job.getMentalPerLevel();
+        when(sheetRepository.findActiveByIdEager(UUID_2)).thenReturn(Optional.of(sheet));
+        var user = getUserDetailsAdmin();
+
+        sheetService.levelUp(UUID_2, user);
+
+        verify(sheetRepository, times(1)).findActiveByIdEager(UUID_2);
+        verify(sheetRepository, times(1)).save(sheetCaptor.capture());
+        var savedSheet = sheetCaptor.getValue();
+        assertEquals(expectedLevel, savedSheet.getLevel());
+        assertEquals(expectedPhysical, savedSheet.getPhysicalTotal());
+        assertEquals(expectedMental, savedSheet.getMentalTotal());
+    }
+
+    @Test
+    void givenLevelUp_whenSheetNotFoundOnDbAndUserNotAdmin_thenThrowUnauthorizedException() {
+        var user = getUserDetailsUser();
+        var userId = user.getId();
+        when(sheetRepository.findActiveByIdEager(userId)).thenReturn(Optional.empty());
+
+        assertThrows(
+                ForbiddenException.class,
+                () -> sheetService.levelUp(userId, user)
+        );
+
+        verify(sheetRepository, times(1)).findActiveByIdEager(userId);
+        verify(sheetRepository, times(0)).save(any());
+    }
+
+    @Test
+    void givenLevelUp_whenSheetNotFoundOnDbAndUserAdmin_thenThrowDataNotFoundException() {
+        var user = getUserDetailsAdmin();
+        var userId = user.getId();
+        when(sheetRepository.findActiveByIdEager(userId)).thenReturn(Optional.empty());
+
+        assertThrows(
+                DataNotFoundException.class,
+                () -> sheetService.levelUp(userId, user)
+        );
+
+        verify(sheetRepository, times(1)).findActiveByIdEager(userId);
+        verify(sheetRepository, times(0)).save(any());
+    }
+
+    @Test
+    void givenLevelUp_whenSheetFoundOnDbAndUserNotAdminAndOwner_thenShouldShouldLevelUp() {
+        var user = getUserDetailsUser();
+        var userId = user.getId();
+        var sheet = getSheetModel(userId);
+        var job = sheet.getJob();
+        var expectedLevel = sheet.getLevel() + 1;
+        var expectedPhysical = sheet.getPhysicalTotal() + job.getPhysicalPerLevel();
+        var expectedMental = sheet.getMentalTotal() + job.getMentalPerLevel();
+        when(sheetRepository.findActiveByIdEager(any())).thenReturn(Optional.of(sheet));
+
+        sheetService.levelUp(userId, user);
+
+        verify(sheetRepository, times(1)).findActiveByIdEager(userId);
+        verify(sheetRepository, times(1)).save(sheetCaptor.capture());
+        var savedSheet = sheetCaptor.getValue();
+        assertEquals(expectedLevel, savedSheet.getLevel());
+        assertEquals(expectedPhysical, savedSheet.getPhysicalTotal());
+        assertEquals(expectedMental, savedSheet.getMentalTotal());
+    }
+
+    @Test
+    void givenLevelUp_whenSheetOnMaxLevel_thenShouldThrowInvalidDataException() {
+        var user = getUserDetailsUser();
+        var userId = user.getId();
+        var sheet = getSheetModel(user.getId());
+        sheet.setLevel(3);
+        when(sheetRepository.findActiveByIdEager(any())).thenReturn(Optional.of(sheet));
+
+        var thrownExc = assertThrows(
+                InvalidDataException.class,
+                () -> sheetService.levelUp(userId, user)
+        );
+
+        verify(sheetRepository, times(0)).save(any());
+        assertEquals(INVALID_SHEET_LEVEL_UP.getName(), thrownExc.getName());
+        assertEquals(INVALID_SHEET_LEVEL_UP.getDescription(), thrownExc.getDescription());
     }
 }

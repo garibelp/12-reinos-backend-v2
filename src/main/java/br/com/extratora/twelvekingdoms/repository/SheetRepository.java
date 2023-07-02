@@ -34,8 +34,8 @@ public interface SheetRepository extends JpaRepository<SheetModel, UUID> {
             countQuery = "select count(*) from SheetModel s where lower(s.name) like lower(concat('%', ?1,'%'))")
     Page<BasicSheetDto> findSheetsPaginatedFilterByNameOpt(Pageable pageable, String name);
 
-    @Query(value = "select s from SheetModel s inner join fetch s.aptitudes where s.id = ?1")
-    Optional<SheetModel> findByIdEager(UUID id);
+    @Query(value = "select s from SheetModel s inner join fetch s.aptitudes where s.id = ?1 and s.isActive = true")
+    Optional<SheetModel> findActiveByIdEager(UUID id);
 
     @Query(value = "select count(*) from SheetModel s where s.id in ?1 and s.isActive = true")
     Long countActiveByIdIn(List<UUID> ids);

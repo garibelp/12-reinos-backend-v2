@@ -94,6 +94,22 @@ With the application running, access the following URLs:
 - [Swagger UI](http://localhost:8080/swagger-ui/index.html#/)
 - [API Docs](http://localhost:8080/api-docs)
 
+## Versions changelog
+
+### - Release 1.2.0
+
+- Added level up support
+
+### - Release 1.1.0
+
+- Added dungeon master role
+- Added campaign CRUD support
+
+### - Release 1.0.0
+
+- User signin/signup
+- Added the character CRUD
+
 ## Trello Board
 
 - [12 Kingdoms](https://trello.com/b/wKoZUTPq/12-reinos-v2)

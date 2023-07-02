@@ -336,4 +336,25 @@ class SheetControllerTests {
 
         verify(sheetService, times(0)).updateCurrentPoints(any(), any(), any());
     }
+
+    @ParameterizedTest
+    @NullSource
+    @CsvSource({
+            "' '",
+            "invalid"
+    })
+    void givenLevelUp_whenInvalidUuid_thenShouldReturnBadRequest(String id) throws Exception {
+        RequestBuilder builder = MockMvcRequestBuilders.patch("/sheets/" + id + "/levelUp");
+
+        mockMvc.perform(builder).andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void givenLevelUp_whenValidUuid_thenShouldReturnOk() throws Exception {
+        RequestBuilder builder = MockMvcRequestBuilders.patch("/sheets/" + UUID.randomUUID() + "/levelUp");
+
+        mockMvc.perform(builder).andExpect(status().isOk());
+
+        verify(sheetService, times(1)).levelUp(any(), any());
+    }
 }

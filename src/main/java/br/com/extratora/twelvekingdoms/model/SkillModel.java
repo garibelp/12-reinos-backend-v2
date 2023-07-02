@@ -49,6 +49,9 @@ public class SkillModel implements Serializable {
     @Column(name = "RANGE")
     private Integer range;
 
+    @Column(name = "SKILL_LEVEL", nullable = false)
+    private int skillLevel;
+
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "JOB_ID", nullable = false)

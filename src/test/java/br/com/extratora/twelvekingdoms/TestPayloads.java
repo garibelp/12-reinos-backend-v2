@@ -217,6 +217,7 @@ public class TestPayloads {
                 .heroismCurrent(1)
                 .heroismTotal(1)
                 .player(getPlayerModel(playerId))
+                .job(getJobModel())
                 .build();
     }
 
@@ -247,6 +248,8 @@ public class TestPayloads {
                 .name("Artífice")
                 .physicalPoints(5)
                 .mentalPoints(8)
+                .physicalPerLevel(4)
+                .mentalPerLevel(2)
                 .aptitudes(getAptitudeModelSet())
                 .build();
     }

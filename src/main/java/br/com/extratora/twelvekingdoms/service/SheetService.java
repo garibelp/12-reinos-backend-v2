@@ -29,4 +29,5 @@ public interface SheetService {
 
     void updateCurrentPoints(UserDetailsImpl user, UUID id, UpdateSheetCurrentPointsRequest request);
 
+    void levelUp(UUID id, UserDetailsImpl user);
 }

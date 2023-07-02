@@ -168,6 +168,23 @@ public class SheetServiceImpl implements SheetService {
         sheetRepository.save(sheet);
     }
 
+    @Override
+    public void levelUp(UUID id, UserDetailsImpl user) {
+        SheetModel sheet = validateAndRetrieveSheetForUser(id, user);
+        var currentLevel = sheet.getLevel();
+        if (currentLevel >= 3) {
+            throw new InvalidDataException(INVALID_SHEET_LEVEL_UP);
+        }
+        sheet.setLevel(sheet.getLevel() + 1);
+
+        var bonusPhysical = sheet.getJob().getPhysicalPerLevel();
+        var bonusMental = sheet.getJob().getMentalPerLevel();
+        sheet.setPhysicalTotal(sheet.getPhysicalTotal() + bonusPhysical);
+        sheet.setMentalTotal(sheet.getMentalTotal() + bonusMental);
+
+        sheetRepository.save(sheet);
+    }
+
     private void validateCurrentPointsUpdate(Integer updated, int maxValue, String field) {
         if (updated != null) {
             if (updated > maxValue)
@@ -209,7 +226,7 @@ public class SheetServiceImpl implements SheetService {
     }
 
     private SheetModel validateAndRetrieveSheetForUser(UUID sheetId, UserDetailsImpl user) {
-        Optional<SheetModel> sheetOpt = sheetRepository.findByIdEager(sheetId);
+        Optional<SheetModel> sheetOpt = sheetRepository.findActiveByIdEager(sheetId);
 
         if (sheetOpt.isEmpty()) {
             if (user.isAdmin()) throw new DataNotFoundException();

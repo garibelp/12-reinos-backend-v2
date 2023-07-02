@@ -104,4 +104,13 @@ public class SheetControllerImpl implements SheetController {
         sheetService.updateCurrentPoints(user, id, request);
         return ResponseEntity.ok(new MessageResponse("Sheet current points updated successfully!"));
     }
+
+    @Override
+    @CrossOrigin(origins = "*")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    @PatchMapping("/{id}/levelUp")
+    public ResponseEntity<MessageResponse> levelUp(@AuthenticationPrincipal UserDetailsImpl user, @PathVariable UUID id) {
+        sheetService.levelUp(id, user);
+        return ResponseEntity.ok(new MessageResponse("Sheet successfully leveled up!"));
+    }
 }

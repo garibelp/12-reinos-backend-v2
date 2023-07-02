@@ -45,6 +45,12 @@ public class JobModel implements Serializable {
     @Column(name = "MENTAL_POINTS", nullable = false)
     private int mentalPoints;
 
+    @Column(name = "PHYSICAL_PER_LEVEL", nullable = false)
+    private int physicalPerLevel;
+
+    @Column(name = "MENTAL_PER_LEVEL", nullable = false)
+    private int mentalPerLevel;
+
     @OneToMany(mappedBy = "job", fetch = FetchType.EAGER)
     private Set<SkillModel> skills = new HashSet<>();
 
