@@ -112,6 +112,10 @@ public class SheetModel implements Serializable {
     @JoinColumn(name = "CAMPAIGN_ID", insertable = false, updatable = false)
     private CampaignModel campaign;
 
+    @ManyToOne
+    @JoinColumn(name = "WOUND_ID", insertable = false)
+    private WoundsModel wound;
+
     public void addAptitude(AptitudeModel aptitude) {
         aptitudes.add(aptitude);
     }

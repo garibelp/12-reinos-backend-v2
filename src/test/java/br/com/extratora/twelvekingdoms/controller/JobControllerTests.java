@@ -31,7 +31,7 @@ class JobControllerTests {
     private JobService jobService;
 
     @Test
-    void givenListCalled_whenUserLogger_thenShouldRetrieveList() throws Exception {
+    void givenListCalled_whenUserLogged_thenShouldRetrieveList() throws Exception {
         RequestBuilder builder = MockMvcRequestBuilders.get("/jobs/list");
 
         mockMvc.perform(builder).andExpect(status().isOk());

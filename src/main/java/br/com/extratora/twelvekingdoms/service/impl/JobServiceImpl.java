@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -31,12 +30,6 @@ public class JobServiceImpl implements JobService {
     @Override
     @Cacheable(value = "jobs", key = "#id")
     public JobModel getJob(UUID id) {
-        Optional<JobModel> jobOpt = jobRepository.findByIdEager(id);
-
-        if (jobOpt.isEmpty()) {
-            throw new DataNotFoundException();
-        }
-
-        return jobOpt.get();
+        return jobRepository.findByIdEager(id).orElseThrow(DataNotFoundException::new);
     }
 }

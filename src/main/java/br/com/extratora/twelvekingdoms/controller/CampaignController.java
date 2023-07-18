@@ -30,7 +30,8 @@ public interface CampaignController {
                     responseCode = "400",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
             ),
-            @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(hidden = true)))
+            @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(hidden = true))),
+            @ApiResponse(responseCode = "403", content = @Content(schema = @Schema(hidden = true)))
     })
     ResponseEntity<IdResponse> create(
             @Parameter(hidden = true) UserDetailsImpl user,
@@ -47,7 +48,8 @@ public interface CampaignController {
                     responseCode = "400",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
             ),
-            @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(hidden = true)))
+            @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(hidden = true))),
+            @ApiResponse(responseCode = "403", content = @Content(schema = @Schema(hidden = true)))
     })
     ResponseEntity<MessageResponse> addSheets(
             @Parameter(hidden = true) UserDetailsImpl user,
@@ -65,7 +67,8 @@ public interface CampaignController {
                     responseCode = "400",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
             ),
-            @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(hidden = true)))
+            @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(hidden = true))),
+            @ApiResponse(responseCode = "403", content = @Content(schema = @Schema(hidden = true)))
     })
     ResponseEntity<MessageResponse> removeSheets(
             @Parameter(hidden = true) UserDetailsImpl user,
@@ -99,7 +102,8 @@ public interface CampaignController {
                     responseCode = "400",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
             ),
-            @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(hidden = true)))
+            @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(hidden = true))),
+            @ApiResponse(responseCode = "403", content = @Content(schema = @Schema(hidden = true)))
     })
     ResponseEntity<CampaignListResponse> list(
             @Min(0) int currentPage,

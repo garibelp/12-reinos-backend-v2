@@ -347,6 +347,8 @@ class SheetControllerTests {
         RequestBuilder builder = MockMvcRequestBuilders.patch("/sheets/" + id + "/levelUp");
 
         mockMvc.perform(builder).andExpect(status().isBadRequest());
+
+        verify(sheetService, times(0)).levelUp(any(), any());
     }
 
     @Test
@@ -356,5 +358,54 @@ class SheetControllerTests {
         mockMvc.perform(builder).andExpect(status().isOk());
 
         verify(sheetService, times(1)).levelUp(any(), any());
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "' ',042a1652-d31f-4197-bbc5-1abbfeedd8b1",
+            "invalid,042a1652-d31f-4197-bbc5-1abbfeedd8b1",
+            "042a1652-d31f-4197-bbc5-1abbfeedd8b1,invalid",
+            "042a1652-d31f-4197-bbc5-1abbfeedd8b1,' '"
+    })
+    void givenAddWound_whenInvalidUuid_thenShouldReturnBadRequest(String sheetId, String woundId) throws Exception {
+        RequestBuilder builder = MockMvcRequestBuilders.patch("/sheets/" + sheetId + "/addWound")
+                .param("woundId", woundId);
+
+        mockMvc.perform(builder).andExpect(status().isBadRequest());
+
+        verify(sheetService, times(0)).addWound(any(), any(), any());
+    }
+
+    @Test
+    void givenAddWound_whenValidUuid_thenShouldReturnOk() throws Exception {
+        RequestBuilder builder = MockMvcRequestBuilders.patch("/sheets/" + UUID.randomUUID() + "/addWound")
+                .param("woundId", UUID.randomUUID().toString());
+
+        mockMvc.perform(builder).andExpect(status().isOk());
+
+        verify(sheetService, times(1)).addWound(any(), any(), any());
+    }
+
+    @ParameterizedTest
+    @NullSource
+    @CsvSource({
+            "' '",
+            "invalid"
+    })
+    void givenRemoveWound_whenInvalidUuid_thenShouldReturnBadRequest(String sheetId) throws Exception {
+        RequestBuilder builder = MockMvcRequestBuilders.patch("/sheets/" + sheetId + "/removeWound");
+
+        mockMvc.perform(builder).andExpect(status().isBadRequest());
+
+        verify(sheetService, times(0)).removeWound(any(), any());
+    }
+
+    @Test
+    void givenRemoveWound_whenValidUuid_thenShouldReturnOk() throws Exception {
+        RequestBuilder builder = MockMvcRequestBuilders.patch("/sheets/" + UUID.randomUUID() + "/removeWound");
+
+        mockMvc.perform(builder).andExpect(status().isOk());
+
+        verify(sheetService, times(1)).removeWound(any(), any());
     }
 }

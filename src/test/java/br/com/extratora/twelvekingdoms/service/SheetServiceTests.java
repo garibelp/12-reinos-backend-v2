@@ -10,10 +10,8 @@ import br.com.extratora.twelvekingdoms.exception.ForbiddenException;
 import br.com.extratora.twelvekingdoms.exception.InvalidDataException;
 import br.com.extratora.twelvekingdoms.model.AptitudeModel;
 import br.com.extratora.twelvekingdoms.model.SheetModel;
-import br.com.extratora.twelvekingdoms.repository.BackgroundRepository;
-import br.com.extratora.twelvekingdoms.repository.JobRepository;
-import br.com.extratora.twelvekingdoms.repository.LineageRepository;
-import br.com.extratora.twelvekingdoms.repository.SheetRepository;
+import br.com.extratora.twelvekingdoms.model.WoundsModel;
+import br.com.extratora.twelvekingdoms.repository.*;
 import br.com.extratora.twelvekingdoms.service.impl.SheetServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,8 +31,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import static br.com.extratora.twelvekingdoms.TestPayloads.*;
-import static br.com.extratora.twelvekingdoms.enums.ErrorEnum.INVALID_CAMPAIGN_SHEET_LIST;
-import static br.com.extratora.twelvekingdoms.enums.ErrorEnum.INVALID_SHEET_LEVEL_UP;
+import static br.com.extratora.twelvekingdoms.enums.ErrorEnum.*;
 import static br.com.extratora.twelvekingdoms.enums.RolesEnum.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -54,6 +51,8 @@ class SheetServiceTests {
     private BackgroundRepository backgroundRepository;
     @Mock
     private JobRepository jobRepository;
+    @Mock
+    private WoundRepository woundRepository;
     @InjectMocks
     private SheetServiceImpl sheetService;
 
@@ -603,5 +602,79 @@ class SheetServiceTests {
         verify(sheetRepository, times(0)).save(any());
         assertEquals(INVALID_SHEET_LEVEL_UP.getName(), thrownExc.getName());
         assertEquals(INVALID_SHEET_LEVEL_UP.getDescription(), thrownExc.getDescription());
+    }
+
+    @Test
+    void givenAddWound_whenAlreadyHaveWound_thenShouldThrowInvalidDataException() {
+        var user = getUserDetailsUser();
+        var sheet = getSheetModel(user.getId());
+        sheet.setWound(new WoundsModel());
+        when(sheetRepository.findActiveByIdEager(any())).thenReturn(Optional.of(sheet));
+
+        var thrownExc = assertThrows(
+                InvalidDataException.class,
+                () -> sheetService.addWound(user, UUID_1, UUID_2)
+        );
+
+        verify(sheetRepository, times(0)).save(any());
+        assertEquals(SHEET_WITH_WOUND.getName(), thrownExc.getName());
+        assertEquals(SHEET_WITH_WOUND.getDescription(), thrownExc.getDescription());
+    }
+
+    @Test
+    void givenAddWound_whenWoundNotFoundOnDb_thenShouldThrowInvalidDataException() {
+        var user = getUserDetailsUser();
+        var sheet = getSheetModel(user.getId());
+        when(sheetRepository.findActiveByIdEager(any())).thenReturn(Optional.of(sheet));
+        when(woundRepository.findById(any())).thenReturn(Optional.empty());
+
+        var thrownExc = assertThrows(
+                InvalidDataException.class,
+                () -> sheetService.addWound(user, UUID_1, UUID_2)
+        );
+
+        verify(sheetRepository, times(0)).save(any());
+        assertEquals(INVALID_WOUND_ID.getName(), thrownExc.getName());
+        assertEquals(INVALID_WOUND_ID.getDescription(), thrownExc.getDescription());
+    }
+
+    @Test
+    void givenAddWound_whenValidData_thenShouldSave() {
+        var user = getUserDetailsUser();
+        var sheet = getSheetModel(user.getId());
+        when(sheetRepository.findActiveByIdEager(any())).thenReturn(Optional.of(sheet));
+        when(woundRepository.findById(any())).thenReturn(Optional.of(new WoundsModel()));
+
+        sheetService.addWound(user, UUID_1, UUID_2);
+
+        verify(sheetRepository, times(1)).save(any());
+    }
+
+    @Test
+    void givenRemoveWound_whenNoWound_thenShouldThrowInvalidDataException() {
+        var user = getUserDetailsUser();
+        var sheet = getSheetModel(user.getId());
+        when(sheetRepository.findActiveByIdEager(any())).thenReturn(Optional.of(sheet));
+
+        var thrownExc = assertThrows(
+                InvalidDataException.class,
+                () -> sheetService.removeWound(user, UUID_1)
+        );
+
+        verify(sheetRepository, times(0)).save(any());
+        assertEquals(SHEET_WITHOUT_WOUND.getName(), thrownExc.getName());
+        assertEquals(SHEET_WITHOUT_WOUND.getDescription(), thrownExc.getDescription());
+    }
+
+    @Test
+    void givenRemoveWound_whenValidData_thenShouldSave() {
+        var user = getUserDetailsUser();
+        var sheet = getSheetModel(user.getId());
+        sheet.setWound(new WoundsModel());
+        when(sheetRepository.findActiveByIdEager(any())).thenReturn(Optional.of(sheet));
+
+        sheetService.removeWound(user, UUID_1);
+
+        verify(sheetRepository, times(1)).save(any());
     }
 }

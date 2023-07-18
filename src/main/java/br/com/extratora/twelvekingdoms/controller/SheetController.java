@@ -125,4 +125,41 @@ public interface SheetController {
             @ApiResponse(responseCode = "403", content = @Content(schema = @Schema(hidden = true)))
     })
     ResponseEntity<MessageResponse> levelUp(@Parameter(hidden = true) UserDetailsImpl user, UUID id);
+
+    @Operation(summary = "Add wound to existing sheet", security = @SecurityRequirement(name = "bearerAuth"))
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = MessageResponse.class))
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
+            ),
+            @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(hidden = true))),
+            @ApiResponse(responseCode = "403", content = @Content(schema = @Schema(hidden = true)))
+    })
+    ResponseEntity<MessageResponse> addWound(
+            @Parameter(hidden = true) UserDetailsImpl user,
+            UUID woundId,
+            UUID sheetId
+    );
+
+    @Operation(summary = "Remove wound from existing sheet", security = @SecurityRequirement(name = "bearerAuth"))
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = MessageResponse.class))
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
+            ),
+            @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(hidden = true))),
+            @ApiResponse(responseCode = "403", content = @Content(schema = @Schema(hidden = true)))
+    })
+    ResponseEntity<MessageResponse> removeWound(
+            @Parameter(hidden = true) UserDetailsImpl user,
+            UUID sheetId
+    );
 }

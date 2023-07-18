@@ -30,4 +30,8 @@ public interface SheetService {
     void updateCurrentPoints(UserDetailsImpl user, UUID id, UpdateSheetCurrentPointsRequest request);
 
     void levelUp(UUID id, UserDetailsImpl user);
+
+    void addWound(UserDetailsImpl user, UUID woundId, UUID sheetId);
+
+    void removeWound(UserDetailsImpl user, UUID sheetId);
 }

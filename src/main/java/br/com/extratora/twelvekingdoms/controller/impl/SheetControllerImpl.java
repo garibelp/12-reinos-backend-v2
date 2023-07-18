@@ -113,4 +113,26 @@ public class SheetControllerImpl implements SheetController {
         sheetService.levelUp(id, user);
         return ResponseEntity.ok(new MessageResponse("Sheet successfully leveled up!"));
     }
+
+    @Override
+    @CrossOrigin(origins = "*")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    @PatchMapping("/{sheetId}/addWound")
+    public ResponseEntity<MessageResponse> addWound(
+            @AuthenticationPrincipal UserDetailsImpl user,
+            @RequestParam UUID woundId,
+            @PathVariable UUID sheetId
+    ) {
+        sheetService.addWound(user, woundId, sheetId);
+        return ResponseEntity.ok(new MessageResponse("Successfully added wound to sheet!"));
+    }
+
+    @Override
+    @CrossOrigin(origins = "*")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    @PatchMapping("/{sheetId}/removeWound")
+    public ResponseEntity<MessageResponse> removeWound(@AuthenticationPrincipal UserDetailsImpl user, @PathVariable UUID sheetId) {
+        sheetService.removeWound(user, sheetId);
+        return ResponseEntity.ok(new MessageResponse("Successfully removed wound to sheet!"));
+    }
 }

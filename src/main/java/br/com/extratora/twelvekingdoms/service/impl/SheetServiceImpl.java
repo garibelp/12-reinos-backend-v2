@@ -9,10 +9,7 @@ import br.com.extratora.twelvekingdoms.exception.DataNotFoundException;
 import br.com.extratora.twelvekingdoms.exception.ForbiddenException;
 import br.com.extratora.twelvekingdoms.exception.InvalidDataException;
 import br.com.extratora.twelvekingdoms.model.*;
-import br.com.extratora.twelvekingdoms.repository.BackgroundRepository;
-import br.com.extratora.twelvekingdoms.repository.JobRepository;
-import br.com.extratora.twelvekingdoms.repository.LineageRepository;
-import br.com.extratora.twelvekingdoms.repository.SheetRepository;
+import br.com.extratora.twelvekingdoms.repository.*;
 import br.com.extratora.twelvekingdoms.security.UserDetailsImpl;
 import br.com.extratora.twelvekingdoms.service.SheetService;
 import org.springframework.data.domain.Page;
@@ -23,7 +20,6 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -39,17 +35,20 @@ public class SheetServiceImpl implements SheetService {
     private final LineageRepository lineageRepository;
     private final BackgroundRepository backgroundRepository;
     private final JobRepository jobRepository;
+    private final WoundRepository woundRepository;
 
     public SheetServiceImpl(
             SheetRepository sheetRepository,
             LineageRepository lineageRepository,
             BackgroundRepository backgroundRepository,
-            JobRepository jobRepository
+            JobRepository jobRepository,
+            WoundRepository woundRepository
     ) {
         this.sheetRepository = sheetRepository;
         this.lineageRepository = lineageRepository;
         this.backgroundRepository = backgroundRepository;
         this.jobRepository = jobRepository;
+        this.woundRepository = woundRepository;
     }
 
     @Override
@@ -60,21 +59,13 @@ public class SheetServiceImpl implements SheetService {
             throw new InvalidDataException(INVALID_CREATION_LINEAGE);
         }
 
-        var backgroundOpt = backgroundRepository.findById(request.getBackgroundId());
+        var background = backgroundRepository.findById(request.getBackgroundId())
+                .orElseThrow(() -> new InvalidDataException(INVALID_CREATION_BACKGROUND));
 
-        if (backgroundOpt.isEmpty()) {
-            throw new InvalidDataException(INVALID_CREATION_BACKGROUND);
-        }
+        var job = jobRepository.findByIdEager(request.getJobId())
+                .orElseThrow(() -> new InvalidDataException(INVALID_CREATION_JOB));
 
-        var jobOpt = jobRepository.findByIdEager(request.getJobId());
-
-        if (jobOpt.isEmpty()) {
-            throw new InvalidDataException(INVALID_CREATION_JOB);
-        }
-
-        var job = jobOpt.get();
         var aptitudeList = request.getAptitudeList();
-
         validateAptitudes(job, aptitudeList);
 
         var player = new PlayerModel();
@@ -82,9 +73,6 @@ public class SheetServiceImpl implements SheetService {
 
         var lineage = new LineageModel();
         lineage.setId(request.getLineageId());
-
-        var background = backgroundOpt.get();
-
 
         var sheet = new SheetModel();
         sheet.setPlayer(player);
@@ -185,6 +173,34 @@ public class SheetServiceImpl implements SheetService {
         sheetRepository.save(sheet);
     }
 
+    @Override
+    @Transactional
+    public void addWound(UserDetailsImpl user, UUID woundId, UUID sheetId) {
+        var sheet = validateAndRetrieveSheetForUser(sheetId, user);
+
+        if (sheet.getWound() != null) {
+            throw new InvalidDataException(SHEET_WITH_WOUND);
+        }
+
+        var wound = woundRepository.findById(woundId).orElseThrow(() -> new InvalidDataException(INVALID_WOUND_ID));
+        wound.addSheet(sheet);
+        sheetRepository.save(sheet);
+    }
+
+    @Override
+    @Transactional
+    public void removeWound(UserDetailsImpl user, UUID sheetId) {
+        var sheet = validateAndRetrieveSheetForUser(sheetId, user);
+
+        var wound = sheet.getWound();
+        if (wound == null) {
+            throw new InvalidDataException(SHEET_WITHOUT_WOUND);
+        }
+
+        wound.removeSheet(sheet);
+        sheetRepository.save(sheet);
+    }
+
     private void validateCurrentPointsUpdate(Integer updated, int maxValue, String field) {
         if (updated != null) {
             if (updated > maxValue)
@@ -226,14 +242,14 @@ public class SheetServiceImpl implements SheetService {
     }
 
     private SheetModel validateAndRetrieveSheetForUser(UUID sheetId, UserDetailsImpl user) {
-        Optional<SheetModel> sheetOpt = sheetRepository.findActiveByIdEager(sheetId);
+        var sheetOpt = sheetRepository.findActiveByIdEager(sheetId);
 
         if (sheetOpt.isEmpty()) {
             if (user.isAdmin()) throw new DataNotFoundException();
             throw new ForbiddenException();
         }
 
-        SheetModel sheet = sheetOpt.get();
+        var sheet = sheetOpt.get();
 
         if (!(user.isAdmin() || sheet.getPlayer().getId().equals(user.getId()))) {
             throw new ForbiddenException();

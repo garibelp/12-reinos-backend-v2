@@ -9,7 +9,6 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -29,12 +28,6 @@ public class LineageServiceImpl implements LineageService {
     @Override
     @Cacheable(value = "lineages", key = "#id")
     public LineageModel getLineage(UUID id) {
-        Optional<LineageModel> lineageOpt = lineageRepository.findById(id);
-
-        if (lineageOpt.isEmpty()) {
-            throw new DataNotFoundException();
-        }
-
-        return lineageOpt.get();
+        return lineageRepository.findById(id).orElseThrow(DataNotFoundException::new);
     }
 }
