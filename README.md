@@ -96,6 +96,10 @@ With the application running, access the following URLs:
 
 ## Versions changelog
 
+### - Release 1.4.1
+
+- Fixes of death roll tests logic
+
 ### - Release 1.4.0
 
 - Added death roll tests

@@ -4,7 +4,7 @@ import br.com.extratora.twelvekingdoms.controller.PlayerController;
 import br.com.extratora.twelvekingdoms.dto.BasicPlayerDto;
 import br.com.extratora.twelvekingdoms.dto.response.MessageResponse;
 import br.com.extratora.twelvekingdoms.dto.response.PlayerListResponse;
-import br.com.extratora.twelvekingdoms.enums.PlayerSortEnum;
+import br.com.extratora.twelvekingdoms.enums.PlayerSort;
 import br.com.extratora.twelvekingdoms.model.PlayerModel;
 import br.com.extratora.twelvekingdoms.security.UserDetailsImpl;
 import br.com.extratora.twelvekingdoms.service.PlayerService;
@@ -48,7 +48,7 @@ public class PlayerControllerImpl implements PlayerController {
             @RequestParam(defaultValue = "0") int currentPage,
             @RequestParam(defaultValue = "5") int pageSize,
             @RequestParam(required = false) Sort.Direction sortDirection,
-            @RequestParam(required = false) PlayerSortEnum sortField
+            @RequestParam(required = false) PlayerSort sortField
     ) {
         Page<BasicPlayerDto> playerList = playerService.playersPaginated(currentPage, pageSize, sortDirection, sortField);
         return ResponseEntity.ok(

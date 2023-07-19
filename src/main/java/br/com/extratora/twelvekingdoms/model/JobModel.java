@@ -1,6 +1,6 @@
 package br.com.extratora.twelvekingdoms.model;
 
-import br.com.extratora.twelvekingdoms.enums.AttributesEnum;
+import br.com.extratora.twelvekingdoms.enums.Attributes;
 import lombok.*;
 import org.hibernate.annotations.Type;
 
@@ -37,7 +37,7 @@ public class JobModel implements Serializable {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "MAIN_ATTRIBUTE", nullable = false, length = 20)
-    private AttributesEnum mainAttribute;
+    private Attributes mainAttribute;
 
     @Column(name = "PHYSICAL_POINTS", nullable = false)
     private int physicalPoints;

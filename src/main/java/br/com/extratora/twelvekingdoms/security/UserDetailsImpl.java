@@ -1,6 +1,6 @@
 package br.com.extratora.twelvekingdoms.security;
 
-import br.com.extratora.twelvekingdoms.enums.RolesEnum;
+import br.com.extratora.twelvekingdoms.enums.Roles;
 import br.com.extratora.twelvekingdoms.model.PlayerModel;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
@@ -72,13 +72,13 @@ public class UserDetailsImpl implements UserDetails {
     public boolean isAdmin() {
         return getAuthorities()
                 .stream()
-                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals(RolesEnum.ROLE_ADMIN.toString()));
+                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals(Roles.ROLE_ADMIN.toString()));
     }
 
     public boolean isGm() {
         return getAuthorities()
                 .stream()
-                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals(RolesEnum.ROLE_GM.toString()));
+                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals(Roles.ROLE_GM.toString()));
     }
 
     @Override

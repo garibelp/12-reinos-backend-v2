@@ -1,6 +1,6 @@
 package br.com.extratora.twelvekingdoms.dto.request;
 
-import br.com.extratora.twelvekingdoms.enums.DiceEnum;
+import br.com.extratora.twelvekingdoms.enums.Dice;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -35,16 +35,16 @@ public class CreateSheetRequest {
     private List<UUID> aptitudeList = new ArrayList<>();
 
     @NotNull
-    private DiceEnum intelligence;
+    private Dice intelligence;
 
     @NotNull
-    private DiceEnum cunning;
+    private Dice cunning;
 
     @NotNull
-    private DiceEnum tenacity;
+    private Dice tenacity;
 
     @NotNull
-    private DiceEnum celerity;
+    private Dice celerity;
 
     @Max(200)
     private String bond;

@@ -1,5 +1,5 @@
 package br.com.extratora.twelvekingdoms.enums;
 
-public enum RolesEnum {
+public enum Roles {
     ROLE_USER, ROLE_GM, ROLE_ADMIN
 }

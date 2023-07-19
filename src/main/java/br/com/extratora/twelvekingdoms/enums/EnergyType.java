@@ -1,5 +1,5 @@
 package br.com.extratora.twelvekingdoms.enums;
 
-public enum EnergyTypeEnum {
+public enum EnergyType {
     PHYSICAL, MENTAL
 }

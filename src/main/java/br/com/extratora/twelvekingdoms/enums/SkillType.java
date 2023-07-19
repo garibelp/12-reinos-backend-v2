@@ -1,5 +1,5 @@
 package br.com.extratora.twelvekingdoms.enums;
 
-public enum SkillTypeEnum {
+public enum SkillType {
     INTERPRETATION, COMBAT, BASIC
 }

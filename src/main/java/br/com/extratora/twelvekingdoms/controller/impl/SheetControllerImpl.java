@@ -3,11 +3,12 @@ package br.com.extratora.twelvekingdoms.controller.impl;
 import br.com.extratora.twelvekingdoms.controller.SheetController;
 import br.com.extratora.twelvekingdoms.dto.BasicSheetDto;
 import br.com.extratora.twelvekingdoms.dto.request.CreateSheetRequest;
+import br.com.extratora.twelvekingdoms.dto.request.UpdateDeathRollsRequest;
 import br.com.extratora.twelvekingdoms.dto.request.UpdateSheetCurrentPointsRequest;
 import br.com.extratora.twelvekingdoms.dto.response.IdResponse;
 import br.com.extratora.twelvekingdoms.dto.response.MessageResponse;
 import br.com.extratora.twelvekingdoms.dto.response.SheetListResponse;
-import br.com.extratora.twelvekingdoms.enums.SheetSortEnum;
+import br.com.extratora.twelvekingdoms.enums.SheetSort;
 import br.com.extratora.twelvekingdoms.model.SheetModel;
 import br.com.extratora.twelvekingdoms.security.UserDetailsImpl;
 import br.com.extratora.twelvekingdoms.service.SheetService;
@@ -58,7 +59,7 @@ public class SheetControllerImpl implements SheetController {
             @RequestParam(defaultValue = "0") int currentPage,
             @RequestParam(defaultValue = "5") int pageSize,
             @RequestParam(required = false) Sort.Direction sortDirection,
-            @RequestParam(required = false) SheetSortEnum sortField,
+            @RequestParam(required = false) SheetSort sortField,
             @RequestParam(defaultValue = "false") boolean usePlayerProfile,
             @RequestParam(defaultValue = "") String nameFilter,
             @AuthenticationPrincipal UserDetailsImpl user
@@ -139,18 +140,14 @@ public class SheetControllerImpl implements SheetController {
     @Override
     @CrossOrigin(origins = "*")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    @PatchMapping("/{sheetId}/failDeathRoll")
-    public ResponseEntity<MessageResponse> failDeathRoll(@AuthenticationPrincipal UserDetailsImpl user, @PathVariable UUID sheetId) {
-        sheetService.failDeathRoll(user, sheetId);
-        return ResponseEntity.ok(new MessageResponse("Successfully updated sheet death roll failure!"));
+    @PatchMapping("/{sheetId}/updateDeathRolls")
+    public ResponseEntity<MessageResponse> updateDeathRolls(
+            @AuthenticationPrincipal UserDetailsImpl user,
+            @PathVariable UUID sheetId,
+            @RequestBody UpdateDeathRollsRequest req
+    ) {
+        sheetService.updateDeathRolls(user, sheetId, req);
+        return ResponseEntity.ok(new MessageResponse("Successfully updated sheet death rolls!"));
     }
 
-    @Override
-    @CrossOrigin(origins = "*")
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    @PatchMapping("/{sheetId}/resetDeathRoll")
-    public ResponseEntity<MessageResponse> resetDeathRoll(@AuthenticationPrincipal UserDetailsImpl user, @PathVariable UUID sheetId) {
-        sheetService.resetDeathRoll(user, sheetId);
-        return ResponseEntity.ok(new MessageResponse("Successfully reset sheet death rolls!"));
-    }
 }

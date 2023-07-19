@@ -3,7 +3,7 @@ package br.com.extratora.twelvekingdoms.controller;
 import br.com.extratora.twelvekingdoms.controller.impl.PlayerControllerImpl;
 import br.com.extratora.twelvekingdoms.dto.BasicPlayerDto;
 import br.com.extratora.twelvekingdoms.dto.response.ErrorResponse;
-import br.com.extratora.twelvekingdoms.enums.PlayerSortEnum;
+import br.com.extratora.twelvekingdoms.enums.PlayerSort;
 import br.com.extratora.twelvekingdoms.exception.DataNotFoundException;
 import br.com.extratora.twelvekingdoms.exception.ForbiddenException;
 import br.com.extratora.twelvekingdoms.service.PlayerService;
@@ -135,7 +135,7 @@ class PlayerControllerTests {
                 .map(d -> Sort.Direction.valueOf(d.toUpperCase()))
                 .orElse(null);
         var expectedSortField = Optional.ofNullable(sortField)
-                .map(s -> PlayerSortEnum.valueOf(sortField.toUpperCase()))
+                .map(s -> PlayerSort.valueOf(sortField.toUpperCase()))
                 .orElse(null);
 
         Page<BasicPlayerDto> dbData = getPlayerDtoPage();

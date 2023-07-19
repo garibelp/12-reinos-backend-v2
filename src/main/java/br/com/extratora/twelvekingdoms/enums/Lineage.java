@@ -1,6 +1,6 @@
 package br.com.extratora.twelvekingdoms.enums;
 
-public enum LineageEnum {
+public enum Lineage {
     ANAO("Anão"),
     ASHARIANO("Ashariano"),
     COGNI("Cogni"),
@@ -16,7 +16,7 @@ public enum LineageEnum {
 
     private final String name;
 
-    LineageEnum(String name) {
+    Lineage(String name) {
         this.name = name;
     }
 

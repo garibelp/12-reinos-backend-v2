@@ -1,12 +1,13 @@
 package br.com.extratora.twelvekingdoms.controller;
 
 import br.com.extratora.twelvekingdoms.dto.request.CreateSheetRequest;
+import br.com.extratora.twelvekingdoms.dto.request.UpdateDeathRollsRequest;
 import br.com.extratora.twelvekingdoms.dto.request.UpdateSheetCurrentPointsRequest;
 import br.com.extratora.twelvekingdoms.dto.response.ErrorResponse;
 import br.com.extratora.twelvekingdoms.dto.response.IdResponse;
 import br.com.extratora.twelvekingdoms.dto.response.MessageResponse;
 import br.com.extratora.twelvekingdoms.dto.response.SheetListResponse;
-import br.com.extratora.twelvekingdoms.enums.SheetSortEnum;
+import br.com.extratora.twelvekingdoms.enums.SheetSort;
 import br.com.extratora.twelvekingdoms.model.SheetModel;
 import br.com.extratora.twelvekingdoms.security.UserDetailsImpl;
 import io.swagger.v3.oas.annotations.Operation;
@@ -71,7 +72,7 @@ public interface SheetController {
             @Min(0) int currentPage,
             @Min(1) int pageSize,
             Sort.Direction sortDirection,
-            SheetSortEnum sortField,
+            SheetSort sortField,
             boolean usePlayerProfile,
             String nameFilter,
             @Parameter(hidden = true) UserDetailsImpl user
@@ -163,7 +164,7 @@ public interface SheetController {
             UUID sheetId
     );
 
-    @Operation(summary = "Fails a death roll of sheet", security = @SecurityRequirement(name = "bearerAuth"))
+    @Operation(summary = "Update death rolls of sheet", security = @SecurityRequirement(name = "bearerAuth"))
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
@@ -176,26 +177,9 @@ public interface SheetController {
             @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(hidden = true))),
             @ApiResponse(responseCode = "403", content = @Content(schema = @Schema(hidden = true)))
     })
-    ResponseEntity<MessageResponse> failDeathRoll(
+    ResponseEntity<MessageResponse> updateDeathRolls(
             @Parameter(hidden = true) UserDetailsImpl user,
-            UUID sheetId
-    );
-
-    @Operation(summary = "Reset death rolls of sheet", security = @SecurityRequirement(name = "bearerAuth"))
-    @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "200",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = MessageResponse.class))
-            ),
-            @ApiResponse(
-                    responseCode = "400",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
-            ),
-            @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(hidden = true))),
-            @ApiResponse(responseCode = "403", content = @Content(schema = @Schema(hidden = true)))
-    })
-    ResponseEntity<MessageResponse> resetDeathRoll(
-            @Parameter(hidden = true) UserDetailsImpl user,
-            UUID sheetId
+            UUID sheetId,
+            @Valid UpdateDeathRollsRequest req
     );
 }

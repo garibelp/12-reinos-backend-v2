@@ -1,24 +1,24 @@
 package br.com.extratora.twelvekingdoms.converter;
 
-import br.com.extratora.twelvekingdoms.enums.DiceEnum;
+import br.com.extratora.twelvekingdoms.enums.Dice;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 import java.util.stream.Stream;
 
 @Converter(autoApply = true)
-public class DiceEnumAttributeConverter implements AttributeConverter<DiceEnum, Integer> {
+public class DiceEnumAttributeConverter implements AttributeConverter<Dice, Integer> {
     @Override
-    public Integer convertToDatabaseColumn(DiceEnum diceEnum) {
-        return diceEnum.getValue();
+    public Integer convertToDatabaseColumn(Dice dice) {
+        return dice.getValue();
     }
 
     @Override
-    public DiceEnum convertToEntityAttribute(Integer value) {
+    public Dice convertToEntityAttribute(Integer value) {
         if (value == null) {
             return null;
         }
-        return Stream.of(DiceEnum.values())
+        return Stream.of(Dice.values())
                 .filter(d -> value == d.getValue())
                 .findFirst()
                 .orElseThrow(IllegalArgumentException::new);

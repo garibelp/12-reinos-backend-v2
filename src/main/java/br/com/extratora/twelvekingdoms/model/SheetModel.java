@@ -1,6 +1,7 @@
 package br.com.extratora.twelvekingdoms.model;
 
-import br.com.extratora.twelvekingdoms.enums.DiceEnum;
+import br.com.extratora.twelvekingdoms.enums.DeathRollStatus;
+import br.com.extratora.twelvekingdoms.enums.Dice;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -31,16 +32,16 @@ public class SheetModel implements Serializable {
     private UUID id;
 
     @Column(name = "INTELLIGENCE", nullable = false)
-    private DiceEnum intelligence;
+    private Dice intelligence;
 
     @Column(name = "CUNNING", nullable = false)
-    private DiceEnum cunning;
+    private Dice cunning;
 
     @Column(name = "TENACITY", nullable = false)
-    private DiceEnum tenacity;
+    private Dice tenacity;
 
     @Column(name = "CELERITY", nullable = false)
-    private DiceEnum celerity;
+    private Dice celerity;
 
     @Column(name = "NAME", nullable = false, length = 30)
     private String name;
@@ -76,8 +77,17 @@ public class SheetModel implements Serializable {
     @Column(name = "NOTES")
     private String notes;
 
-    @Column(name = "DEATH_ROLLS")
-    private Short deathRolls;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "DEATH_ROLL_BODY")
+    private DeathRollStatus deathRollBody = DeathRollStatus.UNCHECKED;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "DEATH_ROLL_MIND")
+    private DeathRollStatus deathRollMind = DeathRollStatus.UNCHECKED;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "DEATH_ROLL_SPIRIT")
+    private DeathRollStatus deathRollSpirit = DeathRollStatus.UNCHECKED;
 
     @Column(name = "IS_ACTIVE", nullable = false)
     private boolean isActive = true;

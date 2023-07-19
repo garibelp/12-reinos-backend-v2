@@ -1,7 +1,7 @@
 package br.com.extratora.twelvekingdoms.model;
 
-import br.com.extratora.twelvekingdoms.enums.EnergyTypeEnum;
-import br.com.extratora.twelvekingdoms.enums.SkillTypeEnum;
+import br.com.extratora.twelvekingdoms.enums.EnergyType;
+import br.com.extratora.twelvekingdoms.enums.SkillType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.annotations.Type;
@@ -40,11 +40,11 @@ public class SkillModel implements Serializable {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "ENERGY_TYPE", nullable = false, length = 12)
-    private EnergyTypeEnum energyType;
+    private EnergyType energyType;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "SKILL_TYPE", nullable = false)
-    private SkillTypeEnum skillType;
+    private SkillType skillType;
 
     @Column(name = "RANGE")
     private Integer range;

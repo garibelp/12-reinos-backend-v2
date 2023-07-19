@@ -2,9 +2,10 @@ package br.com.extratora.twelvekingdoms.service.impl;
 
 import br.com.extratora.twelvekingdoms.dto.BasicSheetDto;
 import br.com.extratora.twelvekingdoms.dto.request.CreateSheetRequest;
+import br.com.extratora.twelvekingdoms.dto.request.UpdateDeathRollsRequest;
 import br.com.extratora.twelvekingdoms.dto.request.UpdateSheetCurrentPointsRequest;
-import br.com.extratora.twelvekingdoms.enums.DiceEnum;
-import br.com.extratora.twelvekingdoms.enums.SheetSortEnum;
+import br.com.extratora.twelvekingdoms.enums.Dice;
+import br.com.extratora.twelvekingdoms.enums.SheetSort;
 import br.com.extratora.twelvekingdoms.exception.DataNotFoundException;
 import br.com.extratora.twelvekingdoms.exception.ForbiddenException;
 import br.com.extratora.twelvekingdoms.exception.InvalidDataException;
@@ -24,8 +25,8 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static br.com.extratora.twelvekingdoms.enums.DiceEnum.*;
-import static br.com.extratora.twelvekingdoms.enums.ErrorEnum.*;
+import static br.com.extratora.twelvekingdoms.enums.Dice.*;
+import static br.com.extratora.twelvekingdoms.enums.Error.*;
 
 @Service
 @Transactional
@@ -113,7 +114,7 @@ public class SheetServiceImpl implements SheetService {
             int currentPage,
             int pageSize,
             Sort.Direction sortDirection,
-            SheetSortEnum sortField,
+            SheetSort sortField,
             boolean usePlayerProfile,
             String nameFilter
     ) {
@@ -203,20 +204,13 @@ public class SheetServiceImpl implements SheetService {
 
     @Override
     @Transactional
-    public void failDeathRoll(UserDetailsImpl user, UUID sheetId) {
+    public void updateDeathRolls(UserDetailsImpl user, UUID sheetId, UpdateDeathRollsRequest req) {
         var sheet = validateAndRetrieveSheetForUser(sheetId, user);
-        if (sheet.getDeathRolls() >= 3) {
-            throw new InvalidDataException(SHEET_WITH_ALL_FAILED_ROLLS);
-        }
-        sheet.setDeathRolls((short) (sheet.getDeathRolls() + 1));
-        sheetRepository.save(sheet);
-    }
 
-    @Override
-    @Transactional
-    public void resetDeathRoll(UserDetailsImpl user, UUID sheetId) {
-        var sheet = validateAndRetrieveSheetForUser(sheetId, user);
-        sheet.setDeathRolls((short) 0);
+        sheet.setDeathRollBody(req.getDeathRollBody());
+        sheet.setDeathRollMind(req.getDeathRollMind());
+        sheet.setDeathRollSpirit(req.getDeathRollSpirit());
+
         sheetRepository.save(sheet);
     }
 
@@ -229,7 +223,7 @@ public class SheetServiceImpl implements SheetService {
     }
 
     private void validateDiceAttributes(CreateSheetRequest request) {
-        Map<DiceEnum, Long> diceMap = Stream.of(
+        Map<Dice, Long> diceMap = Stream.of(
                         request.getCelerity(),
                         request.getTenacity(),
                         request.getIntelligence(),

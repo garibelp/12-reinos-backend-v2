@@ -1,6 +1,6 @@
 package br.com.extratora.twelvekingdoms.service;
 
-import br.com.extratora.twelvekingdoms.enums.PlayerSortEnum;
+import br.com.extratora.twelvekingdoms.enums.PlayerSort;
 import br.com.extratora.twelvekingdoms.exception.DataNotFoundException;
 import br.com.extratora.twelvekingdoms.exception.ForbiddenException;
 import br.com.extratora.twelvekingdoms.model.PlayerModel;
@@ -156,7 +156,7 @@ class PlayerServiceTests {
             int currentPage,
             int pageSize,
             Sort.Direction sortDirection,
-            PlayerSortEnum sortField
+            PlayerSort sortField
     ) {
         playerService.playersPaginated(currentPage, pageSize, sortDirection, sortField);
 

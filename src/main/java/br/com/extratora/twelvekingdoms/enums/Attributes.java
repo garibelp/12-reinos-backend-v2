@@ -1,11 +1,11 @@
 package br.com.extratora.twelvekingdoms.enums;
 
-public enum AttributesEnum {
+public enum Attributes {
     INTELLIGENCE("Intelecto"), CUNNING("Astúcia"), CELERITY("Celeridade"), TENACITY("Tenacidade");
 
     private final String translation;
 
-    AttributesEnum(String translation) {
+    Attributes(String translation) {
         this.translation = translation;
     }
 

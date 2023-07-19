@@ -22,7 +22,7 @@ import javax.transaction.Transactional;
 import java.util.List;
 import java.util.UUID;
 
-import static br.com.extratora.twelvekingdoms.enums.ErrorEnum.INVALID_CAMPAIGN_SHEET_LIST;
+import static br.com.extratora.twelvekingdoms.enums.Error.INVALID_CAMPAIGN_SHEET_LIST;
 
 @Service
 @Transactional

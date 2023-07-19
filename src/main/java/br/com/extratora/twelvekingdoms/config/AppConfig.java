@@ -1,10 +1,10 @@
 package br.com.extratora.twelvekingdoms.config;
 
 import br.com.extratora.twelvekingdoms.converter.CaseInsensitiveEnumConverter;
-import br.com.extratora.twelvekingdoms.enums.DiceEnum;
-import br.com.extratora.twelvekingdoms.enums.LineageEnum;
-import br.com.extratora.twelvekingdoms.enums.PlayerSortEnum;
-import br.com.extratora.twelvekingdoms.enums.SheetSortEnum;
+import br.com.extratora.twelvekingdoms.enums.Dice;
+import br.com.extratora.twelvekingdoms.enums.Lineage;
+import br.com.extratora.twelvekingdoms.enums.PlayerSort;
+import br.com.extratora.twelvekingdoms.enums.SheetSort;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
 import org.springframework.context.annotation.Configuration;
@@ -25,11 +25,11 @@ public class AppConfig implements WebMvcConfigurer {
     @Override
     public void addFormatters(FormatterRegistry registry) {
         List<Class<? extends Enum>> enums = List.of(
-                PlayerSortEnum.class,
+                PlayerSort.class,
                 Sort.Direction.class,
-                DiceEnum.class,
-                LineageEnum.class,
-                SheetSortEnum.class
+                Dice.class,
+                Lineage.class,
+                SheetSort.class
         );
         enums.forEach(enumClass -> registry.addConverter(
                 String.class,

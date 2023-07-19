@@ -24,7 +24,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static br.com.extratora.twelvekingdoms.TestPayloads.*;
-import static br.com.extratora.twelvekingdoms.enums.ErrorEnum.INVALID_CAMPAIGN_SHEET_LIST;
+import static br.com.extratora.twelvekingdoms.enums.Error.INVALID_CAMPAIGN_SHEET_LIST;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 

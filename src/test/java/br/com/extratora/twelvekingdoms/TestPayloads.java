@@ -3,12 +3,10 @@ package br.com.extratora.twelvekingdoms;
 import br.com.extratora.twelvekingdoms.dto.BasicCampaignDto;
 import br.com.extratora.twelvekingdoms.dto.BasicPlayerDto;
 import br.com.extratora.twelvekingdoms.dto.BasicSheetDto;
-import br.com.extratora.twelvekingdoms.dto.request.CreateCampaignRequest;
-import br.com.extratora.twelvekingdoms.dto.request.CreateSheetRequest;
-import br.com.extratora.twelvekingdoms.dto.request.IdListRequest;
-import br.com.extratora.twelvekingdoms.dto.request.SignupRequest;
-import br.com.extratora.twelvekingdoms.enums.DiceEnum;
-import br.com.extratora.twelvekingdoms.enums.RolesEnum;
+import br.com.extratora.twelvekingdoms.dto.request.*;
+import br.com.extratora.twelvekingdoms.enums.DeathRollStatus;
+import br.com.extratora.twelvekingdoms.enums.Dice;
+import br.com.extratora.twelvekingdoms.enums.Roles;
 import br.com.extratora.twelvekingdoms.model.*;
 import br.com.extratora.twelvekingdoms.security.UserDetailsImpl;
 import org.springframework.data.domain.Page;
@@ -49,12 +47,12 @@ public class TestPayloads {
 
     public static Set<RoleModel> getRoleSet(boolean isAdmin, boolean isGm) {
         Set<RoleModel> roleModels = new HashSet<>();
-        roleModels.add(RoleModel.builder().id(UUID.randomUUID()).name(RolesEnum.ROLE_USER).build());
+        roleModels.add(RoleModel.builder().id(UUID.randomUUID()).name(Roles.ROLE_USER).build());
         if (isAdmin) {
-            roleModels.add(RoleModel.builder().id(UUID.randomUUID()).name(RolesEnum.ROLE_ADMIN).build());
+            roleModels.add(RoleModel.builder().id(UUID.randomUUID()).name(Roles.ROLE_ADMIN).build());
         }
         if (isGm) {
-            roleModels.add(RoleModel.builder().id(UUID.randomUUID()).name(RolesEnum.ROLE_GM).build());
+            roleModels.add(RoleModel.builder().id(UUID.randomUUID()).name(Roles.ROLE_GM).build());
         }
         return roleModels;
     }
@@ -105,10 +103,10 @@ public class TestPayloads {
                 .backgroundId(UUID_2)
                 .jobId(UUID_2)
                 .aptitudeList(getValidAptitudeIdList())
-                .intelligence(DiceEnum.D4)
-                .cunning(DiceEnum.D4)
-                .tenacity(DiceEnum.D6)
-                .celerity(DiceEnum.D8)
+                .intelligence(Dice.D4)
+                .cunning(Dice.D4)
+                .tenacity(Dice.D6)
+                .celerity(Dice.D8)
                 .build();
     }
 
@@ -146,27 +144,27 @@ public class TestPayloads {
                 CreateSheetRequest.builder()
                         .name("Valid")
                         .lineageId(UUID_1)
-                        .intelligence(DiceEnum.D4)
-                        .cunning(DiceEnum.D4)
-                        .celerity(DiceEnum.D4)
+                        .intelligence(Dice.D4)
+                        .cunning(Dice.D4)
+                        .celerity(Dice.D4)
                         .aptitudeList(getValidAptitudeIdList())
                         .build(),
                 CreateSheetRequest.builder()
                         .name("Valid")
                         .backgroundId(UUID_1)
                         .jobId(UUID_2)
-                        .intelligence(DiceEnum.D4)
-                        .cunning(DiceEnum.D4)
-                        .celerity(DiceEnum.D4)
+                        .intelligence(Dice.D4)
+                        .cunning(Dice.D4)
+                        .celerity(Dice.D4)
                         .aptitudeList(getValidAptitudeIdList())
                         .build(),
                 CreateSheetRequest.builder()
                         .name("Valid")
                         .lineageId(UUID_1)
                         .backgroundId(UUID_1)
-                        .intelligence(DiceEnum.D4)
-                        .cunning(DiceEnum.D4)
-                        .celerity(DiceEnum.D4)
+                        .intelligence(Dice.D4)
+                        .cunning(Dice.D4)
+                        .celerity(Dice.D4)
                         .aptitudeList(getValidAptitudeIdList())
                         .build(),
                 CreateSheetRequest.builder()
@@ -174,27 +172,27 @@ public class TestPayloads {
                         .lineageId(UUID_1)
                         .backgroundId(UUID_1)
                         .jobId(UUID_2)
-                        .intelligence(DiceEnum.D4)
-                        .cunning(DiceEnum.D4)
-                        .tenacity(DiceEnum.D4)
+                        .intelligence(Dice.D4)
+                        .cunning(Dice.D4)
+                        .tenacity(Dice.D4)
                         .aptitudeList(getValidAptitudeIdList())
                         .build(),
                 CreateSheetRequest.builder()
                         .name("Valid")
                         .lineageId(UUID_1)
                         .backgroundId(UUID_1)
-                        .tenacity(DiceEnum.D4)
-                        .cunning(DiceEnum.D4)
-                        .celerity(DiceEnum.D4)
+                        .tenacity(Dice.D4)
+                        .cunning(Dice.D4)
+                        .celerity(Dice.D4)
                         .aptitudeList(getValidAptitudeIdList())
                         .build(),
                 CreateSheetRequest.builder()
                         .name("Valid")
                         .lineageId(UUID_1)
                         .backgroundId(UUID_1)
-                        .intelligence(DiceEnum.D4)
-                        .tenacity(DiceEnum.D4)
-                        .celerity(DiceEnum.D4)
+                        .intelligence(Dice.D4)
+                        .tenacity(Dice.D4)
+                        .celerity(Dice.D4)
                         .aptitudeList(getValidAptitudeIdList())
                         .build()
         );
@@ -218,7 +216,6 @@ public class TestPayloads {
                 .heroismTotal(1)
                 .player(getPlayerModel(playerId))
                 .job(getJobModel())
-                .deathRolls((short) 1)
                 .build();
     }
 
@@ -286,5 +283,25 @@ public class TestPayloads {
                 .name("Test mesa")
                 .sheets(Set.of(getSheetModel(UUID_2)))
                 .build();
+    }
+
+    public static UpdateDeathRollsRequest getValidDeathRollsRequest() {
+        return UpdateDeathRollsRequest.builder()
+                .deathRollBody(DeathRollStatus.UNCHECKED)
+                .deathRollMind(DeathRollStatus.SUCCESS)
+                .deathRollSpirit(DeathRollStatus.FAILURE)
+                .build();
+    }
+
+    public static Stream<UpdateDeathRollsRequest> getInvalidDeathRollsRequestStream() {
+        return Stream.of(
+                UpdateDeathRollsRequest.builder().build(),
+                UpdateDeathRollsRequest.builder().deathRollBody(DeathRollStatus.UNCHECKED).build(),
+                UpdateDeathRollsRequest.builder().deathRollMind(DeathRollStatus.UNCHECKED).build(),
+                UpdateDeathRollsRequest.builder().deathRollSpirit(DeathRollStatus.UNCHECKED).build(),
+                UpdateDeathRollsRequest.builder().deathRollBody(DeathRollStatus.UNCHECKED).deathRollMind(DeathRollStatus.SUCCESS).build(),
+                UpdateDeathRollsRequest.builder().deathRollBody(DeathRollStatus.UNCHECKED).deathRollSpirit(DeathRollStatus.SUCCESS).build(),
+                UpdateDeathRollsRequest.builder().deathRollMind(DeathRollStatus.UNCHECKED).deathRollSpirit(DeathRollStatus.SUCCESS).build()
+        );
     }
 }

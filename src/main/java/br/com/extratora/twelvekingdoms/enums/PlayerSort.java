@@ -1,5 +1,5 @@
 package br.com.extratora.twelvekingdoms.enums;
 
-public enum PlayerSortEnum {
+public enum PlayerSort {
     USERNAME, EMAIL
 }

@@ -1,6 +1,6 @@
 package br.com.extratora.twelvekingdoms.model;
 
-import br.com.extratora.twelvekingdoms.enums.RolesEnum;
+import br.com.extratora.twelvekingdoms.enums.Roles;
 import lombok.*;
 
 import javax.persistence.*;
@@ -25,5 +25,5 @@ public class RoleModel implements Serializable {
 
     @Enumerated(EnumType.STRING)
     @Column(length = 20, nullable = false)
-    private RolesEnum name;
+    private Roles name;
 }

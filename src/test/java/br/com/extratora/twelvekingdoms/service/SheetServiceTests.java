@@ -1,10 +1,10 @@
 package br.com.extratora.twelvekingdoms.service;
 
 import br.com.extratora.twelvekingdoms.dto.request.UpdateSheetCurrentPointsRequest;
-import br.com.extratora.twelvekingdoms.enums.DiceEnum;
-import br.com.extratora.twelvekingdoms.enums.ErrorEnum;
-import br.com.extratora.twelvekingdoms.enums.RolesEnum;
-import br.com.extratora.twelvekingdoms.enums.SheetSortEnum;
+import br.com.extratora.twelvekingdoms.enums.Dice;
+import br.com.extratora.twelvekingdoms.enums.Error;
+import br.com.extratora.twelvekingdoms.enums.Roles;
+import br.com.extratora.twelvekingdoms.enums.SheetSort;
 import br.com.extratora.twelvekingdoms.exception.DataNotFoundException;
 import br.com.extratora.twelvekingdoms.exception.ForbiddenException;
 import br.com.extratora.twelvekingdoms.exception.InvalidDataException;
@@ -31,8 +31,8 @@ import java.util.Optional;
 import java.util.Set;
 
 import static br.com.extratora.twelvekingdoms.TestPayloads.*;
-import static br.com.extratora.twelvekingdoms.enums.ErrorEnum.*;
-import static br.com.extratora.twelvekingdoms.enums.RolesEnum.*;
+import static br.com.extratora.twelvekingdoms.enums.Error.*;
+import static br.com.extratora.twelvekingdoms.enums.Roles.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -71,10 +71,10 @@ class SheetServiceTests {
             "D4,D8,D8,D8",
     })
     void givenCreateSheet_whenInvalidDiceAttribute_thenShouldThrowInvalidDataException(
-            DiceEnum celerity,
-            DiceEnum tenacity,
-            DiceEnum intelligence,
-            DiceEnum cunning
+            Dice celerity,
+            Dice tenacity,
+            Dice intelligence,
+            Dice cunning
     ) {
         var sheet = getValidCreateSheetRequest();
         var user = getUserDetailsUser();
@@ -89,8 +89,8 @@ class SheetServiceTests {
                 () -> sheetService.createSheet(user, sheet)
         );
 
-        assertEquals(ErrorEnum.INVALID_CREATION_DICES.getName(), ex.getName());
-        assertEquals(ErrorEnum.INVALID_CREATION_DICES.getDescription(), ex.getDescription());
+        assertEquals(Error.INVALID_CREATION_DICES.getName(), ex.getName());
+        assertEquals(Error.INVALID_CREATION_DICES.getDescription(), ex.getDescription());
         verify(sheetRepository, times(0)).save(any());
         verify(lineageRepository, times(0)).existsById(any());
         verify(backgroundRepository, times(0)).findById(any());
@@ -108,8 +108,8 @@ class SheetServiceTests {
                 () -> sheetService.createSheet(user, sheet)
         );
 
-        assertEquals(ErrorEnum.INVALID_CREATION_LINEAGE.getName(), ex.getName());
-        assertEquals(ErrorEnum.INVALID_CREATION_LINEAGE.getDescription(), ex.getDescription());
+        assertEquals(Error.INVALID_CREATION_LINEAGE.getName(), ex.getName());
+        assertEquals(Error.INVALID_CREATION_LINEAGE.getDescription(), ex.getDescription());
         verify(sheetRepository, times(0)).save(any());
         verify(lineageRepository, times(1)).existsById(any());
         verify(backgroundRepository, times(0)).findById(any());
@@ -128,8 +128,8 @@ class SheetServiceTests {
                 () -> sheetService.createSheet(user, sheet)
         );
 
-        assertEquals(ErrorEnum.INVALID_CREATION_BACKGROUND.getName(), ex.getName());
-        assertEquals(ErrorEnum.INVALID_CREATION_BACKGROUND.getDescription(), ex.getDescription());
+        assertEquals(Error.INVALID_CREATION_BACKGROUND.getName(), ex.getName());
+        assertEquals(Error.INVALID_CREATION_BACKGROUND.getDescription(), ex.getDescription());
         verify(sheetRepository, times(0)).save(any());
         verify(lineageRepository, times(1)).existsById(any());
         verify(backgroundRepository, times(1)).findById(any());
@@ -149,8 +149,8 @@ class SheetServiceTests {
                 () -> sheetService.createSheet(user, sheet)
         );
 
-        assertEquals(ErrorEnum.INVALID_CREATION_JOB.getName(), ex.getName());
-        assertEquals(ErrorEnum.INVALID_CREATION_JOB.getDescription(), ex.getDescription());
+        assertEquals(Error.INVALID_CREATION_JOB.getName(), ex.getName());
+        assertEquals(Error.INVALID_CREATION_JOB.getDescription(), ex.getDescription());
         verify(sheetRepository, times(0)).save(any());
         verify(lineageRepository, times(1)).existsById(any());
         verify(backgroundRepository, times(1)).findById(any());
@@ -190,12 +190,12 @@ class SheetServiceTests {
                 () -> sheetService.createSheet(user, sheet)
         );
 
-        assertEquals(ErrorEnum.INVALID_CREATION_APTITUDE_LIST.getName(), ex1.getName());
-        assertEquals(ErrorEnum.INVALID_CREATION_APTITUDE_LIST.getDescription(), ex1.getDescription());
-        assertEquals(ErrorEnum.INVALID_CREATION_APTITUDE_LIST.getName(), ex2.getName());
-        assertEquals(ErrorEnum.INVALID_CREATION_APTITUDE_LIST.getDescription(), ex2.getDescription());
-        assertEquals(ErrorEnum.INVALID_CREATION_APTITUDE_JOB.getName(), ex3.getName());
-        assertEquals(ErrorEnum.INVALID_CREATION_APTITUDE_JOB.getDescription(), ex3.getDescription());
+        assertEquals(Error.INVALID_CREATION_APTITUDE_LIST.getName(), ex1.getName());
+        assertEquals(Error.INVALID_CREATION_APTITUDE_LIST.getDescription(), ex1.getDescription());
+        assertEquals(Error.INVALID_CREATION_APTITUDE_LIST.getName(), ex2.getName());
+        assertEquals(Error.INVALID_CREATION_APTITUDE_LIST.getDescription(), ex2.getDescription());
+        assertEquals(Error.INVALID_CREATION_APTITUDE_JOB.getName(), ex3.getName());
+        assertEquals(Error.INVALID_CREATION_APTITUDE_JOB.getDescription(), ex3.getDescription());
 
     }
 
@@ -394,8 +394,8 @@ class SheetServiceTests {
             int currentPage,
             int pageSize,
             Sort.Direction sortDirection,
-            SheetSortEnum sortField,
-            RolesEnum profile,
+            SheetSort sortField,
+            Roles profile,
             boolean usePlayerProfile
     ) {
         var user = switch (profile) {
@@ -679,41 +679,18 @@ class SheetServiceTests {
     }
 
     @Test
-    void givenFailDeathRoll_whenMaxFailures_thenShouldThrowInvalidDataException() {
+    void givenUpdateDeathRolls_whenCalled_thenShouldUpdateData() {
         var user = getUserDetailsUser();
         var sheet = getSheetModel(user.getId());
-        sheet.setDeathRolls((short) 3);
+        var req = getValidDeathRollsRequest();
         when(sheetRepository.findActiveByIdEager(any())).thenReturn(Optional.of(sheet));
 
-        var thrownExc = assertThrows(
-                InvalidDataException.class,
-                () -> sheetService.failDeathRoll(user, UUID_1)
-        );
+        sheetService.updateDeathRolls(user, user.getId(), req);
 
-        verify(sheetRepository, times(0)).save(any());
-        assertEquals(SHEET_WITH_ALL_FAILED_ROLLS.getName(), thrownExc.getName());
-        assertEquals(SHEET_WITH_ALL_FAILED_ROLLS.getDescription(), thrownExc.getDescription());
-    }
-
-    @Test
-    void givenFailDeathRoll_whenNoMaxFailures_thenShouldSave() {
-        var user = getUserDetailsUser();
-        var sheet = getSheetModel(user.getId());
-        when(sheetRepository.findActiveByIdEager(any())).thenReturn(Optional.of(sheet));
-
-        sheetService.failDeathRoll(user, UUID_1);
-
-        verify(sheetRepository, times(1)).save(any());
-    }
-
-    @Test
-    void givenResetDeathRoll_whenCalled_thenShouldSave() {
-        var user = getUserDetailsUser();
-        var sheet = getSheetModel(user.getId());
-        when(sheetRepository.findActiveByIdEager(any())).thenReturn(Optional.of(sheet));
-
-        sheetService.resetDeathRoll(user, UUID_1);
-
-        verify(sheetRepository, times(1)).save(any());
+        verify(sheetRepository, times(1)).save(sheetCaptor.capture());
+        var model = sheetCaptor.getValue();
+        assertEquals(req.getDeathRollBody(), model.getDeathRollBody());
+        assertEquals(req.getDeathRollMind(), model.getDeathRollMind());
+        assertEquals(req.getDeathRollSpirit(), model.getDeathRollSpirit());
     }
 }

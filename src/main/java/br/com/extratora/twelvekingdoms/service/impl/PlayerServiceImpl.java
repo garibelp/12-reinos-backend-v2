@@ -1,7 +1,7 @@
 package br.com.extratora.twelvekingdoms.service.impl;
 
 import br.com.extratora.twelvekingdoms.dto.BasicPlayerDto;
-import br.com.extratora.twelvekingdoms.enums.PlayerSortEnum;
+import br.com.extratora.twelvekingdoms.enums.PlayerSort;
 import br.com.extratora.twelvekingdoms.exception.DataNotFoundException;
 import br.com.extratora.twelvekingdoms.exception.ForbiddenException;
 import br.com.extratora.twelvekingdoms.model.PlayerModel;
@@ -43,7 +43,7 @@ public class PlayerServiceImpl implements PlayerService {
             int currentPage,
             int pageSize,
             Sort.Direction sortDirection,
-            PlayerSortEnum sortField
+            PlayerSort sortField
     ) {
         var pageRequest = PageRequest.of(currentPage, pageSize);
 

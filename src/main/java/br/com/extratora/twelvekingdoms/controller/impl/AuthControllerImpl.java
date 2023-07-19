@@ -5,7 +5,7 @@ import br.com.extratora.twelvekingdoms.dto.request.LoginRequest;
 import br.com.extratora.twelvekingdoms.dto.request.SignupRequest;
 import br.com.extratora.twelvekingdoms.dto.response.JwtResponse;
 import br.com.extratora.twelvekingdoms.dto.response.MessageResponse;
-import br.com.extratora.twelvekingdoms.enums.RolesEnum;
+import br.com.extratora.twelvekingdoms.enums.Roles;
 import br.com.extratora.twelvekingdoms.exception.ResponseFieldStatusException;
 import br.com.extratora.twelvekingdoms.model.PlayerModel;
 import br.com.extratora.twelvekingdoms.model.RoleModel;
@@ -91,7 +91,7 @@ public class AuthControllerImpl implements AuthController {
             throw new ResponseFieldStatusException(HttpStatus.BAD_REQUEST, "Email is already in use!", "email");
         }
 
-        RoleModel userRole = roleRepository.findByName(RolesEnum.ROLE_USER)
+        RoleModel userRole = roleRepository.findByName(Roles.ROLE_USER)
                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
 
         // Create new user's account

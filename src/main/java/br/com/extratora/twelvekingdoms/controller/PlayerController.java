@@ -3,7 +3,7 @@ package br.com.extratora.twelvekingdoms.controller;
 import br.com.extratora.twelvekingdoms.dto.response.ErrorResponse;
 import br.com.extratora.twelvekingdoms.dto.response.MessageResponse;
 import br.com.extratora.twelvekingdoms.dto.response.PlayerListResponse;
-import br.com.extratora.twelvekingdoms.enums.PlayerSortEnum;
+import br.com.extratora.twelvekingdoms.enums.PlayerSort;
 import br.com.extratora.twelvekingdoms.model.PlayerModel;
 import br.com.extratora.twelvekingdoms.security.UserDetailsImpl;
 import io.swagger.v3.oas.annotations.Operation;
@@ -69,6 +69,6 @@ public interface PlayerController {
             @Min(0) int currentPage,
             @Min(1) int pageSize,
             Sort.Direction sortDirection,
-            PlayerSortEnum sortField
+            PlayerSort sortField
     );
 }

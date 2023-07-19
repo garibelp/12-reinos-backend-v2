@@ -3,9 +3,10 @@ package br.com.extratora.twelvekingdoms.controller;
 import br.com.extratora.twelvekingdoms.controller.impl.SheetControllerImpl;
 import br.com.extratora.twelvekingdoms.dto.BasicSheetDto;
 import br.com.extratora.twelvekingdoms.dto.request.CreateSheetRequest;
+import br.com.extratora.twelvekingdoms.dto.request.UpdateDeathRollsRequest;
 import br.com.extratora.twelvekingdoms.dto.request.UpdateSheetCurrentPointsRequest;
 import br.com.extratora.twelvekingdoms.dto.response.ErrorResponse;
-import br.com.extratora.twelvekingdoms.enums.SheetSortEnum;
+import br.com.extratora.twelvekingdoms.enums.SheetSort;
 import br.com.extratora.twelvekingdoms.exception.InvalidDataException;
 import br.com.extratora.twelvekingdoms.service.SheetService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -30,7 +31,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static br.com.extratora.twelvekingdoms.TestPayloads.*;
-import static br.com.extratora.twelvekingdoms.enums.ErrorEnum.INVALID_CREATION_DICES;
+import static br.com.extratora.twelvekingdoms.enums.Error.INVALID_CREATION_DICES;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -221,7 +222,7 @@ class SheetControllerTests {
                 .map(d -> Sort.Direction.valueOf(d.toUpperCase()))
                 .orElse(null);
         var expectedSortField = Optional.ofNullable(sortField)
-                .map(s -> SheetSortEnum.valueOf(sortField.toUpperCase()))
+                .map(s -> SheetSort.valueOf(sortField.toUpperCase()))
                 .orElse(null);
         var expectedUsePlayerProfile = Optional.ofNullable(usePlayerProfile)
                 .map(Boolean::parseBoolean)
@@ -249,7 +250,7 @@ class SheetControllerTests {
         ArgumentCaptor<Integer> pageNumberCaptor = ArgumentCaptor.forClass(Integer.class);
         ArgumentCaptor<Integer> pageSizeCaptor = ArgumentCaptor.forClass(Integer.class);
         ArgumentCaptor<Sort.Direction> sortDirectionCaptor = ArgumentCaptor.forClass(Sort.Direction.class);
-        ArgumentCaptor<SheetSortEnum> sortFieldCaptor = ArgumentCaptor.forClass(SheetSortEnum.class);
+        ArgumentCaptor<SheetSort> sortFieldCaptor = ArgumentCaptor.forClass(SheetSort.class);
         ArgumentCaptor<Boolean> usePlayerProfileCaptor = ArgumentCaptor.forClass(Boolean.class);
 
         verify(sheetService, times(1)).sheetsPaginated(
@@ -411,47 +412,25 @@ class SheetControllerTests {
 
     @ParameterizedTest
     @NullSource
-    @CsvSource({
-            "' '",
-            "invalid"
-    })
-    void givenFailDeathRoll_whenInvalidUuid_thenShouldReturnBadRequest(String sheetId) throws Exception {
-        RequestBuilder builder = MockMvcRequestBuilders.patch("/sheets/" + sheetId + "/failDeathRoll");
+    @MethodSource("br.com.extratora.twelvekingdoms.TestPayloads#getInvalidDeathRollsRequestStream")
+    void givenUpdateDeathRolls_whenInvalidBody_thenShouldReturnBadRequest(UpdateDeathRollsRequest req) throws Exception {
+        RequestBuilder builder = MockMvcRequestBuilders.patch("/sheets/" + UUID.randomUUID() + "/updateDeathRolls")
+                .content(objectMapper.writeValueAsString(req))
+                .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(builder).andExpect(status().isBadRequest());
 
-        verify(sheetService, times(0)).failDeathRoll(any(), any());
+        verify(sheetService, times(0)).updateDeathRolls(any(), any(), any());
     }
 
     @Test
-    void givenFailDeathRoll_whenValidUuid_thenShouldReturnOk() throws Exception {
-        RequestBuilder builder = MockMvcRequestBuilders.patch("/sheets/" + UUID.randomUUID() + "/failDeathRoll");
+    void givenUpdateDeathRolls_whenValidRequest_thenShouldReturnOk() throws Exception {
+        RequestBuilder builder = MockMvcRequestBuilders.patch("/sheets/" + UUID.randomUUID() + "/updateDeathRolls")
+                .content(objectMapper.writeValueAsString(getValidDeathRollsRequest()))
+                .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(builder).andExpect(status().isOk());
 
-        verify(sheetService, times(1)).failDeathRoll(any(), any());
-    }
-
-    @ParameterizedTest
-    @NullSource
-    @CsvSource({
-            "' '",
-            "invalid"
-    })
-    void givenResetDeathRoll_whenInvalidUuid_thenShouldReturnBadRequest(String sheetId) throws Exception {
-        RequestBuilder builder = MockMvcRequestBuilders.patch("/sheets/" + sheetId + "/resetDeathRoll");
-
-        mockMvc.perform(builder).andExpect(status().isBadRequest());
-
-        verify(sheetService, times(0)).resetDeathRoll(any(), any());
-    }
-
-    @Test
-    void givenResetDeathRoll_whenValidUuid_thenShouldReturnOk() throws Exception {
-        RequestBuilder builder = MockMvcRequestBuilders.patch("/sheets/" + UUID.randomUUID() + "/resetDeathRoll");
-
-        mockMvc.perform(builder).andExpect(status().isOk());
-
-        verify(sheetService, times(1)).resetDeathRoll(any(), any());
+        verify(sheetService, times(1)).updateDeathRolls(any(), any(), any());
     }
 }
