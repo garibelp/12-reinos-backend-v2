@@ -218,6 +218,7 @@ public class TestPayloads {
                 .heroismTotal(1)
                 .player(getPlayerModel(playerId))
                 .job(getJobModel())
+                .deathRolls((short) 1)
                 .build();
     }
 

@@ -11,7 +11,8 @@ public enum ErrorEnum {
     INVALID_SHEET_LEVEL_UP("sheet", "sheet already in the maximum level currently allowed"),
     INVALID_WOUND_ID("wound", "wound couldn't be retrieved from database"),
     SHEET_WITHOUT_WOUND("wound", "sheet doesn't contain wound"),
-    SHEET_WITH_WOUND("wound", "sheet already contains wound");
+    SHEET_WITH_WOUND("wound", "sheet already contains wound"),
+    SHEET_WITH_ALL_FAILED_ROLLS("deathRoll", "sheet already failed all death rolls");
 
     private final String name;
     private final String description;

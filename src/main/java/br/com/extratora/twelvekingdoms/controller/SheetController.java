@@ -162,4 +162,40 @@ public interface SheetController {
             @Parameter(hidden = true) UserDetailsImpl user,
             UUID sheetId
     );
+
+    @Operation(summary = "Fails a death roll of sheet", security = @SecurityRequirement(name = "bearerAuth"))
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = MessageResponse.class))
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
+            ),
+            @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(hidden = true))),
+            @ApiResponse(responseCode = "403", content = @Content(schema = @Schema(hidden = true)))
+    })
+    ResponseEntity<MessageResponse> failDeathRoll(
+            @Parameter(hidden = true) UserDetailsImpl user,
+            UUID sheetId
+    );
+
+    @Operation(summary = "Reset death rolls of sheet", security = @SecurityRequirement(name = "bearerAuth"))
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = MessageResponse.class))
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
+            ),
+            @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(hidden = true))),
+            @ApiResponse(responseCode = "403", content = @Content(schema = @Schema(hidden = true)))
+    })
+    ResponseEntity<MessageResponse> resetDeathRoll(
+            @Parameter(hidden = true) UserDetailsImpl user,
+            UUID sheetId
+    );
 }

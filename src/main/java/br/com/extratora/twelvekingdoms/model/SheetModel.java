@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Type;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.io.Serial;
@@ -75,6 +76,9 @@ public class SheetModel implements Serializable {
     @Column(name = "NOTES")
     private String notes;
 
+    @Column(name = "DEATH_ROLLS")
+    private Short deathRolls;
+
     @Column(name = "IS_ACTIVE", nullable = false)
     private boolean isActive = true;
 
@@ -82,6 +86,11 @@ public class SheetModel implements Serializable {
     @CreationTimestamp
     @Column(name = "CREATED_AT", nullable = false)
     private Timestamp createdAt;
+
+    @JsonIgnore
+    @UpdateTimestamp
+    @Column(name = "UPDATED_AT")
+    private Timestamp updatedAt;
 
     @JsonIgnore
     @ManyToOne

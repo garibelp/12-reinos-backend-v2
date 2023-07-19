@@ -201,6 +201,25 @@ public class SheetServiceImpl implements SheetService {
         sheetRepository.save(sheet);
     }
 
+    @Override
+    @Transactional
+    public void failDeathRoll(UserDetailsImpl user, UUID sheetId) {
+        var sheet = validateAndRetrieveSheetForUser(sheetId, user);
+        if (sheet.getDeathRolls() >= 3) {
+            throw new InvalidDataException(SHEET_WITH_ALL_FAILED_ROLLS);
+        }
+        sheet.setDeathRolls((short) (sheet.getDeathRolls() + 1));
+        sheetRepository.save(sheet);
+    }
+
+    @Override
+    @Transactional
+    public void resetDeathRoll(UserDetailsImpl user, UUID sheetId) {
+        var sheet = validateAndRetrieveSheetForUser(sheetId, user);
+        sheet.setDeathRolls((short) 0);
+        sheetRepository.save(sheet);
+    }
+
     private void validateCurrentPointsUpdate(Integer updated, int maxValue, String field) {
         if (updated != null) {
             if (updated > maxValue)

@@ -677,4 +677,43 @@ class SheetServiceTests {
 
         verify(sheetRepository, times(1)).save(any());
     }
+
+    @Test
+    void givenFailDeathRoll_whenMaxFailures_thenShouldThrowInvalidDataException() {
+        var user = getUserDetailsUser();
+        var sheet = getSheetModel(user.getId());
+        sheet.setDeathRolls((short) 3);
+        when(sheetRepository.findActiveByIdEager(any())).thenReturn(Optional.of(sheet));
+
+        var thrownExc = assertThrows(
+                InvalidDataException.class,
+                () -> sheetService.failDeathRoll(user, UUID_1)
+        );
+
+        verify(sheetRepository, times(0)).save(any());
+        assertEquals(SHEET_WITH_ALL_FAILED_ROLLS.getName(), thrownExc.getName());
+        assertEquals(SHEET_WITH_ALL_FAILED_ROLLS.getDescription(), thrownExc.getDescription());
+    }
+
+    @Test
+    void givenFailDeathRoll_whenNoMaxFailures_thenShouldSave() {
+        var user = getUserDetailsUser();
+        var sheet = getSheetModel(user.getId());
+        when(sheetRepository.findActiveByIdEager(any())).thenReturn(Optional.of(sheet));
+
+        sheetService.failDeathRoll(user, UUID_1);
+
+        verify(sheetRepository, times(1)).save(any());
+    }
+
+    @Test
+    void givenResetDeathRoll_whenCalled_thenShouldSave() {
+        var user = getUserDetailsUser();
+        var sheet = getSheetModel(user.getId());
+        when(sheetRepository.findActiveByIdEager(any())).thenReturn(Optional.of(sheet));
+
+        sheetService.resetDeathRoll(user, UUID_1);
+
+        verify(sheetRepository, times(1)).save(any());
+    }
 }

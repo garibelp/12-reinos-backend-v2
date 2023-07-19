@@ -408,4 +408,50 @@ class SheetControllerTests {
 
         verify(sheetService, times(1)).removeWound(any(), any());
     }
+
+    @ParameterizedTest
+    @NullSource
+    @CsvSource({
+            "' '",
+            "invalid"
+    })
+    void givenFailDeathRoll_whenInvalidUuid_thenShouldReturnBadRequest(String sheetId) throws Exception {
+        RequestBuilder builder = MockMvcRequestBuilders.patch("/sheets/" + sheetId + "/failDeathRoll");
+
+        mockMvc.perform(builder).andExpect(status().isBadRequest());
+
+        verify(sheetService, times(0)).failDeathRoll(any(), any());
+    }
+
+    @Test
+    void givenFailDeathRoll_whenValidUuid_thenShouldReturnOk() throws Exception {
+        RequestBuilder builder = MockMvcRequestBuilders.patch("/sheets/" + UUID.randomUUID() + "/failDeathRoll");
+
+        mockMvc.perform(builder).andExpect(status().isOk());
+
+        verify(sheetService, times(1)).failDeathRoll(any(), any());
+    }
+
+    @ParameterizedTest
+    @NullSource
+    @CsvSource({
+            "' '",
+            "invalid"
+    })
+    void givenResetDeathRoll_whenInvalidUuid_thenShouldReturnBadRequest(String sheetId) throws Exception {
+        RequestBuilder builder = MockMvcRequestBuilders.patch("/sheets/" + sheetId + "/resetDeathRoll");
+
+        mockMvc.perform(builder).andExpect(status().isBadRequest());
+
+        verify(sheetService, times(0)).resetDeathRoll(any(), any());
+    }
+
+    @Test
+    void givenResetDeathRoll_whenValidUuid_thenShouldReturnOk() throws Exception {
+        RequestBuilder builder = MockMvcRequestBuilders.patch("/sheets/" + UUID.randomUUID() + "/resetDeathRoll");
+
+        mockMvc.perform(builder).andExpect(status().isOk());
+
+        verify(sheetService, times(1)).resetDeathRoll(any(), any());
+    }
 }

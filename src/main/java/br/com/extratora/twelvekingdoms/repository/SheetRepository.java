@@ -40,7 +40,7 @@ public interface SheetRepository extends JpaRepository<SheetModel, UUID> {
     @Query(value = "select count(*) from SheetModel s where s.id in ?1 and s.isActive = true")
     Long countActiveByIdIn(List<UUID> ids);
 
-    @Query(value = SHEET_DETAILS_BASE_SELECT + " from SheetModel s where s.campaign.id = ?1 and s.isActive = true order by s.name asc")
+    @Query(value = SHEET_DETAILS_BASE_SELECT + " from SheetModel s where s.campaign.id = ?1 and s.isActive = true order by s.updatedAt desc")
     Set<CampaignSheetDto> findCampaignSheetByCampaignId(UUID campaignId);
 
 }

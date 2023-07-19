@@ -135,4 +135,22 @@ public class SheetControllerImpl implements SheetController {
         sheetService.removeWound(user, sheetId);
         return ResponseEntity.ok(new MessageResponse("Successfully removed wound to sheet!"));
     }
+
+    @Override
+    @CrossOrigin(origins = "*")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    @PatchMapping("/{sheetId}/failDeathRoll")
+    public ResponseEntity<MessageResponse> failDeathRoll(@AuthenticationPrincipal UserDetailsImpl user, @PathVariable UUID sheetId) {
+        sheetService.failDeathRoll(user, sheetId);
+        return ResponseEntity.ok(new MessageResponse("Successfully updated sheet death roll failure!"));
+    }
+
+    @Override
+    @CrossOrigin(origins = "*")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    @PatchMapping("/{sheetId}/resetDeathRoll")
+    public ResponseEntity<MessageResponse> resetDeathRoll(@AuthenticationPrincipal UserDetailsImpl user, @PathVariable UUID sheetId) {
+        sheetService.resetDeathRoll(user, sheetId);
+        return ResponseEntity.ok(new MessageResponse("Successfully reset sheet death rolls!"));
+    }
 }

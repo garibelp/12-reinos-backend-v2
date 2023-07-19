@@ -34,4 +34,8 @@ public interface SheetService {
     void addWound(UserDetailsImpl user, UUID woundId, UUID sheetId);
 
     void removeWound(UserDetailsImpl user, UUID sheetId);
+
+    void failDeathRoll(UserDetailsImpl user, UUID sheetId);
+
+    void resetDeathRoll(UserDetailsImpl user, UUID sheetId);
 }
