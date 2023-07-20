@@ -175,7 +175,6 @@ public class SheetServiceImpl implements SheetService {
     }
 
     @Override
-    @Transactional
     public void addWound(UserDetailsImpl user, UUID woundId, UUID sheetId) {
         var sheet = validateAndRetrieveSheetForUser(sheetId, user);
 
@@ -189,7 +188,6 @@ public class SheetServiceImpl implements SheetService {
     }
 
     @Override
-    @Transactional
     public void removeWound(UserDetailsImpl user, UUID sheetId) {
         var sheet = validateAndRetrieveSheetForUser(sheetId, user);
 
@@ -203,7 +201,6 @@ public class SheetServiceImpl implements SheetService {
     }
 
     @Override
-    @Transactional
     public void updateDeathRolls(UserDetailsImpl user, UUID sheetId, UpdateDeathRollsRequest req) {
         var sheet = validateAndRetrieveSheetForUser(sheetId, user);
 

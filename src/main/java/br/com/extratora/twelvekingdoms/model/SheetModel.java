@@ -127,8 +127,9 @@ public class SheetModel implements Serializable {
     )
     private Set<AptitudeModel> aptitudes = new HashSet<>();
 
-    @ManyToOne
-    @JoinColumn(name = "CAMPAIGN_ID", insertable = false, updatable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "CAMPAIGN_ID", insertable = false)
+    @JsonIgnore
     private CampaignModel campaign;
 
     @ManyToOne
