@@ -2,6 +2,7 @@ package br.com.extratora.twelvekingdoms.controller;
 
 import br.com.extratora.twelvekingdoms.dto.request.CreateSheetRequest;
 import br.com.extratora.twelvekingdoms.dto.request.UpdateDeathRollsRequest;
+import br.com.extratora.twelvekingdoms.dto.request.UpdateNotesRequest;
 import br.com.extratora.twelvekingdoms.dto.request.UpdateSheetCurrentPointsRequest;
 import br.com.extratora.twelvekingdoms.dto.response.ErrorResponse;
 import br.com.extratora.twelvekingdoms.dto.response.IdResponse;
@@ -39,7 +40,7 @@ public interface SheetController {
             ),
             @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(hidden = true)))
     })
-    ResponseEntity<IdResponse> create(@Parameter(hidden = true) UserDetailsImpl user, @Valid CreateSheetRequest request);
+    ResponseEntity<IdResponse> createSheet(@Parameter(hidden = true) UserDetailsImpl user, @Valid CreateSheetRequest request);
 
     @Operation(summary = "Retrieve sheet details", security = @SecurityRequirement(name = "bearerAuth"))
     @ApiResponses(value = {
@@ -54,7 +55,7 @@ public interface SheetController {
             @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(hidden = true))),
             @ApiResponse(responseCode = "403", content = @Content(schema = @Schema(hidden = true)))
     })
-    ResponseEntity<SheetModel> details(@Parameter(hidden = true) UserDetailsImpl user, UUID id);
+    ResponseEntity<SheetModel> sheetDetails(@Parameter(hidden = true) UserDetailsImpl user, UUID id);
 
     @Operation(summary = "List sheets", security = @SecurityRequirement(name = "bearerAuth"))
     @ApiResponses(value = {
@@ -68,7 +69,7 @@ public interface SheetController {
             ),
             @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(hidden = true)))
     })
-    ResponseEntity<SheetListResponse> list(
+    ResponseEntity<SheetListResponse> sheetList(
             @Min(0) int currentPage,
             @Min(1) int pageSize,
             Sort.Direction sortDirection,
@@ -91,7 +92,7 @@ public interface SheetController {
             @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(hidden = true))),
             @ApiResponse(responseCode = "403", content = @Content(schema = @Schema(hidden = true)))
     })
-    ResponseEntity<MessageResponse> delete(@Parameter(hidden = true) UserDetailsImpl user, UUID id);
+    ResponseEntity<MessageResponse> deleteSheet(@Parameter(hidden = true) UserDetailsImpl user, UUID id);
 
     @Operation(summary = "Update current physical, mental and heroism points of a sheet", security = @SecurityRequirement(name = "bearerAuth"))
     @ApiResponses(value = {
@@ -181,5 +182,24 @@ public interface SheetController {
             @Parameter(hidden = true) UserDetailsImpl user,
             UUID sheetId,
             @Valid UpdateDeathRollsRequest req
+    );
+
+    @Operation(summary = "Update notes of sheet", security = @SecurityRequirement(name = "bearerAuth"))
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = MessageResponse.class))
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
+            ),
+            @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(hidden = true))),
+            @ApiResponse(responseCode = "403", content = @Content(schema = @Schema(hidden = true)))
+    })
+    ResponseEntity<MessageResponse> updateNotes(
+            @Parameter(hidden = true) UserDetailsImpl user,
+            UUID sheetId,
+            @Valid UpdateNotesRequest req
     );
 }

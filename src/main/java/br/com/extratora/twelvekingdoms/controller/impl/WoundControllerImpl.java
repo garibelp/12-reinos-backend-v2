@@ -19,7 +19,7 @@ public class WoundControllerImpl implements WoundController {
 
     @Override
     @GetMapping("/list")
-    public ResponseEntity<WoundListResponse> list() {
+    public ResponseEntity<WoundListResponse> woundList() {
         return ResponseEntity.ok(new WoundListResponse(woundService.list()));
     }
 }

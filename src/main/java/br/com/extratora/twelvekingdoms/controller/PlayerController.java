@@ -36,7 +36,7 @@ public interface PlayerController {
             @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(hidden = true))),
             @ApiResponse(responseCode = "403", content = @Content(schema = @Schema(hidden = true)))
     })
-    ResponseEntity<MessageResponse> delete(@Parameter(hidden = true) UserDetailsImpl user, UUID id);
+    ResponseEntity<MessageResponse> deletePlayer(@Parameter(hidden = true) UserDetailsImpl user, UUID id);
 
     @Operation(summary = "Retrieve player details", security = @SecurityRequirement(name = "bearerAuth"))
     @ApiResponses(value = {
@@ -51,7 +51,7 @@ public interface PlayerController {
             @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(hidden = true))),
             @ApiResponse(responseCode = "403", content = @Content(schema = @Schema(hidden = true)))
     })
-    ResponseEntity<PlayerModel> details(@Parameter(hidden = true) UserDetailsImpl user, UUID id);
+    ResponseEntity<PlayerModel> playerDetails(@Parameter(hidden = true) UserDetailsImpl user, UUID id);
 
     @Operation(summary = "List players", security = @SecurityRequirement(name = "bearerAuth"))
     @ApiResponses(value = {
@@ -65,7 +65,7 @@ public interface PlayerController {
             ),
             @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(hidden = true)))
     })
-    ResponseEntity<PlayerListResponse> list(
+    ResponseEntity<PlayerListResponse> playerList(
             @Min(0) int currentPage,
             @Min(1) int pageSize,
             Sort.Direction sortDirection,

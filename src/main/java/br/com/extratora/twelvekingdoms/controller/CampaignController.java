@@ -33,7 +33,7 @@ public interface CampaignController {
             @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(hidden = true))),
             @ApiResponse(responseCode = "403", content = @Content(schema = @Schema(hidden = true)))
     })
-    ResponseEntity<IdResponse> create(
+    ResponseEntity<IdResponse> createCampaign(
             @Parameter(hidden = true) UserDetailsImpl user,
             @Valid CreateCampaignRequest request
     );
@@ -89,7 +89,7 @@ public interface CampaignController {
             @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(hidden = true))),
             @ApiResponse(responseCode = "403", content = @Content(schema = @Schema(hidden = true)))
     })
-    ResponseEntity<MessageResponse> delete(@Parameter(hidden = true) UserDetailsImpl user, UUID id);
+    ResponseEntity<MessageResponse> deleteCampaign(@Parameter(hidden = true) UserDetailsImpl user, UUID id);
 
 
     @Operation(summary = "List campaigns", security = @SecurityRequirement(name = "bearerAuth"))
@@ -105,7 +105,7 @@ public interface CampaignController {
             @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(hidden = true))),
             @ApiResponse(responseCode = "403", content = @Content(schema = @Schema(hidden = true)))
     })
-    ResponseEntity<CampaignListResponse> list(
+    ResponseEntity<CampaignListResponse> campaignList(
             @Min(0) int currentPage,
             @Min(1) int pageSize,
             @Parameter(hidden = true) UserDetailsImpl user
@@ -124,5 +124,5 @@ public interface CampaignController {
             @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(hidden = true))),
             @ApiResponse(responseCode = "403", content = @Content(schema = @Schema(hidden = true)))
     })
-    ResponseEntity<CampaignDetailsResponse> details(@Parameter(hidden = true) UserDetailsImpl user, UUID id);
+    ResponseEntity<CampaignDetailsResponse> campaignDetails(@Parameter(hidden = true) UserDetailsImpl user, UUID id);
 }

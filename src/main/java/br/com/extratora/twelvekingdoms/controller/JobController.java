@@ -24,7 +24,7 @@ public interface JobController {
             ),
             @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(hidden = true)))
     })
-    ResponseEntity<IdNameListResponse> list();
+    ResponseEntity<IdNameListResponse> jobList();
 
     @Operation(summary = "Retrieve player details", security = @SecurityRequirement(name = "bearerAuth"))
     @ApiResponses(value = {
@@ -38,5 +38,5 @@ public interface JobController {
             ),
             @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(hidden = true)))
     })
-    ResponseEntity<JobModel> details(UUID id);
+    ResponseEntity<JobModel> jobDetails(UUID id);
 }

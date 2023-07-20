@@ -3,6 +3,7 @@ package br.com.extratora.twelvekingdoms.service.impl;
 import br.com.extratora.twelvekingdoms.dto.BasicSheetDto;
 import br.com.extratora.twelvekingdoms.dto.request.CreateSheetRequest;
 import br.com.extratora.twelvekingdoms.dto.request.UpdateDeathRollsRequest;
+import br.com.extratora.twelvekingdoms.dto.request.UpdateNotesRequest;
 import br.com.extratora.twelvekingdoms.dto.request.UpdateSheetCurrentPointsRequest;
 import br.com.extratora.twelvekingdoms.enums.Dice;
 import br.com.extratora.twelvekingdoms.enums.SheetSort;
@@ -98,7 +99,6 @@ public class SheetServiceImpl implements SheetService {
         sheet.setCelerity(request.getCelerity());
         sheet.setBond(request.getBond());
         sheet.setMotivation(request.getMotivation());
-        sheet.setNotes(request.getNotes());
 
         return sheetRepository.save(sheet);
     }
@@ -208,6 +208,13 @@ public class SheetServiceImpl implements SheetService {
         sheet.setDeathRollMind(req.getDeathRollMind());
         sheet.setDeathRollSpirit(req.getDeathRollSpirit());
 
+        sheetRepository.save(sheet);
+    }
+
+    @Override
+    public void updateNotes(UserDetailsImpl user, UUID sheetId, UpdateNotesRequest req) {
+        var sheet = validateAndRetrieveSheetForUser(sheetId, user);
+        sheet.setNotes(req.getNotes());
         sheetRepository.save(sheet);
     }
 

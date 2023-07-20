@@ -28,7 +28,7 @@ public class CampaignControllerImpl implements CampaignController {
     @Override
     @PreAuthorize("hasAnyRole('GM','ADMIN')")
     @PostMapping
-    public ResponseEntity<IdResponse> create(
+    public ResponseEntity<IdResponse> createCampaign(
             @AuthenticationPrincipal UserDetailsImpl user,
             @RequestBody CreateCampaignRequest request
     ) {
@@ -66,7 +66,7 @@ public class CampaignControllerImpl implements CampaignController {
     @CrossOrigin(origins = "*")
     @PreAuthorize("hasAnyRole('GM','ADMIN')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<MessageResponse> delete(
+    public ResponseEntity<MessageResponse> deleteCampaign(
             @AuthenticationPrincipal UserDetailsImpl user,
             @PathVariable UUID id
     ) {
@@ -77,7 +77,7 @@ public class CampaignControllerImpl implements CampaignController {
     @Override
     @PreAuthorize("hasAnyRole('GM','ADMIN')")
     @GetMapping("/list")
-    public ResponseEntity<CampaignListResponse> list(
+    public ResponseEntity<CampaignListResponse> campaignList(
             @RequestParam(defaultValue = "0") int currentPage,
             @RequestParam(defaultValue = "5") int pageSize,
             @AuthenticationPrincipal UserDetailsImpl user
@@ -97,7 +97,7 @@ public class CampaignControllerImpl implements CampaignController {
     @Override
     @PreAuthorize("hasAnyRole('GM','ADMIN')")
     @GetMapping
-    public ResponseEntity<CampaignDetailsResponse> details(
+    public ResponseEntity<CampaignDetailsResponse> campaignDetails(
             @AuthenticationPrincipal UserDetailsImpl user,
             @RequestParam UUID id
     ) {

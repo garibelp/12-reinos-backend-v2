@@ -11,7 +11,7 @@ paths:
       tags:
         - sheet-controller-impl
       summary: Retrieve sheet details
-      operationId: details
+      operationId: sheetDetails
       parameters:
         - name: id
           in: query
@@ -20,29 +20,29 @@ paths:
             type: string
             format: uuid
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/SheetModel'
-        '400':
+        "403":
+          description: Forbidden
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-        '401':
+        "401":
           description: Unauthorized
-        '403':
-          description: Forbidden
       security:
         - bearerAuth: [ ]
     post:
       tags:
         - sheet-controller-impl
       summary: Create a sheet
-      operationId: create
+      operationId: createSheet
       requestBody:
         content:
           application/json:
@@ -50,19 +50,19 @@ paths:
               $ref: '#/components/schemas/CreateSheetRequest'
         required: true
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/IdResponse'
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-        '401':
+        "401":
           description: Unauthorized
       security:
         - bearerAuth: [ ]
@@ -71,7 +71,7 @@ paths:
       tags:
         - campaign-controller-impl
       summary: Retrieve sheet details
-      operationId: details_4
+      operationId: campaignDetails
       parameters:
         - name: id
           in: query
@@ -80,29 +80,29 @@ paths:
             type: string
             format: uuid
       responses:
-        '200':
+        "403":
+          description: Forbidden
+        "200":
           description: OK
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/CampaignDetailsResponse'
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-        '401':
+        "401":
           description: Unauthorized
-        '403':
-          description: Forbidden
       security:
         - bearerAuth: [ ]
     post:
       tags:
         - campaign-controller-impl
       summary: Create a campaign
-      operationId: create_1
+      operationId: createCampaign
       requestBody:
         content:
           application/json:
@@ -110,19 +110,21 @@ paths:
               $ref: '#/components/schemas/CreateCampaignRequest'
         required: true
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/IdResponse'
-        '400':
+        "403":
+          description: Forbidden
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-        '401':
+        "401":
           description: Unauthorized
       security:
         - bearerAuth: [ ]
@@ -139,13 +141,13 @@ paths:
               $ref: '#/components/schemas/SignupRequest'
         required: true
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/MessageResponse'
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
@@ -164,23 +166,201 @@ paths:
               $ref: '#/components/schemas/LoginRequest'
         required: true
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/JwtResponse'
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+  /sheets/{sheetId}/updateNotes:
+    patch:
+      tags:
+        - sheet-controller-impl
+      summary: Update notes of sheet
+      operationId: updateNotes
+      parameters:
+        - name: sheetId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateNotesRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+        "403":
+          description: Forbidden
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "401":
+          description: Unauthorized
+      security:
+        - bearerAuth: [ ]
+  /sheets/{sheetId}/updateDeathRolls:
+    patch:
+      tags:
+        - sheet-controller-impl
+      summary: Update death rolls of sheet
+      operationId: updateDeathRolls
+      parameters:
+        - name: sheetId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateDeathRollsRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+        "403":
+          description: Forbidden
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "401":
+          description: Unauthorized
+      security:
+        - bearerAuth: [ ]
+  /sheets/{sheetId}/removeWound:
+    patch:
+      tags:
+        - sheet-controller-impl
+      summary: Remove wound from existing sheet
+      operationId: removeWound
+      parameters:
+        - name: sheetId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+        "403":
+          description: Forbidden
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "401":
+          description: Unauthorized
+      security:
+        - bearerAuth: [ ]
+  /sheets/{sheetId}/addWound:
+    patch:
+      tags:
+        - sheet-controller-impl
+      summary: Add wound to existing sheet
+      operationId: addWound
+      parameters:
+        - name: woundId
+          in: query
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: sheetId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+        "403":
+          description: Forbidden
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "401":
+          description: Unauthorized
+      security:
+        - bearerAuth: [ ]
+  /sheets/{id}/levelUp:
+    patch:
+      tags:
+        - sheet-controller-impl
+      summary: Level up a sheet
+      operationId: levelUp
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+        "403":
+          description: Forbidden
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "401":
+          description: Unauthorized
+      security:
+        - bearerAuth: [ ]
   /sheets/{id}/currentPoints:
     patch:
       tags:
         - sheet-controller-impl
-      summary: Update current physical, mental and heroism points of a sheet
+      summary: "Update current physical, mental and heroism points of a sheet"
       operationId: updateCurrentPoints
       parameters:
         - name: id
@@ -196,22 +376,22 @@ paths:
               $ref: '#/components/schemas/UpdateSheetCurrentPointsRequest'
         required: true
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/MessageResponse'
-        '400':
+        "403":
+          description: Forbidden
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-        '401':
+        "401":
           description: Unauthorized
-        '403':
-          description: Forbidden
       security:
         - bearerAuth: [ ]
   /campaigns/removeSheets/{campaignId}:
@@ -234,19 +414,21 @@ paths:
               $ref: '#/components/schemas/IdListRequest'
         required: true
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/MessageResponse'
-        '400':
+        "403":
+          description: Forbidden
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-        '401':
+        "401":
           description: Unauthorized
       security:
         - bearerAuth: [ ]
@@ -270,19 +452,38 @@ paths:
               $ref: '#/components/schemas/IdListRequest'
         required: true
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/MessageResponse'
-        '400':
+        "403":
+          description: Forbidden
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-        '401':
+        "401":
+          description: Unauthorized
+      security:
+        - bearerAuth: [ ]
+  /wounds/list:
+    get:
+      tags:
+        - wound-controller-impl
+      summary: List existing wounds
+      operationId: woundList
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WoundListResponse'
+        "401":
           description: Unauthorized
       security:
         - bearerAuth: [ ]
@@ -291,7 +492,7 @@ paths:
       tags:
         - sheet-controller-impl
       summary: List sheets
-      operationId: list
+      operationId: sheetList
       parameters:
         - name: currentPage
           in: query
@@ -319,20 +520,32 @@ paths:
           required: false
           schema:
             type: string
+        - name: usePlayerProfile
+          in: query
+          required: false
+          schema:
+            type: boolean
+            default: false
+        - name: nameFilter
+          in: query
+          required: false
+          schema:
+            type: string
+            default: ""
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/SheetListResponse'
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-        '401':
+        "401":
           description: Unauthorized
       security:
         - bearerAuth: [ ]
@@ -341,7 +554,7 @@ paths:
       tags:
         - player-controller-impl
       summary: Retrieve player details
-      operationId: details_1
+      operationId: playerDetails
       parameters:
         - name: id
           in: query
@@ -350,22 +563,22 @@ paths:
             type: string
             format: uuid
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/PlayerModel'
-        '400':
+        "403":
+          description: Forbidden
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-        '401':
+        "401":
           description: Unauthorized
-        '403':
-          description: Forbidden
       security:
         - bearerAuth: [ ]
   /players/list:
@@ -373,7 +586,7 @@ paths:
       tags:
         - player-controller-impl
       summary: List players
-      operationId: list_1
+      operationId: playerList
       parameters:
         - name: currentPage
           in: query
@@ -402,19 +615,19 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/PlayerListResponse'
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-        '401':
+        "401":
           description: Unauthorized
       security:
         - bearerAuth: [ ]
@@ -423,7 +636,7 @@ paths:
       tags:
         - lineage-controller-impl
       summary: Retrieve player details
-      operationId: details_2
+      operationId: lineageDetails
       parameters:
         - name: id
           in: query
@@ -432,19 +645,19 @@ paths:
             type: string
             format: uuid
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/LineageModel'
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-        '401':
+        "401":
           description: Unauthorized
       security:
         - bearerAuth: [ ]
@@ -453,15 +666,15 @@ paths:
       tags:
         - lineage-controller-impl
       summary: List lineages
-      operationId: list_2
+      operationId: lineageList
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/IdNameListResponse'
-        '401':
+        "401":
           description: Unauthorized
       security:
         - bearerAuth: [ ]
@@ -470,7 +683,7 @@ paths:
       tags:
         - job-controller-impl
       summary: Retrieve player details
-      operationId: details_3
+      operationId: jobDetails
       parameters:
         - name: id
           in: query
@@ -479,19 +692,19 @@ paths:
             type: string
             format: uuid
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/JobModel'
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-        '401':
+        "401":
           description: Unauthorized
       security:
         - bearerAuth: [ ]
@@ -500,15 +713,15 @@ paths:
       tags:
         - job-controller-impl
       summary: List lineages
-      operationId: list_3
+      operationId: jobList
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/IdNameListResponse'
-        '401':
+        "401":
           description: Unauthorized
       security:
         - bearerAuth: [ ]
@@ -517,7 +730,7 @@ paths:
       tags:
         - campaign-controller-impl
       summary: List campaigns
-      operationId: list_4
+      operationId: campaignList
       parameters:
         - name: currentPage
           in: query
@@ -536,19 +749,21 @@ paths:
             format: int32
             default: 5
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/CampaignListResponse'
-        '400':
+        "403":
+          description: Forbidden
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-        '401':
+        "401":
           description: Unauthorized
       security:
         - bearerAuth: [ ]
@@ -557,15 +772,15 @@ paths:
       tags:
         - background-controller-impl
       summary: List backgrounds
-      operationId: list_5
+      operationId: backgroundList
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/BackgroundListResponse'
-        '401':
+        "401":
           description: Unauthorized
       security:
         - bearerAuth: [ ]
@@ -574,7 +789,7 @@ paths:
       tags:
         - sheet-controller-impl
       summary: Delete a sheet
-      operationId: delete
+      operationId: deleteSheet
       parameters:
         - name: id
           in: path
@@ -583,22 +798,22 @@ paths:
             type: string
             format: uuid
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/MessageResponse'
-        '400':
+        "403":
+          description: Forbidden
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-        '401':
+        "401":
           description: Unauthorized
-        '403':
-          description: Forbidden
       security:
         - bearerAuth: [ ]
   /players/{id}:
@@ -606,7 +821,7 @@ paths:
       tags:
         - player-controller-impl
       summary: Delete a player
-      operationId: delete_1
+      operationId: deletePlayer
       parameters:
         - name: id
           in: path
@@ -615,22 +830,22 @@ paths:
             type: string
             format: uuid
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/MessageResponse'
-        '400':
+        "403":
+          description: Forbidden
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-        '401':
+        "401":
           description: Unauthorized
-        '403':
-          description: Forbidden
       security:
         - bearerAuth: [ ]
   /campaigns/{id}:
@@ -638,7 +853,7 @@ paths:
       tags:
         - campaign-controller-impl
       summary: Delete a campaign
-      operationId: delete_2
+      operationId: deleteCampaign
       parameters:
         - name: id
           in: path
@@ -647,22 +862,22 @@ paths:
             type: string
             format: uuid
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/MessageResponse'
-        '400':
+        "403":
+          description: Forbidden
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-        '401':
+        "401":
           description: Unauthorized
-        '403':
-          description: Forbidden
       security:
         - bearerAuth: [ ]
 components:
@@ -730,10 +945,12 @@ components:
             - D12
             - D20
         bond:
+          maxLength: 200
+          minLength: 0
           type: string
         motivation:
-          type: string
-        notes:
+          maxLength: 200
+          minLength: 0
           type: string
     IdResponse:
       type: object
@@ -785,7 +1002,7 @@ components:
           minLength: 5
           type: string
         password:
-          pattern: ^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>]).{8,20}$
+          pattern: "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()?[{}]:;',?/*~$^+=<>]).{8,20}$"
           type: string
         firstName:
           maxLength: 20
@@ -813,7 +1030,7 @@ components:
           minLength: 5
           type: string
         password:
-          pattern: ^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>]).{8,20}$
+          pattern: "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()?[{}]:;',?/*~$^+=<>]).{8,20}$"
           type: string
     JwtResponse:
       type: object
@@ -833,6 +1050,40 @@ components:
           type: array
           items:
             type: string
+    UpdateNotesRequest:
+      required:
+        - notes
+      type: object
+      properties:
+        notes:
+          maxLength: 1000
+          minLength: 0
+          type: string
+    UpdateDeathRollsRequest:
+      required:
+        - deathRollBody
+        - deathRollMind
+        - deathRollSpirit
+      type: object
+      properties:
+        deathRollBody:
+          type: string
+          enum:
+            - UNCHECKED
+            - SUCCESS
+            - FAILURE
+        deathRollMind:
+          type: string
+          enum:
+            - UNCHECKED
+            - SUCCESS
+            - FAILURE
+        deathRollSpirit:
+          type: string
+          enum:
+            - UNCHECKED
+            - SUCCESS
+            - FAILURE
     UpdateSheetCurrentPointsRequest:
       type: object
       properties:
@@ -855,6 +1106,29 @@ components:
           items:
             type: string
             format: uuid
+    WoundListResponse:
+      type: object
+      properties:
+        list:
+          type: array
+          items:
+            $ref: '#/components/schemas/WoundsModel'
+    WoundsModel:
+      required:
+        - description
+        - diceRange
+        - name
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        diceRange:
+          type: string
+        description:
+          type: string
     AdvantageModel:
       required:
         - description
@@ -895,34 +1169,6 @@ components:
           format: int32
         advantage:
           $ref: '#/components/schemas/AdvantageModel'
-    CampaignModel:
-      required:
-        - active
-        - name
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        name:
-          type: string
-        notes:
-          type: string
-        createdAt:
-          type: string
-          format: date-time
-        updatedAt:
-          type: string
-          format: date-time
-        player:
-          $ref: '#/components/schemas/PlayerModel'
-        sheets:
-          uniqueItems: true
-          type: array
-          items:
-            $ref: '#/components/schemas/SheetModel'
-        active:
-          type: boolean
     JobModel:
       required:
         - description
@@ -946,6 +1192,12 @@ components:
           type: integer
           format: int32
         mentalPoints:
+          type: integer
+          format: int32
+        physicalPerLevel:
+          type: integer
+          format: int32
+        mentalPerLevel:
           type: integer
           format: int32
         skills:
@@ -991,56 +1243,6 @@ components:
           type: string
         negativeTraitDescription:
           type: string
-    PlayerModel:
-      required:
-        - email
-        - firstName
-        - lastName
-        - username
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        username:
-          type: string
-        firstName:
-          type: string
-        lastName:
-          type: string
-        email:
-          type: string
-        createdAt:
-          type: string
-          format: date-time
-        roles:
-          uniqueItems: true
-          type: array
-          items:
-            $ref: '#/components/schemas/RoleModel'
-        sheets:
-          uniqueItems: true
-          type: array
-          items:
-            $ref: '#/components/schemas/SheetModel'
-        campaigns:
-          uniqueItems: true
-          type: array
-          items:
-            $ref: '#/components/schemas/CampaignModel'
-        active:
-          type: boolean
-    RoleModel:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        name:
-          type: string
-          enum:
-            - ROLE_USER
-            - ROLE_ADMIN
     SheetModel:
       type: object
       properties:
@@ -1108,19 +1310,37 @@ components:
           type: string
         notes:
           type: string
+        deathRollBody:
+          type: string
+          enum:
+            - UNCHECKED
+            - SUCCESS
+            - FAILURE
+        deathRollMind:
+          type: string
+          enum:
+            - UNCHECKED
+            - SUCCESS
+            - FAILURE
+        deathRollSpirit:
+          type: string
+          enum:
+            - UNCHECKED
+            - SUCCESS
+            - FAILURE
         lineage:
           $ref: '#/components/schemas/LineageModel'
         background:
           $ref: '#/components/schemas/BackgroundModel'
         job:
           $ref: '#/components/schemas/JobModel'
+        wound:
+          $ref: '#/components/schemas/WoundsModel'
         aptitudes:
           uniqueItems: true
           type: array
           items:
             $ref: '#/components/schemas/AptitudeModel'
-        campaign:
-          $ref: '#/components/schemas/CampaignModel'
         active:
           type: boolean
     SkillModel:
@@ -1150,6 +1370,9 @@ components:
             - COMBAT
             - BASIC
         range:
+          type: integer
+          format: int32
+        skillLevel:
           type: integer
           format: int32
     BasicSheetDto:
@@ -1191,6 +1414,85 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/BasicSheetDto'
+    CampaignModel:
+      required:
+        - active
+        - name
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        notes:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        player:
+          $ref: '#/components/schemas/PlayerModel'
+        sheets:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/SheetModel'
+        active:
+          type: boolean
+    PlayerModel:
+      required:
+        - email
+        - firstName
+        - lastName
+        - username
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        username:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        roles:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/RoleModel'
+        sheets:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/SheetModel'
+        campaigns:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/CampaignModel'
+        active:
+          type: boolean
+    RoleModel:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          enum:
+            - ROLE_USER
+            - ROLE_GM
+            - ROLE_ADMIN
     BasicPlayerDto:
       type: object
       properties:
@@ -1240,6 +1542,13 @@ components:
     CampaignDetailsResponse:
       type: object
       properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        notes:
+          type: string
         sheets:
           uniqueItems: true
           type: array
@@ -1248,6 +1557,9 @@ components:
     CampaignSheetDto:
       type: object
       properties:
+        id:
+          type: string
+          format: uuid
         name:
           type: string
         level:
@@ -1265,6 +1577,10 @@ components:
         physicalTotal:
           type: integer
           format: int32
+        lineage:
+          type: string
+        background:
+          type: string
     BasicCampaignDto:
       type: object
       properties:

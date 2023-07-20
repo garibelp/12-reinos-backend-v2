@@ -96,6 +96,10 @@ With the application running, access the following URLs:
 
 ## Versions changelog
 
+### - Release 1.5.0
+
+- Added sheet notes update
+
 ### - Release 1.4.1
 
 - Fixes of death roll tests logic

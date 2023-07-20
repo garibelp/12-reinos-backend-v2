@@ -25,14 +25,14 @@ public class LineageControllerImpl implements LineageController {
     @Override
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @GetMapping("/list")
-    public ResponseEntity<IdNameListResponse> list() {
+    public ResponseEntity<IdNameListResponse> lineageList() {
         return ResponseEntity.ok(new IdNameListResponse(lineageService.lineageList()));
     }
 
     @Override
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @GetMapping
-    public ResponseEntity<LineageModel> details(@RequestParam UUID id) {
+    public ResponseEntity<LineageModel> lineageDetails(@RequestParam UUID id) {
         return ResponseEntity.ok(lineageService.getLineage(id));
     }
 }

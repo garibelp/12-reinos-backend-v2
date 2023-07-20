@@ -433,4 +433,26 @@ class SheetControllerTests {
 
         verify(sheetService, times(1)).updateDeathRolls(any(), any(), any());
     }
+
+    @Test
+    void givenUpdateNotes_whenInvalidRequest_thenShouldReturnOk() throws Exception {
+        RequestBuilder builder = MockMvcRequestBuilders.patch("/sheets/" + UUID.randomUUID() + "/updateNotes")
+                .content(objectMapper.writeValueAsString(getNotesRequest(null)))
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(builder).andExpect(status().isBadRequest());
+
+        verify(sheetService, times(0)).updateNotes(any(), any(), any());
+    }
+
+    @Test
+    void givenUpdateNotes_whenValidRequest_thenShouldReturnOk() throws Exception {
+        RequestBuilder builder = MockMvcRequestBuilders.patch("/sheets/" + UUID.randomUUID() + "/updateNotes")
+                .content(objectMapper.writeValueAsString(getNotesRequest("some note")))
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(builder).andExpect(status().isOk());
+
+        verify(sheetService, times(1)).updateNotes(any(), any(), any());
+    }
 }

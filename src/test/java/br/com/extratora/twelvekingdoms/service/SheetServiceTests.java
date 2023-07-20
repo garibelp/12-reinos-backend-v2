@@ -1,5 +1,6 @@
 package br.com.extratora.twelvekingdoms.service;
 
+import br.com.extratora.twelvekingdoms.dto.request.UpdateNotesRequest;
 import br.com.extratora.twelvekingdoms.dto.request.UpdateSheetCurrentPointsRequest;
 import br.com.extratora.twelvekingdoms.enums.Dice;
 import br.com.extratora.twelvekingdoms.enums.Error;
@@ -692,5 +693,19 @@ class SheetServiceTests {
         assertEquals(req.getDeathRollBody(), model.getDeathRollBody());
         assertEquals(req.getDeathRollMind(), model.getDeathRollMind());
         assertEquals(req.getDeathRollSpirit(), model.getDeathRollSpirit());
+    }
+
+    @Test
+    void givenUpdateNotes_whenCalled_thenShouldUpdateData() {
+        var user = getUserDetailsUser();
+        var sheet = getSheetModel(user.getId());
+        var note = "test note - update";
+        when(sheetRepository.findActiveByIdEager(any())).thenReturn(Optional.of(sheet));
+
+        sheetService.updateNotes(user, user.getId(), UpdateNotesRequest.builder().notes(note).build());
+
+        verify(sheetRepository, times(1)).save(sheetCaptor.capture());
+        var model = sheetCaptor.getValue();
+        assertEquals(note, model.getNotes());
     }
 }

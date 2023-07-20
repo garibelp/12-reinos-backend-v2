@@ -21,7 +21,7 @@ public class BackgroundControllerImpl implements BackgroundController {
     @Override
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @GetMapping("/list")
-    public ResponseEntity<BackgroundListResponse> list() {
+    public ResponseEntity<BackgroundListResponse> backgroundList() {
         return ResponseEntity.ok(new BackgroundListResponse(backgroundService.backgroundList()));
     }
 }

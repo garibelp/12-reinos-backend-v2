@@ -304,4 +304,8 @@ public class TestPayloads {
                 UpdateDeathRollsRequest.builder().deathRollMind(DeathRollStatus.UNCHECKED).deathRollSpirit(DeathRollStatus.SUCCESS).build()
         );
     }
+
+    public static UpdateNotesRequest getNotesRequest(String note) {
+        return UpdateNotesRequest.builder().notes(note).build();
+    }
 }

@@ -119,14 +119,6 @@ public class SheetModel implements Serializable {
     @JoinColumn(name = "JOB_ID", nullable = false)
     private JobModel job;
 
-    @ManyToMany
-    @JoinTable(
-            name = "APTITUDE_SHEET",
-            joinColumns = @JoinColumn(name = "SHEET_ID"),
-            inverseJoinColumns = @JoinColumn(name = "APTITUDE_ID")
-    )
-    private Set<AptitudeModel> aptitudes = new HashSet<>();
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "CAMPAIGN_ID", insertable = false)
     @JsonIgnore
@@ -135,6 +127,14 @@ public class SheetModel implements Serializable {
     @ManyToOne
     @JoinColumn(name = "WOUND_ID", insertable = false)
     private WoundsModel wound;
+
+    @ManyToMany
+    @JoinTable(
+            name = "APTITUDE_SHEET",
+            joinColumns = @JoinColumn(name = "SHEET_ID"),
+            inverseJoinColumns = @JoinColumn(name = "APTITUDE_ID")
+    )
+    private Set<AptitudeModel> aptitudes = new HashSet<>();
 
     public void addAptitude(AptitudeModel aptitude) {
         aptitudes.add(aptitude);

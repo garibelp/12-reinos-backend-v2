@@ -24,7 +24,7 @@ public interface LineageController {
             ),
             @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(hidden = true)))
     })
-    ResponseEntity<IdNameListResponse> list();
+    ResponseEntity<IdNameListResponse> lineageList();
 
     @Operation(summary = "Retrieve player details", security = @SecurityRequirement(name = "bearerAuth"))
     @ApiResponses(value = {
@@ -38,5 +38,5 @@ public interface LineageController {
             ),
             @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(hidden = true)))
     })
-    ResponseEntity<LineageModel> details(UUID id);
+    ResponseEntity<LineageModel> lineageDetails(UUID id);
 }

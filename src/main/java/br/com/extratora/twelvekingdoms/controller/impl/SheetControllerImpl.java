@@ -4,6 +4,7 @@ import br.com.extratora.twelvekingdoms.controller.SheetController;
 import br.com.extratora.twelvekingdoms.dto.BasicSheetDto;
 import br.com.extratora.twelvekingdoms.dto.request.CreateSheetRequest;
 import br.com.extratora.twelvekingdoms.dto.request.UpdateDeathRollsRequest;
+import br.com.extratora.twelvekingdoms.dto.request.UpdateNotesRequest;
 import br.com.extratora.twelvekingdoms.dto.request.UpdateSheetCurrentPointsRequest;
 import br.com.extratora.twelvekingdoms.dto.response.IdResponse;
 import br.com.extratora.twelvekingdoms.dto.response.MessageResponse;
@@ -34,7 +35,7 @@ public class SheetControllerImpl implements SheetController {
     @Override
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @PostMapping
-    public ResponseEntity<IdResponse> create(
+    public ResponseEntity<IdResponse> createSheet(
             @AuthenticationPrincipal UserDetailsImpl user,
             @RequestBody CreateSheetRequest request
     ) {
@@ -45,7 +46,7 @@ public class SheetControllerImpl implements SheetController {
     @Override
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @GetMapping
-    public ResponseEntity<SheetModel> details(
+    public ResponseEntity<SheetModel> sheetDetails(
             @AuthenticationPrincipal UserDetailsImpl user,
             @RequestParam UUID id
     ) {
@@ -55,7 +56,7 @@ public class SheetControllerImpl implements SheetController {
     @Override
     @PreAuthorize("hasAnyRole('USER','GM','ADMIN')")
     @GetMapping("/list")
-    public ResponseEntity<SheetListResponse> list(
+    public ResponseEntity<SheetListResponse> sheetList(
             @RequestParam(defaultValue = "0") int currentPage,
             @RequestParam(defaultValue = "5") int pageSize,
             @RequestParam(required = false) Sort.Direction sortDirection,
@@ -88,7 +89,7 @@ public class SheetControllerImpl implements SheetController {
     @CrossOrigin(origins = "*")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<MessageResponse> delete(@AuthenticationPrincipal UserDetailsImpl user, @PathVariable UUID id) {
+    public ResponseEntity<MessageResponse> deleteSheet(@AuthenticationPrincipal UserDetailsImpl user, @PathVariable UUID id) {
         sheetService.deleteSheet(id, user);
         return ResponseEntity.ok(new MessageResponse("Sheet deleted successfully!"));
     }
@@ -148,6 +149,19 @@ public class SheetControllerImpl implements SheetController {
     ) {
         sheetService.updateDeathRolls(user, sheetId, req);
         return ResponseEntity.ok(new MessageResponse("Successfully updated sheet death rolls!"));
+    }
+
+    @Override
+    @CrossOrigin(origins = "*")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    @PatchMapping("/{sheetId}/updateNotes")
+    public ResponseEntity<MessageResponse> updateNotes(
+            @AuthenticationPrincipal UserDetailsImpl user,
+            @PathVariable UUID sheetId,
+            @RequestBody UpdateNotesRequest req
+    ) {
+        sheetService.updateNotes(user, sheetId, req);
+        return ResponseEntity.ok(new MessageResponse("Successfully updated sheet notes!"));
     }
 
 }

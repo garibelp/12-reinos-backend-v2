@@ -3,6 +3,7 @@ package br.com.extratora.twelvekingdoms.service;
 import br.com.extratora.twelvekingdoms.dto.BasicSheetDto;
 import br.com.extratora.twelvekingdoms.dto.request.CreateSheetRequest;
 import br.com.extratora.twelvekingdoms.dto.request.UpdateDeathRollsRequest;
+import br.com.extratora.twelvekingdoms.dto.request.UpdateNotesRequest;
 import br.com.extratora.twelvekingdoms.dto.request.UpdateSheetCurrentPointsRequest;
 import br.com.extratora.twelvekingdoms.enums.SheetSort;
 import br.com.extratora.twelvekingdoms.model.SheetModel;
@@ -37,5 +38,7 @@ public interface SheetService {
     void removeWound(UserDetailsImpl user, UUID sheetId);
 
     void updateDeathRolls(UserDetailsImpl user, UUID sheetId, UpdateDeathRollsRequest req);
+
+    void updateNotes(UserDetailsImpl user, UUID sheetId, UpdateNotesRequest req);
 
 }

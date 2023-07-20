@@ -17,7 +17,7 @@ import javax.validation.Valid;
 
 @Validated
 public interface AuthController {
-    @Operation(summary = "Authenticate existing player")
+    @Operation(summary = "Authenticate existing player", operationId = "authenticateUser")
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
@@ -30,7 +30,7 @@ public interface AuthController {
     })
     ResponseEntity<JwtResponse> authenticateUser(@Valid LoginRequest loginRequest);
 
-    @Operation(summary = "Register a new player")
+    @Operation(summary = "Register a new player", operationId = "registerUser")
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",

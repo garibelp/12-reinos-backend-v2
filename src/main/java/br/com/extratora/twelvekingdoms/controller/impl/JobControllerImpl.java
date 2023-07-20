@@ -25,14 +25,14 @@ public class JobControllerImpl implements JobController {
     @Override
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @GetMapping("/list")
-    public ResponseEntity<IdNameListResponse> list() {
+    public ResponseEntity<IdNameListResponse> jobList() {
         return ResponseEntity.ok(new IdNameListResponse(jobService.jobList()));
     }
 
     @Override
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @GetMapping
-    public ResponseEntity<JobModel> details(@RequestParam UUID id) {
+    public ResponseEntity<JobModel> jobDetails(@RequestParam UUID id) {
         return ResponseEntity.ok(jobService.getJob(id));
     }
 }

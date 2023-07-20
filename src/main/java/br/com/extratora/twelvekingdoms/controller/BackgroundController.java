@@ -18,5 +18,5 @@ public interface BackgroundController {
             ),
             @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(hidden = true)))
     })
-    ResponseEntity<BackgroundListResponse> list();
+    ResponseEntity<BackgroundListResponse> backgroundList();
 }

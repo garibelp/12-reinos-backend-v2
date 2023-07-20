@@ -29,7 +29,7 @@ public class PlayerControllerImpl implements PlayerController {
     @Override
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<MessageResponse> delete(@AuthenticationPrincipal UserDetailsImpl user, @PathVariable UUID id) {
+    public ResponseEntity<MessageResponse> deletePlayer(@AuthenticationPrincipal UserDetailsImpl user, @PathVariable UUID id) {
         playerService.deletePlayer(id, user);
         return ResponseEntity.ok(new MessageResponse("User deleted successfully!"));
     }
@@ -37,14 +37,14 @@ public class PlayerControllerImpl implements PlayerController {
     @Override
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @GetMapping
-    public ResponseEntity<PlayerModel> details(@AuthenticationPrincipal UserDetailsImpl user, @RequestParam UUID id) {
+    public ResponseEntity<PlayerModel> playerDetails(@AuthenticationPrincipal UserDetailsImpl user, @RequestParam UUID id) {
         return ResponseEntity.ok(playerService.getPlayer(id, user));
     }
 
     @Override
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/list")
-    public ResponseEntity<PlayerListResponse> list(
+    public ResponseEntity<PlayerListResponse> playerList(
             @RequestParam(defaultValue = "0") int currentPage,
             @RequestParam(defaultValue = "5") int pageSize,
             @RequestParam(required = false) Sort.Direction sortDirection,

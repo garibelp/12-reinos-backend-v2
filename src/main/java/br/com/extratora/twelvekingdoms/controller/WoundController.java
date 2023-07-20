@@ -18,5 +18,5 @@ public interface WoundController {
             ),
             @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(hidden = true)))
     })
-    ResponseEntity<WoundListResponse> list();
+    ResponseEntity<WoundListResponse> woundList();
 }
