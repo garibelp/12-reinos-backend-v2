@@ -7,6 +7,7 @@ import br.com.extratora.twelvekingdoms.enums.PlayerSort;
 import br.com.extratora.twelvekingdoms.enums.SheetSort;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.Sort;
 import org.springframework.format.FormatterRegistry;
@@ -22,6 +23,13 @@ import java.util.List;
 @Configuration
 @EnableWebMvc
 public class AppConfig implements WebMvcConfigurer {
+
+    @Value("${app.cors.origins}")
+    private String corsAllowedOrigins;
+
+    @Value("${app.cors.methods}")
+    private String corsAllowedMethods;
+
     @Override
     public void addFormatters(FormatterRegistry registry) {
         List<Class<? extends Enum>> enums = List.of(
@@ -56,6 +64,8 @@ public class AppConfig implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**");
+        registry.addMapping("/**")
+                .allowedOrigins(corsAllowedOrigins)
+                .allowedMethods(corsAllowedMethods);
     }
 }

@@ -86,7 +86,6 @@ public class SheetControllerImpl implements SheetController {
     }
 
     @Override
-    @CrossOrigin(origins = "*")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<MessageResponse> deleteSheet(@AuthenticationPrincipal UserDetailsImpl user, @PathVariable UUID id) {
@@ -95,7 +94,6 @@ public class SheetControllerImpl implements SheetController {
     }
 
     @Override
-    @CrossOrigin(origins = "*")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @PatchMapping("/{id}/currentPoints")
     public ResponseEntity<MessageResponse> updateCurrentPoints(
@@ -108,7 +106,6 @@ public class SheetControllerImpl implements SheetController {
     }
 
     @Override
-    @CrossOrigin(origins = "*")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @PatchMapping("/{id}/levelUp")
     public ResponseEntity<MessageResponse> levelUp(@AuthenticationPrincipal UserDetailsImpl user, @PathVariable UUID id) {
@@ -117,7 +114,6 @@ public class SheetControllerImpl implements SheetController {
     }
 
     @Override
-    @CrossOrigin(origins = "*")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @PatchMapping("/{sheetId}/addWound")
     public ResponseEntity<MessageResponse> addWound(
@@ -130,7 +126,6 @@ public class SheetControllerImpl implements SheetController {
     }
 
     @Override
-    @CrossOrigin(origins = "*")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @PatchMapping("/{sheetId}/removeWound")
     public ResponseEntity<MessageResponse> removeWound(@AuthenticationPrincipal UserDetailsImpl user, @PathVariable UUID sheetId) {
@@ -139,7 +134,6 @@ public class SheetControllerImpl implements SheetController {
     }
 
     @Override
-    @CrossOrigin(origins = "*")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @PatchMapping("/{sheetId}/updateDeathRolls")
     public ResponseEntity<MessageResponse> updateDeathRolls(
@@ -152,7 +146,6 @@ public class SheetControllerImpl implements SheetController {
     }
 
     @Override
-    @CrossOrigin(origins = "*")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @PatchMapping("/{sheetId}/updateNotes")
     public ResponseEntity<MessageResponse> updateNotes(

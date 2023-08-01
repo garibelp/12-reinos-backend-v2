@@ -37,7 +37,6 @@ public class CampaignControllerImpl implements CampaignController {
     }
 
     @Override
-    @CrossOrigin(origins = "*")
     @PreAuthorize("hasAnyRole('GM','ADMIN')")
     @PatchMapping("/addSheets/{campaignId}")
     public ResponseEntity<MessageResponse> addSheets(
@@ -50,7 +49,6 @@ public class CampaignControllerImpl implements CampaignController {
     }
 
     @Override
-    @CrossOrigin(origins = "*")
     @PreAuthorize("hasAnyRole('GM','ADMIN')")
     @PatchMapping("/removeSheets/{campaignId}")
     public ResponseEntity<MessageResponse> removeSheets(
@@ -63,7 +61,6 @@ public class CampaignControllerImpl implements CampaignController {
     }
 
     @Override
-    @CrossOrigin(origins = "*")
     @PreAuthorize("hasAnyRole('GM','ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<MessageResponse> deleteCampaign(

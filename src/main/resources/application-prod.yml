@@ -21,3 +21,8 @@ springdoc:
 logging:
   pattern:
     console: "{\"time\": \"%d\", \"level\": \"%p\", \"source\": \"%logger{63}:%L\", \"message\": \"%m\"}%n"
+
+app:
+  cors:
+    origins: 'https://www.12reinos.com'
+    methods: 'GET,OPTIONS,POST,PATCH,PUT,DELETE'
