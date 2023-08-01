@@ -24,5 +24,4 @@ logging:
 
 app:
   cors:
-    origins: 'https://www.12reinos.com'
-    methods: 'GET,OPTIONS,POST,PATCH,PUT,DELETE'
+    origins: https://www.12reinos.com

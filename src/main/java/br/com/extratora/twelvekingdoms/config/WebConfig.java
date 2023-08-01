@@ -7,6 +7,7 @@ import br.com.extratora.twelvekingdoms.enums.PlayerSort;
 import br.com.extratora.twelvekingdoms.enums.SheetSort;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.Sort;
@@ -22,13 +23,11 @@ import java.util.List;
 
 @Configuration
 @EnableWebMvc
-public class AppConfig implements WebMvcConfigurer {
+@Slf4j
+public class WebConfig implements WebMvcConfigurer {
 
     @Value("${app.cors.origins}")
     private String corsAllowedOrigins;
-
-    @Value("${app.cors.methods}")
-    private String corsAllowedMethods;
 
     @Override
     public void addFormatters(FormatterRegistry registry) {
@@ -64,8 +63,9 @@ public class AppConfig implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
+        log.info("Enabling CORS for domain [{}]", corsAllowedOrigins);
         registry.addMapping("/**")
                 .allowedOrigins(corsAllowedOrigins)
-                .allowedMethods(corsAllowedMethods);
+                .allowedMethods("GET", "OPTIONS", "POST", "PATCH", "PUT", "DELETE");
     }
 }
