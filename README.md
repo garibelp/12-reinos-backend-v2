@@ -75,16 +75,15 @@ $ mvn clean install
 ```
 
 There are several ways to run a Spring Boot application on your local machine. One way is to execute the `main` method
-in the `br.com.extratora.twelvekingdoms.Main` class from your IDE and add value `--spring.profiles.active=dev` to
-the Environment Variables.
+in the `br.com.extratora.twelvekingdoms.Main` class from your IDE.
 
 Alternatively you can use
 the [Spring Boot Maven plugin](https://docs.spring.io/spring-boot/docs/current/reference/html/build-tool-plugins-maven-plugin.html)
 like so:
 
 ```shell
-# Command to run with development profile
-$ mvn spring-boot:run -Dspring-boot.run.profiles=dev
+# Command to run project
+$ mvn spring-boot:run
 ```
 
 ## Accessing Swagger documentation

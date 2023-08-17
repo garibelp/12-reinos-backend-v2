@@ -24,7 +24,7 @@ import java.util.List;
 @Configuration
 @EnableWebMvc
 @Slf4j
-public class WebConfig implements WebMvcConfigurer {
+public class WebMvcConfig implements WebMvcConfigurer {
 
     @Value("${app.cors.origins}")
     private String corsAllowedOrigins;
@@ -63,9 +63,9 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        log.info("Enabling CORS for domain [{}]", corsAllowedOrigins);
+        log.info("Enabling CORS for domain: {}", corsAllowedOrigins);
         registry.addMapping("/**")
                 .allowedOrigins(corsAllowedOrigins)
-                .allowedMethods("GET", "OPTIONS", "POST", "PATCH", "PUT", "DELETE");
+                .allowedMethods("GET", "OPTIONS", "POST", "PATCH", "PUT", "DELETE", "HEAD");
     }
 }
